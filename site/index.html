@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mohawk Nexus | Sovereign Intelligence Demo</title>
+  <meta name="description" content="A high-impact, GitHub Pages-ready ecosystem demo for Mohawk Nexus and Sovereign-Mohawk-Proto capabilities." />
+  <style>
+    :root {
+      --bg: #081019;
+      --panel: #101c2b;
+      --panel-soft: #15263a;
+      --ink: #eef4fb;
+      --muted: #9fb3c9;
+      --cyan: #2dd4bf;
+      --amber: #fbbf24;
+      --rose: #fb7185;
+      --line: #223951;
+      --max: 1180px;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Space Grotesk", "Segoe UI", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 8% -5%, rgba(45, 212, 191, 0.28), transparent 55%),
+        radial-gradient(900px 500px at 95% 15%, rgba(251, 191, 36, 0.2), transparent 60%),
+        linear-gradient(180deg, #081019 0%, #0d1725 40%, #0a1320 100%);
+      color: var(--ink);
+      scroll-behavior: smooth;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 0.7px, transparent 0.7px);
+      background-size: 4px 4px;
+      opacity: 0.18;
+      z-index: 0;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(8, 16, 25, 0.72);
+      border-bottom: 1px solid rgba(159, 179, 201, 0.18);
+      z-index: 20;
+    }
+
+    .nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.92rem;
+      border: 1px solid transparent;
+      padding: 0.35rem 0.58rem;
+      border-radius: 999px;
+      transition: 160ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      border-color: var(--line);
+      background: rgba(34, 57, 81, 0.3);
+    }
+
+    section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 4.5rem 1rem;
+    }
+
+    .hero {
+      padding-top: 4rem;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(45, 212, 191, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      border-radius: 999px;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.82rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-family: "Sora", "Space Grotesk", sans-serif;
+      font-size: clamp(2rem, 5vw, 3.75rem);
+      line-height: 1.06;
+      margin: 0 0 1rem;
+      text-wrap: balance;
+    }
+
+    .lede {
+      color: var(--muted);
+      margin: 0 0 1.35rem;
+      max-width: 64ch;
+      font-size: 1.06rem;
+      line-height: 1.7;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .btn {
+      text-decoration: none;
+      border-radius: 0.7rem;
+      padding: 0.72rem 1rem;
+      font-weight: 700;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #2dd4bf, #22c55e);
+      color: #061019;
+      box-shadow: 0 14px 35px rgba(45, 212, 191, 0.28);
+    }
+
+    .btn-secondary {
+      color: var(--ink);
+      border: 1px solid var(--line);
+      background: rgba(16, 28, 43, 0.72);
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(21, 38, 58, 0.95), rgba(16, 28, 43, 0.95));
+      border: 1px solid rgba(159, 179, 201, 0.22);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.6rem;
+    }
+
+    .kpi {
+      background: rgba(8, 16, 25, 0.7);
+      border: 1px solid rgba(34, 57, 81, 0.9);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: 1.3rem;
+      color: #d0f8ff;
+      margin-bottom: 0.15rem;
+    }
+
+    .kpi span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.4rem, 2.4vw, 2.15rem);
+      margin: 0 0 0.85rem;
+    }
+
+    .section-copy {
+      margin: 0 0 1.35rem;
+      color: var(--muted);
+      max-width: 70ch;
+      line-height: 1.7;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    .card {
+      background: rgba(16, 28, 43, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 1rem;
+      min-height: 160px;
+      transition: transform 200ms ease, border-color 200ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(45, 212, 191, 0.55);
+    }
+
+    .card h3 {
+      margin: 0 0 0.55rem;
+      font-size: 1.02rem;
+      color: #d4f8ff;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .verticals {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .vertical {
+      border: 1px solid rgba(251, 191, 36, 0.28);
+      background:
+        linear-gradient(145deg, rgba(251, 191, 36, 0.1), rgba(16, 28, 43, 0.92));
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+
+    .vertical h3 {
+      margin: 0 0 0.35rem;
+      color: #ffe6a3;
+    }
+
+    .vertical p {
+      margin: 0;
+      color: #f8f3e4;
+      opacity: 0.88;
+      line-height: 1.62;
+    }
+
+    .timeline {
+      border-left: 2px solid rgba(45, 212, 191, 0.4);
+      margin-left: 0.35rem;
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 1.1rem;
+    }
+
+    .event {
+      background: rgba(16, 28, 43, 0.82);
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+      padding: 0.9rem;
+      position: relative;
+    }
+
+    .event::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--cyan);
+      left: -1.58rem;
+      top: 1.05rem;
+      box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.16);
+    }
+
+    .event h4 {
+      margin: 0 0 0.35rem;
+      color: #d9f9ff;
+    }
+
+    .event p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .resource {
+      border: 1px dashed rgba(159, 179, 201, 0.35);
+      border-radius: 0.8rem;
+      padding: 0.85rem;
+      color: var(--ink);
+      text-decoration: none;
+      background: rgba(16, 28, 43, 0.65);
+    }
+
+    .resource strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .resource span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .resource:hover {
+      border-color: rgba(45, 212, 191, 0.52);
+      background: rgba(21, 38, 58, 0.88);
+    }
+
+    footer {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2.5rem 1rem 3.25rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(159, 179, 201, 0.18);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fadeUp 700ms ease forwards;
+      animation-delay: var(--delay, 0ms);
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .matrix {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .links,
+      .verticals,
+      .matrix,
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 3.4rem 1rem;
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="shell">
+    <header>
+      <div class="nav">
+        <a class="brand" href="#top">Mohawk Nexus Demo</a>
+        <nav class="nav-links">
+          <a href="#capabilities">Capabilities</a>
+          <a href="#verticals">Verticals</a>
+          <a href="#narrative">Narrative</a>
+          <a href="#deploy">Deploy</a>
+          <a href="#evidence">Evidence</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero" id="top">
+      <div>
+        <span class="pill reveal" style="--delay: 80ms;">Sovereign-Mohawk Ecosystem Demo</span>
+        <h1 class="reveal" style="--delay: 140ms;">Collective intelligence with verified trust, domain sovereignty, and production-grade scale.</h1>
+        <p class="lede reveal" style="--delay: 210ms;">
+          This experience merges the documented Mohawk Nexus architecture with the active
+          capabilities of Sovereign-Mohawk-Proto: Byzantine-resilient federated learning,
+          formal verification, TPM-backed identity, post-quantum migration plans,
+          and vertical deployment patterns for oncology, agriculture, climate, and supply chain.
+        </p>
+        <div class="cta-row reveal" style="--delay: 280ms;">
+          <a class="btn btn-primary" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noreferrer">Explore Source Repository</a>
+          <a class="btn btn-secondary" href="#deploy">Publish on GitHub Pages</a>
+        </div>
+      </div>
+
+      <aside class="hero-card reveal" style="--delay: 240ms;" aria-label="Ecosystem KPI Highlights">
+        <div class="kpi-grid">
+          <div class="kpi"><strong>10M+</strong><span>Node-scale target for federated intelligence</span></div>
+          <div class="kpi"><strong>&lt;10ms</strong><span>zk-SNARK verification benchmark target</span></div>
+          <div class="kpi"><strong>6+</strong><span>Lean proof modules tied to runtime evidence</span></div>
+          <div class="kpi"><strong>x25519-mlkem768</strong><span>PQC hybrid transport migration path</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="capabilities">
+      <h2 class="section-title">Capability Matrix</h2>
+      <p class="section-copy">
+        This demo highlights combined capabilities across protocol runtime, trust primitives,
+        observability, and deployment ergonomics. Each card maps to themes found in the
+        Sovereign-Mohawk-Proto README and Mohawk Nexus architecture docs.
+      </p>
+      <div class="matrix">
+        <article class="card reveal" style="--delay: 80ms;"><h3>Byzantine-Tolerant FL Core</h3><p>Federated aggregation designed to tolerate adversarial participants while preserving convergence integrity under Byzantine assumptions.</p></article>
+        <article class="card reveal" style="--delay: 120ms;"><h3>Lean Formalization Trail</h3><p>Proof modules and a traceability matrix align theorem claims with runtime evidence and CI verification workflows.</p></article>
+        <article class="card reveal" style="--delay: 160ms;"><h3>TPM + XMSS Identity</h3><p>Hardware-rooted attestation and XMSS identity controls enforce verifiable node provenance and fail-closed trust posture.</p></article>
+        <article class="card reveal" style="--delay: 200ms;"><h3>PQC Transition Readiness</h3><p>Hybrid key exchange path (x25519 + mlkem768) supports staged migration toward post-quantum resilience.</p></article>
+        <article class="card reveal" style="--delay: 240ms;"><h3>Developer Adoption Lane</h3><p>Python SDK, Flower-compatible flows, and quickstart scripts lower friction for teams moving from classic FL stacks.</p></article>
+        <article class="card reveal" style="--delay: 280ms;"><h3>Operational Evidence System</h3><p>Performance gates, security workflows, and artifact governance provide auditable evidence for readiness discussions.</p></article>
+      </div>
+    </section>
+
+    <section id="verticals">
+      <h2 class="section-title">Vertical Stories That Capture Attention</h2>
+      <p class="section-copy">
+        Mohawk Nexus positions each domain behind policy gates. The same sovereign trust fabric
+        powers different mission outcomes without centralizing raw data.
+      </p>
+      <div class="verticals">
+        <article class="vertical reveal" style="--delay: 100ms;"><h3>Oncology Intelligence</h3><p>Hospitals collaborate on model improvement while retaining patient data locally. Compliance logs, attestation evidence, and privacy accounting support HIPAA and GDPR operations.</p></article>
+        <article class="vertical reveal" style="--delay: 160ms;"><h3>Agriculture Optimization</h3><p>Farm-level training supports yield prediction, sustainability scoring, and resilient planning while preserving farmer sovereignty and preventing centralized extraction of operational data.</p></article>
+        <article class="vertical reveal" style="--delay: 220ms;"><h3>Climate Coordination</h3><p>Distributed climate signal aggregation enables region-level forecasting and emissions response without forcing single authority control over nation-scale environmental datasets.</p></article>
+        <article class="vertical reveal" style="--delay: 280ms;"><h3>Supply Chain Resilience</h3><p>Cross-organization optimization improves routing and throughput through federated updates, provenance checks, and verifiable trust anchors across enterprise boundaries.</p></article>
+      </div>
+    </section>
+
+    <section id="narrative">
+      <h2 class="section-title">Narrated Ecosystem Journey</h2>
+      <p class="section-copy">
+        A simple demo story for presentations: start with local training at the edge, validate identity,
+        verify cryptographic integrity, converge through Byzantine filtering, then ship policy-compliant,
+        auditable model updates across sovereign domains.
+      </p>
+      <div class="timeline">
+        <article class="event reveal" style="--delay: 90ms;"><h4>Step 1: Sovereign Edge Training</h4><p>Each node trains on local data and emits updates instead of raw records. Privacy and provenance begin at the source.</p></article>
+        <article class="event reveal" style="--delay: 140ms;"><h4>Step 2: Attested Identity + Proof Signals</h4><p>TPM-backed identity and cryptographic checks gate participation, reducing spoofing and unaudited update injection risk.</p></article>
+        <article class="event reveal" style="--delay: 190ms;"><h4>Step 3: Byzantine Filtering + Consensus</h4><p>Aggregation paths tolerate adversarial behavior and maintain continuity toward correct global outcomes with theorem-guided guardrails.</p></article>
+        <article class="event reveal" style="--delay: 240ms;"><h4>Step 4: Policy-Gated Domain Distribution</h4><p>Outputs are distributed by governance rules per vertical, preserving autonomy while enabling cross-organizational intelligence gains.</p></article>
+        <article class="event reveal" style="--delay: 290ms;"><h4>Step 5: Evidence-Backed Operations</h4><p>CI gates, performance artifacts, and formal-trace documents turn platform claims into inspectable operational evidence.</p></article>
+      </div>
+    </section>
+
+    <section id="deploy">
+      <h2 class="section-title">GitHub Pages Attachment</h2>
+      <p class="section-copy">
+        This repository now includes a GitHub Actions workflow that publishes this site folder directly to GitHub Pages.
+        Push to main, enable Pages in repository settings, and the narrated demo becomes your public ecosystem front door.
+      </p>
+      <div class="links">
+        <a class="resource reveal" style="--delay: 100ms;" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions" target="_blank" rel="noreferrer">
+          <strong>Action Runs</strong>
+          <span>Track deployment status and inspect build logs for every push.</span>
+        </a>
+        <a class="resource reveal" style="--delay: 150ms;" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/settings/pages" target="_blank" rel="noreferrer">
+          <strong>Pages Settings</strong>
+          <span>Set source to GitHub Actions, then publish automatically.</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="evidence">
+      <h2 class="section-title">Source Evidence Links</h2>
+      <p class="section-copy">Use these links during demos to validate every claim with upstream artifacts and architecture references.</p>
+      <div class="links">
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/blob/main/README.md" target="_blank" rel="noreferrer"><strong>Sovereign-Mohawk-Proto README</strong><span>Primary capability overview, quickstarts, and platform context.</span></a>
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/proofs" target="_blank" rel="noreferrer"><strong>Formal Proofs Directory</strong><span>Lean modules, verification logs, and formal traceability assets.</span></a>
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/sdk/python" target="_blank" rel="noreferrer"><strong>Python SDK + Flower Integration</strong><span>Migration lane for developers and practical examples.</span></a>
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/internal/router" target="_blank" rel="noreferrer"><strong>Federated Router Components</strong><span>Cross-vertical policy and provenance routing logic.</span></a>
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/01-ARCHITECTURE.md" target="_blank" rel="noreferrer"><strong>Mohawk Nexus Architecture Doc</strong><span>Layered trust model, scaling assumptions, and policy-gated domains.</span></a>
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/07-ROADMAP.md" target="_blank" rel="noreferrer"><strong>Mohawk Nexus Roadmap</strong><span>PQC milestones, scaling trajectory, and domain expansion plans.</span></a>
+      </div>
+    </section>
+
+    <footer>
+      Mohawk Nexus demo narrative. Designed for GitHub Pages and stakeholder presentations.
+      Claims are anchored to public repository artifacts and documentation.
+    </footer>
+  </div>
+</body>
+</html>

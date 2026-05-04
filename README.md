@@ -2,6 +2,24 @@
 
 Welcome to Mohawk Nexus documentation. This directory contains comprehensive guides organized by topic.
 
+## Live Ecosystem Demo (GitHub Pages)
+
+This repository now includes a high-impact narrated demo page designed to showcase the combined Mohawk Nexus + Sovereign-Mohawk-Proto ecosystem.
+
+- Demo source: `site/index.html`
+- Deployment workflow: `.github/workflows/deploy-pages.yml`
+- Upstream capability source: <https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto>
+
+### Publish Steps
+
+1. Push this repository to `main`.
+2. Open repository settings -> Pages.
+3. Set source to `GitHub Actions`.
+4. Wait for `Deploy GitHub Pages` workflow to complete.
+
+After deployment, the site will be available at:
+`https://rwilliamspbg-ops.github.io/Mohawk-Nexus/`
+
 ## 📚 Documentation Roadmap
 
 ### 🟢 START HERE (5 minutes)

@@ -2,6 +2,12 @@
 
 Complete directory of all Mohawk Nexus files and documentation.
 
+## 🌐 Ecosystem Demo Entry Point
+
+- Narrated demo page: `site/index.html`
+- GitHub Pages deployment workflow: `.github/workflows/deploy-pages.yml`
+- Upstream source used for capabilities: <https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto>
+
 ## 🎯 Quick Navigation
 
 **New to the project?**
