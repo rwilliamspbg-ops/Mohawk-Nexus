@@ -345,19 +345,20 @@ Observability:
 
 ## Future Roadmap
 
-### 2026 Q2
+### 2026 H1 (Q1-Q2)
 - [ ] x25519-mlkem768 deployment
 - [ ] Lean4 consensus proofs complete
 - [ ] TPM 2.0 enterprise rollout
 
-### 2026 H2
-- [ ] 1000+ nodes in production
-- [ ] 4 verticals (oncology, ag, climate, SC)
+### 2026 H2 (Q3-Q4)
 - [ ] Multi-chain integration
+- [ ] Autonomous model improvement
+- [ ] Advanced analytics
+- [ ] Agentic experience layer (dynamic UI, feedback loops, low-latency rendering, tool hooks)
 
 ### 2027+
 - [ ] 100M+ nodes
-- [ ] Autonomous model improvement
+- [ ] Dynamic node elasticity
 - [ ] Global nation-level deployments
 
 ---

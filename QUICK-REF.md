@@ -6,11 +6,11 @@
 
 ## YOUR 30-SECOND PITCH (Memorize This!)
 
-"Standard agentic systems depend on centralized servers. That's a trust bottleneck, privacy nightmare, and environmental disaster—uses 1000s of gallons of water daily.
+"Standard agentic systems depend on centralized servers. That creates trust, privacy, and cost problems, and it burns electricity and water at scale.
 
 We route aggregation across sovereign nodes. No central honeypot. Byzantine-tolerant consensus with zk-SNARK proofs mathematically prove nothing was tampered with.
 
-Our Mohawk Protocol scales with **O(d log n) memory**—not O(n). At 100k nodes, that's **31x less RAM**, **zero-water edge inference**, and **real sovereignty**.
+Our Mohawk Protocol scales with **O(d log n) memory**—not O(n). That means less RAM, lower electricity demand, less water use, and **real sovereignty**.
 
 Watch." [Show demo]
 
@@ -18,7 +18,7 @@ Watch." [Show demo]
 
 ## THE TECH IN ONE IMAGE
 
-```
+```text
 Edge Nodes (100K-1M)
     ↓ (local training)
 Byzantine Consensus Layer
@@ -35,14 +35,14 @@ OUTPUT: Verified intelligence, no central authority
 ## KEY STATS (Tell judges these numbers!)
 
 | Stat | Why |
-|------|-----|
+| --- | --- |
 | **O(d log n)** | Algorithmic superiority (vs O(n) bloat) |
 | **224x RAM** reduction | Concrete efficiency proof |
 | **1/3** Byzantine threshold | Tolerates malicious nodes |
 | **<10ms** SNARK proof | Real-time verification |
 | **100M** nodes | Planetary scale |
 | **31x** memory savings | Per aggregator, 100k nodes |
-| **30,000+ gallons** water saved daily | Sustainability angle |
+| **Electricity + water savings** | Sustainability angle |
 | **58MB** edge runtime | Works on constrained hardware |
 
 ---
@@ -50,7 +50,8 @@ OUTPUT: Verified intelligence, no central authority
 ## DEMO FLOW (What judges see)
 
 ### Demo 1: Agentic Sovereignty
-```
+
+```text
 "Watch 100 sovereign nodes aggregate intelligence in real-time."
 [Opening browser → animated node network]
 
@@ -62,21 +63,24 @@ OUTPUT: Verified intelligence, no central authority
 
 "This is trustworthy intelligence at scale."
 ```
+
 **Time**: ~2 minutes
 
 ### Demo 2: Efficiency
-```
+
+```text
 "Same aggregation. Look at the resource drain:"
 [Side-by-side comparison]
 
-"Centralized: 2GB RAM, $0.40/hour, 30,000 gallons/day"
+"Centralized: 2GB RAM, high electricity demand, heavy water usage"
 [Red bars, bad numbers]
 
-"SMP Protocol: 64MB RAM, $0.001/hour, zero-water edge"
+"SMP Protocol: 64MB RAM, lower electricity demand, lower water use"
 [Green bars, amazing numbers]
 
 "That's infrastructure built for the planet."
 ```
+
 **Time**: ~2 minutes
 
 ---
@@ -130,12 +134,14 @@ Pick one:
 ## VIBE CHECK
 
 **You are NOT showing:**
+
 - Another ChatGPT wrapper
 - Prettier UI
 - Faster inference
 - More model params
 
 **You ARE showing:**
+
 - ✅ Trustworthy infrastructure
 - ✅ Formal mathematical proofs
 - ✅ Planetary-scale systems thinking
@@ -148,7 +154,8 @@ Pick one:
 
 ## EMERGENCY CONTACTS (Judges' Attention)
 
-If you see judges' eyes glazing over→ Pull them back with a number:
+If you see judges' eyes glazing over, pull them back with a number:
+
 - "28,800 gallons of water. Per day."
 - "31x less memory."
 - "58 megabytes—runs on my laptop."
@@ -158,9 +165,9 @@ All of these are conversation restarters.
 
 ---
 
-## THE SECRET Weapon
+## THE SECRET WEAPON
 
-**Mention you have formal proofs.**
+Mention you have formal proofs.
 
 In a room full of people tuning APIs, being the person who can say "This is formally verified in Lean4" makes you unforgettable.
 
@@ -173,11 +180,11 @@ Use it once. They'll remember.
 ## LAST MINUTE PREP
 
 **5 min before presentation:**
+
 - [ ] Laptop fully charged
 - [ ] WiFi connected
 - [ ] Browser bookmarks ready: GitHub, demos, pages
 - [ ] Pitch memorized (say it out loud once)
 - [ ] Smile
 
-**You got this. 🚀**
-
+You got this.

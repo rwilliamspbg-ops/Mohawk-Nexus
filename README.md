@@ -107,10 +107,11 @@ After deployment, the site will be available at:
 **For feature planning**
 
 - [`07-ROADMAP.md`](07-ROADMAP.md)
-  - 2026 milestones
+  - 2026 H1/H2 milestones
   - Post-quantum cryptography plan
   - Scaling roadmap
-  - New verticals planned
+  - Agentic experience layer
+  - 100M+ node scaling target
   - Research initiatives
 
 ## 🧭 Documentation by Use Case
@@ -282,9 +283,10 @@ After deployment, the site will be available at:
 - Rate limiting strategy
 
 ### 07-ROADMAP.md
-- 2026 H1 milestones
+- 2026 H1/H2 milestones
 - Post-quantum migration (x25519-mlkem768)
 - Formal verification completion
+- Agentic experience layer
 - 100M node scaling target
 - New vertical applications
 - Multi-chain integration
@@ -301,10 +303,10 @@ All documents link to related sections. For example:
 ## 📞 Support
 
 - **Questions?** Read the relevant section above
-- **Found a bug?** See TROUBLESHOOTING.md
-- **Security issue?** See SECURITY.md (Responsible Disclosure)
-- **Want to contribute?** See CONTRIBUTING.md
-- **Need to deploy?** See DEPLOYMENT.md
+- **Found a bug?** See 05-TROUBLESHOOTING.md
+- **Security issue?** See 06-SECURITY.md (Responsible Disclosure)
+- **Want to contribute?** See 03-CONTRIBUTING.md
+- **Need to deploy?** See 02-DEPLOYMENT.md
 
 ## ✅ Documentation Checklist
 
@@ -312,11 +314,11 @@ Before shipping:
 - [ ] Read GETTING-STARTED.md (overview)
 - [ ] Test examples/ locally
 - [ ] Review ARCHITECTURE.md
-- [ ] Follow CONTRIBUTING.md standards
-- [ ] Check SECURITY.md compliance
-- [ ] Use DEPLOYMENT.md for production
-- [ ] Consult TROUBLESHOOTING.md if issues
-- [ ] Reference ROADMAP.md for planning
+- [ ] Follow 03-CONTRIBUTING.md standards
+- [ ] Check 06-SECURITY.md compliance
+- [ ] Use 02-DEPLOYMENT.md for production
+- [ ] Consult 05-TROUBLESHOOTING.md if issues
+- [ ] Reference 07-ROADMAP.md for planning
 
 ---
 
