@@ -5,6 +5,7 @@
 ## 2026 H1 (Q1-Q2)
 
 ### Post-Quantum Cryptography (March)
+
 - [ ] x25519-mlkem768 hybrid deployment
 - [ ] XMSS signature rollout
 - [ ] Key migration for all nodes
@@ -13,6 +14,7 @@
 **Impact**: Quantum-resistance from 2026 onwards
 
 ### Formal Verification (April)
+
 - [ ] Complete Lean4 proofs for consensus
 - [ ] Automated theorem proving in CI/CD
 - [ ] Formal verification of all state transitions
@@ -20,6 +22,7 @@
 **Impact**: Mathematically proven correctness
 
 ### Enterprise Scale (May)
+
 - [ ] 1000+ nodes in production
 - [ ] 4 verticals deployed (oncology, ag, climate, supply-chain)
 - [ ] Multi-region failover
@@ -30,6 +33,7 @@
 ## 2026 H2 (Q3-Q4)
 
 ### Multi-Chain Integration (July)
+
 - [ ] Ethereum mainnet ledger commits
 - [ ] Sovereign blockchain support
 - [ ] Cross-chain consensus verification
@@ -38,6 +42,7 @@
 **Impact**: Full blockchain integration, no central control
 
 ### Autonomous Model Improvement (September)
+
 - [ ] Self-tuning aggregation parameters
 - [ ] Automatic vertical deployment
 - [ ] Human-in-the-loop governance
@@ -46,6 +51,7 @@
 **Impact**: Self-optimizing systems with human control
 
 ### Advanced Analytics (November)
+
 - [ ] Federated data lineage tracking
 - [ ] Causality inference (no raw data)
 - [ ] Counterfactual fairness verification
@@ -53,9 +59,19 @@
 
 **Impact**: Intelligence without centralization
 
+### Agentic Experience Layer (December)
+
+- [ ] Dynamic component generation tied to model reasoning state
+- [ ] Agentic feedback loops with real-time user steering controls
+- [ ] Latency-optimized rendering with local execution and KV-cache-aware workflows
+- [ ] Tool-enabled interfaces for cross-app agent workflows
+
+**Impact**: Fluid, interactive interfaces that expose autonomous behavior safely and directly
+
 ## 2027+
 
 ### 100M+ Node Scaling
+
 - [ ] Hierarchical consensus (domains as shards)
 - [ ] Sub-second aggregation (2026: 5-10min)
 - [ ] Dynamic node elasticity
@@ -64,6 +80,7 @@
 **Impact**: Global collective intelligence
 
 ### New Verticals
+
 - **Finance**: Decentralized risk modeling
 - **Education**: Privacy-preserving learning analytics
 - **Energy**: Smart grid optimization
@@ -72,6 +89,7 @@
 **Impact**: Sovereign AI for all sectors
 
 ### Autonomous Fleets
+
 - [ ] Federated robotics coordination
 - [ ] Swarm intelligence (no central controller)
 - [ ] Fully autonomous decision-making
@@ -83,7 +101,7 @@
 
 ### Q1 2026: Post-Quantum Migration
 
-```timeline
+```text
 March 1: x25519-mlkem768 implementation complete
 March 15: Testing & benchmark suite
 April 1: Beta deployment (opt-in)
@@ -93,6 +111,7 @@ June 1: All nodes migrated (target)
 ```
 
 **Work Items**:
+
 - [ ] mlkem768 library integration
 - [ ] Hybrid key agreement protocol
 - [ ] Migration tool for existing keys
@@ -102,6 +121,7 @@ June 1: All nodes migrated (target)
 ### Q2 2026: Formal Verification Complete
 
 **Theorems to prove**:
+
 1. Byzantine consensus correctness (≤1/3 faults)
 2. Aggregation update validity (no tampering)
 3. Proof verification soundness (<10ms)
@@ -109,6 +129,7 @@ June 1: All nodes migrated (target)
 5. No information leakage (differential privacy)
 
 **Deliverables**:
+
 - [ ] Lean4 formalization of consensus algorithm
 - [ ] Automated theorem proving in CI/CD
 - [ ] Formal specification document
@@ -117,12 +138,14 @@ June 1: All nodes migrated (target)
 ### Q3 2026: Blockchain Integration
 
 **Platforms**:
+
 - Ethereum (mainnet ledger)
 - Sovereign blockchains (Cosmos, Polkadot)
 - Layer 2 solutions (Arbitrum, Optimism)
 - Privacy chains (Monero integration)
 
 **Integration**:
+
 - Consensus finality anchored to blockchain
 - Smart contract governance
 - On-chain DPIA generation
@@ -131,12 +154,14 @@ June 1: All nodes migrated (target)
 ### Q4 2026: Autonomous Learning
 
 **Capabilities**:
+
 - Auto-tuning hyperparameters
 - Anomaly detection (no human review needed)
 - Automatic model rollback on failure
 - Self-healing infrastructure
 
 **Safeguards**:
+
 - Human-in-the-loop for major changes
 - Rollback button always available
 - Governance votes for policy changes
@@ -145,7 +170,7 @@ June 1: All nodes migrated (target)
 ## Success Metrics (2026)
 
 | Metric | Target | Importance |
-|--------|--------|-----------|
+| --- | --- | --- |
 | **Nodes** | 100,000+ | Core |
 | **Uptime** | 99.99% | Critical |
 | **Consensus Latency** | <5min | Performance |
@@ -159,6 +184,7 @@ June 1: All nodes migrated (target)
 ## Resource Requirements
 
 ### Engineering
+
 - Core team: 10 engineers
 - Vertical teams: 12 engineers (3 per vertical)
 - Security: 3 engineers
@@ -166,12 +192,14 @@ June 1: All nodes migrated (target)
 - **Total**: 29 engineers
 
 ### Infrastructure
+
 - Cloud spend: $50K/month
 - TPM hardware: $500K one-time
 - Formal verification (external): $200K
 - Security audits: $150K/quarter
 
 ### Research
+
 - Post-quantum cryptography: $100K
 - Distributed systems: $150K
 - Privacy-preserving ML: $200K
@@ -179,7 +207,7 @@ June 1: All nodes migrated (target)
 ## Risks & Mitigations
 
 | Risk | Likelihood | Mitigation |
-|------|-----------|-----------|
+| --- | --- | --- |
 | Quantum threat emerges | Low | Hybrid crypto (mlkem768) ready |
 | Consensus bug found | Low | Formal verification, 3rd-party audit |
 | Node onboarding slow | Medium | Mobile SDK, simpler enrollment |
@@ -197,7 +225,7 @@ We welcome community feedback on roadmap:
 
 ## Estimated Timeline
 
-```
+```text
 2026 Q1-Q2: Foundation (PQC, Formal Proofs)
 2026 Q3-Q4: Integration (Blockchain, Autonomy)
 2027 H1:    Scaling (100M nodes, new verticals)

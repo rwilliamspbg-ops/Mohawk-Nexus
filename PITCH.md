@@ -1,6 +1,7 @@
 # 30-Second Pitch Reference: Mohawk Nexus
 
 ## Context for Judges
+
 - Event Theme: "Agentic Interfaces"
 - Core Problem: LLM apps need aggregation layers, but centralized servers create trust/privacy/cost/sustainability problems
 - Your Solution: Decentralized, formally verified, Byzantine-tolerant infrastructure
@@ -10,16 +11,16 @@
 ## The "30-Second Mohawk" ⚡
 
 **[Start with problem]**
-"AI agents today rely on centralized servers to sync intelligence across models. That's a trust bottleneck, a privacy nightmare, and it drinks 1000s of gallons of water daily."
+"AI agents today rely on centralized servers to sync intelligence across models. That creates trust, privacy, and cost problems, and it burns electricity and water at scale."
 
 **[Show the solution]**
-"We route aggregation across sovereign nodes. No central honeypot. And here's the kicker: Byzantine-tolerant consensus with zk-SNARK proofs mathematically guarantees the answer wasn't tampered with."
+"We route aggregation across sovereign nodes. No central honeypot. Byzantine-tolerant consensus with zk-SNARK proofs guarantees the answer wasn't tampered with."
 
 **[The wow]**
-"Our Mohawk Protocol scales with O(d log n) memory instead of O(n). At 100k nodes, that's 31x less RAM, zero-water edge inference, and real sovereignty. Watch."
+"Our Mohawk Protocol scales with O(d log n) memory instead of O(n). That means less RAM, lower electricity demand, and less water use while keeping real sovereignty. Watch."
 
 **[Transition to demo]**
-"In fact, right now, I'm running this exact aggregation with <60MB of memory on my laptop, proving it works everywhere."
+"Right now, I'm running this exact aggregation with under 60MB of memory on my laptop, proving it works everywhere."
 
 ---
 
@@ -32,7 +33,7 @@
 ## Key Stats to Memorize (Judges 🤍 Numbers)
 
 | Stat | Why It Matters |
-|------|----------------|
+| --- | --- |
 | **O(d log n)** memory scaling | Shows algorithmic superiority vs. O(n) |
 | **224x** RAM reduction | Concrete proof of efficiency |
 | **1/3** Byzantine tolerance | Resilience to malicious nodes |
@@ -78,18 +79,21 @@ A: "Absolutely. Healthcare (HIPAA compliance without data centralization), agric
 ## Physical Demo Talking Points
 
 ### If Showing Viz Demo
+
 - "These particles are sovereign nodes."
 - "Watch how aggregation happens *distributively*—no central collection point."
 - "[Point to red highlight] This is what happens if someone tries to tamper. The proof fails. Byzantine consensus rejects it."
 - "In production, this runs with 10M+ nodes. Same visualization, impossible to centralize."
 
 ### If Showing Efficiency Dashboard
+
 - "On the left: your standard cloud agent. On the right: same functionality, SMP protocol."
 - "RAM usage, network latency, and—most importantly—water consumption."
 - "[Point to numbers] 31x less memory, 30x lower water cost."
 - "With 100k nodes, that's a city's worth of water savings daily."
 
 ### If Showing Edge Demo
+
 - "This is running on my Zenbook. 58 megabytes of RAM."
 - "[Terminal] It just aggregated 10 sovereign nodes with Byzantine consensus and zk-SNARK verification."
 - "No cloud. No round-trip to a central server. Real edge computing."
@@ -99,7 +103,9 @@ A: "Absolutely. Healthcare (HIPAA compliance without data centralization), agric
 
 ## The Question You Want to Get
 
-**"So this works on the edge? How do you scale to millions of nodes?"**
+### Edge Scaling Question
+
+"So this works on the edge? How do you scale to millions of nodes?"
 
 *This is your moment.* Answer:
 "That's the Mohawk Protocol. Each aggregator node only needs O(d log n) memory, where d is the dimension of the model and n is the number of participants. So even with a million nodes, each aggregator uses logarithmic overhead. [Pause] It's why we can run this on my laptop and scale it to a planet simultaneously."
@@ -108,7 +114,7 @@ A: "Absolutely. Healthcare (HIPAA compliance without data centralization), agric
 
 ## The Energy Narrative (Use if judges seem green-focused)
 
-"AI's hidden cost is infrastructure energy. A single large model running inference across millions of users requires massive cooling, water usage, and carbon emissions. 
+"AI's hidden cost is infrastructure energy. A single large model running inference across millions of users requires massive cooling, water usage, and carbon emissions.
 
 With decentralized aggregation on the edge, you shift compute from giant data centers to distributed nodes—most of which already exist (phones, IoT, enterprise servers). No new hardware. No new water usage. Just mathematical elegance.
 
@@ -143,4 +149,3 @@ You're showing that **infrastructure—not UI—is the frontier of AI**.
 While everyone else is building prettier ChatGPT wrappers, you're solving the systems problem that makes planetary-scale AI possible *and* trustworthy.
 
 That's rare. Own it. 🚀
-

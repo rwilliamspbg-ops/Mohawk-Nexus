@@ -52,7 +52,7 @@ README.md                 Documentation index
 04-API-REFERENCE.md      SDK & API docs (20 min)
 05-TROUBLESHOOTING.md    Common issues & fixes (varies)
 06-SECURITY.md          Security & compliance (15 min)
-07-ROADMAP.md           2026+ feature roadmap (10 min)
+07-ROADMAP.md           2026+ feature roadmap incl. agentic experience layer (10 min)
 ```
 
 ### `/modules` - Consolidated Code (13 repositories)
@@ -171,7 +171,7 @@ config/
 
 ### For Product/Managers
 - **docs/01-ARCHITECTURE.md** (system overview)
-- **docs/07-ROADMAP.md** (2026+ features)
+- **docs/07-ROADMAP.md** (2026+ features, agentic experience layer)
 
 ---
 
