@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mohawk Nexus | Sovereign Intelligence Demo</title>
-  <meta name="description" content="A high-impact, GitHub Pages-ready ecosystem demo for Mohawk Nexus and Sovereign-Mohawk-Proto capabilities." />
+  <title>Mohawk Nexus | Agentic Sovereignty Console</title>
+  <meta name="description" content="A hackathon-ready demo for Mohawk Nexus showing AG-UI interaction, A2UI rendering, and MCP Apps as an optional bonus surface." />
   <style>
     :root {
       --bg: #081019;
@@ -184,6 +184,156 @@
       box-shadow: var(--shadow);
       display: grid;
       gap: 0.7rem;
+    }
+
+    .console-section {
+      margin-top: -0.25rem;
+    }
+
+    .console-shell {
+      background: linear-gradient(180deg, rgba(16, 28, 43, 0.95), rgba(10, 19, 32, 0.96));
+      border: 1px solid rgba(45, 212, 191, 0.22);
+      border-radius: 1.15rem;
+      padding: 1.1rem;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 1rem;
+    }
+
+    .console-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .console-title {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .console-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      border: 1px solid rgba(45, 212, 191, 0.28);
+      background: rgba(45, 212, 191, 0.1);
+      color: #cdfbf1;
+    }
+
+    .console-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 0.9rem;
+    }
+
+    .console-panel {
+      border-radius: 0.95rem;
+      border: 1px solid rgba(159, 179, 201, 0.18);
+      background: rgba(8, 16, 25, 0.72);
+      padding: 1rem;
+      min-height: 200px;
+    }
+
+    .console-panel h3 {
+      margin: 0 0 0.75rem;
+      font-size: 0.98rem;
+      color: #d4f8ff;
+    }
+
+    .console-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(159, 179, 201, 0.12);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .console-line strong {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border-radius: 999px;
+      padding: 0.28rem 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .status-idle {
+      background: rgba(159, 179, 201, 0.12);
+      color: #dbe7f5;
+      border: 1px solid rgba(159, 179, 201, 0.18);
+    }
+
+    .status-analyzing {
+      background: rgba(251, 191, 36, 0.12);
+      color: #ffe7ac;
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .status-verified {
+      background: rgba(45, 212, 191, 0.12);
+      color: #bafcec;
+      border: 1px solid rgba(45, 212, 191, 0.22);
+    }
+
+    .status-failed {
+      background: rgba(251, 113, 133, 0.12);
+      color: #ffd5dc;
+      border: 1px solid rgba(251, 113, 133, 0.22);
+    }
+
+    .steps-list {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 0.8rem;
+    }
+
+    .step-item {
+      border-radius: 0.8rem;
+      border: 1px solid rgba(159, 179, 201, 0.14);
+      background: rgba(16, 28, 43, 0.72);
+      padding: 0.8rem 0.9rem;
+      color: var(--muted);
+    }
+
+    .step-item strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+
+    .console-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .console-actions button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .console-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      max-width: 62ch;
     }
 
     .kpi-grid {
@@ -408,11 +558,11 @@
   <div class="shell">
     <header>
       <div class="nav">
-        <a class="brand" href="#top">Mohawk Nexus Demo</a>
+        <a class="brand" href="#top">Agentic Sovereignty Console</a>
         <nav class="nav-links">
-          <a href="#capabilities">Capabilities</a>
-          <a href="#verticals">Verticals</a>
-          <a href="#narrative">Narrative</a>
+          <a href="#protocols">Protocols</a>
+          <a href="#checklist">Checklist</a>
+          <a href="#flow">Flow</a>
           <a href="#deploy">Deploy</a>
           <a href="#evidence">Evidence</a>
         </nav>
@@ -421,74 +571,109 @@
 
     <section class="hero" id="top">
       <div>
-        <span class="pill reveal" style="--delay: 80ms;">Sovereign-Mohawk Ecosystem Demo</span>
-        <h1 class="reveal" style="--delay: 140ms;">Collective intelligence with verified trust, domain sovereignty, and production-grade scale.</h1>
+        <span class="pill reveal" style="--delay: 80ms;">Hackathon entry: AG-UI + A2UI</span>
+        <h1 class="reveal" style="--delay: 140ms;">An agentic console that renders live UI, proves state changes, and keeps MCP Apps optional.</h1>
         <p class="lede reveal" style="--delay: 210ms;">
-          This experience merges the documented Mohawk Nexus architecture with the active
-          capabilities of Sovereign-Mohawk-Proto: Byzantine-resilient federated learning,
-          formal verification, TPM-backed identity, post-quantum migration plans,
-          and vertical deployment patterns for oncology, agriculture, climate, and supply chain.
+          The hackathon plan is now concrete: use AG-UI for the runtime interaction loop,
+          use A2UI for the live rendered surface, and keep MCP Apps as a secondary flourish
+          only if the main flow is stable. The result is a judge-friendly console, not just a
+          static architecture page.
         </p>
         <div class="cta-row reveal" style="--delay: 280ms;">
-          <a class="btn btn-primary" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noreferrer">Explore Source Repository</a>
-          <a class="btn btn-secondary" href="#deploy">Publish on GitHub Pages</a>
+          <a class="btn btn-primary" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/HACKATHON-GENUI-PLAN.md" target="_blank" rel="noreferrer">Open Hackathon Plan</a>
+          <a class="btn btn-secondary" href="#protocols">See Protocol Roles</a>
         </div>
       </div>
 
       <aside class="hero-card reveal" style="--delay: 240ms;" aria-label="Ecosystem KPI Highlights">
         <div class="kpi-grid">
-          <div class="kpi"><strong>10M+</strong><span>Node-scale target for federated intelligence</span></div>
-          <div class="kpi"><strong>&lt;10ms</strong><span>zk-SNARK verification benchmark target</span></div>
-          <div class="kpi"><strong>6+</strong><span>Lean proof modules tied to runtime evidence</span></div>
-          <div class="kpi"><strong>x25519-mlkem768</strong><span>PQC hybrid transport migration path</span></div>
+          <div class="kpi"><strong>AG-UI</strong><span>Runtime interaction layer and state handoff</span></div>
+          <div class="kpi"><strong>A2UI</strong><span>Declarative live surface for rendered updates</span></div>
+          <div class="kpi"><strong>MCP Apps</strong><span>Optional bonus surface, not the main demo path</span></div>
+          <div class="kpi"><strong>Fallback</strong><span>Static version if the agent loop misbehaves</span></div>
         </div>
       </aside>
     </section>
 
-    <section id="capabilities">
-      <h2 class="section-title">Capability Matrix</h2>
+    <section class="console-section" aria-labelledby="console-title">
+      <div class="console-shell reveal" style="--delay: 120ms;">
+        <div class="console-header">
+          <div>
+            <span class="console-badge">Live AG-UI to A2UI handoff</span>
+            <h2 class="console-title" id="console-title">Agentic Sovereignty Console</h2>
+          </div>
+          <button class="btn btn-primary" id="run-demo" type="button">Run agent check</button>
+        </div>
+
+        <div class="console-grid">
+          <div class="console-panel" aria-live="polite">
+            <h3>Live Surface</h3>
+            <div class="console-line"><span>Interaction state</span><strong id="state-label"><span class="status-chip status-idle">idle</span></strong></div>
+            <div class="console-line"><span>Agent task</span><strong id="task-label">Waiting for request</strong></div>
+            <div class="console-line"><span>Proof status</span><strong id="proof-label">No proof yet</strong></div>
+            <div class="console-line"><span>Proof hash</span><strong id="hash-label">--</strong></div>
+            <div class="console-line"><span>Verification time</span><strong id="time-label">--</strong></div>
+          </div>
+
+          <div class="console-panel">
+            <h3>Protocol Trace</h3>
+            <div class="steps-list" id="step-list">
+              <div class="step-item"><strong>AG-UI</strong>Defines the interaction and tells the console what to do next.</div>
+              <div class="step-item"><strong>A2UI</strong>Renders the live surface from structured state updates.</div>
+              <div class="step-item"><strong>MCP Apps</strong>Optional only if the core demo is already stable.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="console-actions">
+          <p class="console-note">This is the first executable slice of the implementation checklist: a visible state transition from idle to analyzing to verified, with a fallback path if the agent loop is not ready.</p>
+          <span class="console-badge">Fallback: static page remains usable</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="protocols">
+      <h2 class="section-title">Protocol Roles</h2>
       <p class="section-copy">
-        This demo highlights combined capabilities across protocol runtime, trust primitives,
-        observability, and deployment ergonomics. Each card maps to themes found in the
-        Sovereign-Mohawk-Proto README and Mohawk Nexus architecture docs.
+        The implementation checklist is intentionally narrow. Each protocol has one job, and the
+        demo only becomes more complex if the core flow is already working.
       </p>
       <div class="matrix">
-        <article class="card reveal" style="--delay: 80ms;"><h3>Byzantine-Tolerant FL Core</h3><p>Federated aggregation designed to tolerate adversarial participants while preserving convergence integrity under Byzantine assumptions.</p></article>
-        <article class="card reveal" style="--delay: 120ms;"><h3>Lean Formalization Trail</h3><p>Proof modules and a traceability matrix align theorem claims with runtime evidence and CI verification workflows.</p></article>
-        <article class="card reveal" style="--delay: 160ms;"><h3>TPM + XMSS Identity</h3><p>Hardware-rooted attestation and XMSS identity controls enforce verifiable node provenance and fail-closed trust posture.</p></article>
-        <article class="card reveal" style="--delay: 200ms;"><h3>PQC Transition Readiness</h3><p>Hybrid key exchange path (x25519 + mlkem768) supports staged migration toward post-quantum resilience.</p></article>
-        <article class="card reveal" style="--delay: 240ms;"><h3>Developer Adoption Lane</h3><p>Python SDK, Flower-compatible flows, and quickstart scripts lower friction for teams moving from classic FL stacks.</p></article>
-        <article class="card reveal" style="--delay: 280ms;"><h3>Operational Evidence System</h3><p>Performance gates, security workflows, and artifact governance provide auditable evidence for readiness discussions.</p></article>
+        <article class="card reveal" style="--delay: 80ms;"><h3>AG-UI Controls the Loop</h3><p>The agent decides when the interface changes and which interaction state should be shown next.</p></article>
+        <article class="card reveal" style="--delay: 120ms;"><h3>A2UI Renders the State</h3><p>The frontend receives structured updates and turns them into a live panel with visible state transitions.</p></article>
+        <article class="card reveal" style="--delay: 160ms;"><h3>MCP Apps Stay Optional</h3><p>Only add a small open-ended surface if the core demo is already reliable and visually clear.</p></article>
+        <article class="card reveal" style="--delay: 200ms;"><h3>Verification Badge</h3><p>Show an explicit verified or failed state so the judge sees proof, not just text output.</p></article>
+        <article class="card reveal" style="--delay: 240ms;"><h3>Fallback Static View</h3><p>Keep a non-agentic version of the same story in case the live protocol layer stalls during the demo.</p></article>
+        <article class="card reveal" style="--delay: 280ms;"><h3>Judge-Friendly Story</h3><p>Every visible element should help answer one question: what did the agent do, and why should I trust it?</p></article>
       </div>
     </section>
 
-    <section id="verticals">
-      <h2 class="section-title">Vertical Stories That Capture Attention</h2>
+    <section id="checklist">
+      <h2 class="section-title">Implementation Checklist</h2>
       <p class="section-copy">
-        Mohawk Nexus positions each domain behind policy gates. The same sovereign trust fabric
-        powers different mission outcomes without centralizing raw data.
+        This is the exact build order for the hackathon. If a step does not move the demo closer
+        to the AG-UI + A2UI story, it can wait.
       </p>
       <div class="verticals">
-        <article class="vertical reveal" style="--delay: 100ms;"><h3>Oncology Intelligence</h3><p>Hospitals collaborate on model improvement while retaining patient data locally. Compliance logs, attestation evidence, and privacy accounting support HIPAA and GDPR operations.</p></article>
-        <article class="vertical reveal" style="--delay: 160ms;"><h3>Agriculture Optimization</h3><p>Farm-level training supports yield prediction, sustainability scoring, and resilient planning while preserving farmer sovereignty and preventing centralized extraction of operational data.</p></article>
-        <article class="vertical reveal" style="--delay: 220ms;"><h3>Climate Coordination</h3><p>Distributed climate signal aggregation enables region-level forecasting and emissions response without forcing single authority control over nation-scale environmental datasets.</p></article>
-        <article class="vertical reveal" style="--delay: 280ms;"><h3>Supply Chain Resilience</h3><p>Cross-organization optimization improves routing and throughput through federated updates, provenance checks, and verifiable trust anchors across enterprise boundaries.</p></article>
+        <article class="vertical reveal" style="--delay: 100ms;"><h3>Phase 1: Story</h3><p>Update the pitch and hero copy so the demo clearly says AG-UI drives the interaction and A2UI renders the result.</p></article>
+        <article class="vertical reveal" style="--delay: 160ms;"><h3>Phase 2: Surface</h3><p>Replace static summary panels with one live state panel that changes from idle to analyzing to verified.</p></article>
+        <article class="vertical reveal" style="--delay: 220ms;"><h3>Phase 3: Runtime</h3><p>Wire the single interaction loop, keep the payload tiny, and make every change visible on screen.</p></article>
+        <article class="vertical reveal" style="--delay: 280ms;"><h3>Phase 4: Proof</h3><p>Add one explicit proof or verification indicator so the judge sees the evidence trail instead of inferring it.</p></article>
       </div>
     </section>
 
-    <section id="narrative">
-      <h2 class="section-title">Narrated Ecosystem Journey</h2>
+    <section id="flow">
+      <h2 class="section-title">Demo Flow</h2>
       <p class="section-copy">
-        A simple demo story for presentations: start with local training at the edge, validate identity,
-        verify cryptographic integrity, converge through Byzantine filtering, then ship policy-compliant,
-        auditable model updates across sovereign domains.
+        The demo should feel like a sequence, not a pile of features: ask for a result, watch the
+        agent respond, render the live UI, then display the verification state.
       </p>
       <div class="timeline">
-        <article class="event reveal" style="--delay: 90ms;"><h4>Step 1: Sovereign Edge Training</h4><p>Each node trains on local data and emits updates instead of raw records. Privacy and provenance begin at the source.</p></article>
-        <article class="event reveal" style="--delay: 140ms;"><h4>Step 2: Attested Identity + Proof Signals</h4><p>TPM-backed identity and cryptographic checks gate participation, reducing spoofing and unaudited update injection risk.</p></article>
-        <article class="event reveal" style="--delay: 190ms;"><h4>Step 3: Byzantine Filtering + Consensus</h4><p>Aggregation paths tolerate adversarial behavior and maintain continuity toward correct global outcomes with theorem-guided guardrails.</p></article>
-        <article class="event reveal" style="--delay: 240ms;"><h4>Step 4: Policy-Gated Domain Distribution</h4><p>Outputs are distributed by governance rules per vertical, preserving autonomy while enabling cross-organizational intelligence gains.</p></article>
-        <article class="event reveal" style="--delay: 290ms;"><h4>Step 5: Evidence-Backed Operations</h4><p>CI gates, performance artifacts, and formal-trace documents turn platform claims into inspectable operational evidence.</p></article>
+        <article class="event reveal" style="--delay: 90ms;"><h4>Step 1: Request</h4><p>Start with a simple task, such as checking node health or verifying an aggregate.</p></article>
+        <article class="event reveal" style="--delay: 140ms;"><h4>Step 2: Agent Decision</h4><p>AG-UI handles the interaction and decides what the next surface state should be.</p></article>
+        <article class="event reveal" style="--delay: 190ms;"><h4>Step 3: A2UI Render</h4><p>The frontend receives declarative updates and turns them into a visible live panel.</p></article>
+        <article class="event reveal" style="--delay: 240ms;"><h4>Step 4: Verification</h4><p>The proof badge flips to verified, showing the result is backed by more than just a chat response.</p></article>
+        <article class="event reveal" style="--delay: 290ms;"><h4>Step 5: Optional Flourish</h4><p>If time remains, show one MCP Apps surface for an editable diagram or secondary visualization.</p></article>
       </div>
     </section>
 
@@ -496,7 +681,7 @@
       <h2 class="section-title">GitHub Pages Attachment</h2>
       <p class="section-copy">
         This repository now includes a GitHub Actions workflow that publishes this site folder directly to GitHub Pages.
-        Push to main, enable Pages in repository settings, and the narrated demo becomes your public ecosystem front door.
+        Push to main, enable Pages in repository settings, and the agentic console becomes your public hackathon front door.
       </p>
       <div class="links">
         <a class="resource reveal" style="--delay: 100ms;" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions" target="_blank" rel="noreferrer">
@@ -512,21 +697,90 @@
 
     <section id="evidence">
       <h2 class="section-title">Source Evidence Links</h2>
-      <p class="section-copy">Use these links during demos to validate every claim with upstream artifacts and architecture references.</p>
+      <p class="section-copy">Use these links during demos to validate the protocol choice, the plan, and the architecture references.</p>
       <div class="links">
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/HACKATHON-GENUI-PLAN.md" target="_blank" rel="noreferrer"><strong>Hackathon GenUI Plan</strong><span>The concrete execution checklist for AG-UI, A2UI, and optional MCP Apps.</span></a>
+        <a class="resource" href="https://github.com/copilotkit/generative-ui" target="_blank" rel="noreferrer"><strong>CopilotKit Generative UI Repo</strong><span>Source reference for the protocol trade-offs and implementation patterns.</span></a>
         <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/blob/main/README.md" target="_blank" rel="noreferrer"><strong>Sovereign-Mohawk-Proto README</strong><span>Primary capability overview, quickstarts, and platform context.</span></a>
         <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/proofs" target="_blank" rel="noreferrer"><strong>Formal Proofs Directory</strong><span>Lean modules, verification logs, and formal traceability assets.</span></a>
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/sdk/python" target="_blank" rel="noreferrer"><strong>Python SDK + Flower Integration</strong><span>Migration lane for developers and practical examples.</span></a>
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/internal/router" target="_blank" rel="noreferrer"><strong>Federated Router Components</strong><span>Cross-vertical policy and provenance routing logic.</span></a>
         <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/01-ARCHITECTURE.md" target="_blank" rel="noreferrer"><strong>Mohawk Nexus Architecture Doc</strong><span>Layered trust model, scaling assumptions, and policy-gated domains.</span></a>
         <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/07-ROADMAP.md" target="_blank" rel="noreferrer"><strong>Mohawk Nexus Roadmap</strong><span>PQC milestones, scaling trajectory, and domain expansion plans.</span></a>
       </div>
     </section>
 
     <footer>
-      Mohawk Nexus demo narrative. Designed for GitHub Pages and stakeholder presentations.
-      Claims are anchored to public repository artifacts and documentation.
+      Agentic Sovereignty Console. Designed for GitHub Pages and hackathon presentations.
+      Claims are anchored to public repository artifacts and the concrete implementation plan.
     </footer>
   </div>
+
+  <script>
+    (() => {
+      const runButton = document.getElementById('run-demo');
+      const stateLabel = document.getElementById('state-label');
+      const taskLabel = document.getElementById('task-label');
+      const proofLabel = document.getElementById('proof-label');
+      const hashLabel = document.getElementById('hash-label');
+      const timeLabel = document.getElementById('time-label');
+
+      if (!runButton || !stateLabel || !taskLabel || !proofLabel || !hashLabel || !timeLabel) {
+        return;
+      }
+
+      const states = [
+        {
+          name: 'idle',
+          task: 'Waiting for request',
+          proof: 'No proof yet',
+          hash: '--',
+        },
+        {
+          name: 'analyzing',
+          task: 'AG-UI requested a node-health check',
+          proof: 'Generating response',
+          hash: 'pending',
+        },
+        {
+          name: 'verified',
+          task: 'A2UI rendered the verified result',
+          proof: 'Proof verified',
+          hash: '0x8f42a7c1e3b9d6a4',
+        },
+      ];
+
+      const chipClass = (name) => `status-chip status-${name}`;
+
+      const renderState = (state) => {
+        stateLabel.innerHTML = `<span class="${chipClass(state.name)}">${state.name}</span>`;
+        taskLabel.textContent = state.task;
+        proofLabel.textContent = state.proof;
+        hashLabel.textContent = state.hash;
+        timeLabel.textContent = state.name === 'verified'
+          ? new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+          : '--';
+      };
+
+      let runCount = 0;
+      renderState(states[0]);
+
+      runButton.addEventListener('click', () => {
+        runButton.disabled = true;
+        runButton.textContent = 'Running...';
+
+        renderState(states[1]);
+
+        window.setTimeout(() => {
+          runCount += 1;
+          const proofSuffix = String(runCount).padStart(2, '0');
+          renderState({
+            ...states[2],
+            hash: `0x8f42a7c1e3b9d6a4${proofSuffix}`,
+          });
+          runButton.disabled = false;
+          runButton.textContent = 'Run agent check';
+        }, 900);
+      });
+    })();
+  </script>
 </body>
 </html>

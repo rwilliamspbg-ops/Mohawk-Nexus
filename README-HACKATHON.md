@@ -2,6 +2,12 @@
 
 Welcome to your personalized hackathon battle plan for Mohawk Nexus.
 
+## Concrete Protocol Plan
+
+If you want the shortest path to a strong demo, use the new [HACKATHON-GENUI-PLAN.md](HACKATHON-GENUI-PLAN.md) as the primary execution guide.
+
+It locks the hackathon entry to one main path: AG-UI for interaction, A2UI for the live UI, and one small MCP Apps bonus surface only if time remains.
+
 ## 📚 What You Have
 
 I've created 5 documents to guide you through the hackathon:
