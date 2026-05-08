@@ -1,5 +1,7 @@
 # 🎯 HACKATHON PREP SAVED - May 8, 2026
 
+> Archive note: this file reflects the earlier multi-demo plan. The active plan now lives in [HACKATHON-GENUI-PLAN.md](HACKATHON-GENUI-PLAN.md), and progress is tracked in [HACKATHON-PROGRESS.md](HACKATHON-PROGRESS.md).
+
 Your complete hackathon strategy has been created and saved.
 
 ## What's Ready for Tomorrow

@@ -1,5 +1,7 @@
 # Hackathon Strategy: Mohawk Nexus Agentic Interface
 
+> Archive note: the active hackathon plan now lives in [HACKATHON-GENUI-PLAN.md](HACKATHON-GENUI-PLAN.md) and progress is tracked in [HACKATHON-PROGRESS.md](HACKATHON-PROGRESS.md). This file is kept as background reference for the older 3-demo strategy.
+
 ## Overview
 
 Your Mohawk Nexus repository is a perfect foundation for a **3-demo hackathon blitz**. Each demo amplifies different competitive advantages of your architecture. Pick 1-2 based on time, or execute all three in modular phases.

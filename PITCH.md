@@ -1,5 +1,7 @@
 # 30-Second Pitch Reference: Mohawk Nexus
 
+> Current demo: Agentic Sovereignty Console. The pitch now centers on AG-UI interaction, A2UI rendering, and optional MCP Apps.
+
 ## Context for Judges
 
 - Event Theme: "Agentic Interfaces"

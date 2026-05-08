@@ -1,5 +1,7 @@
 # Hackathon Execution Timeline
 
+> Archive note: the active plan is now [HACKATHON-GENUI-PLAN.md](HACKATHON-GENUI-PLAN.md) with progress tracked in [HACKATHON-PROGRESS.md](HACKATHON-PROGRESS.md). This timeline remains as reference for the older multi-demo strategy.
+
 ## Pre-Hackathon (Tonight: 30 minutes)
 
 - [ ] Run `bash hackathon-prep.sh` → install any missing tools

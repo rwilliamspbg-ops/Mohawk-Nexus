@@ -1,5 +1,7 @@
 # Hackathon Quick Reference Card 🚀
 
+> Current narrative: Agentic Sovereignty Console. Use AG-UI for interaction, A2UI for rendering, and keep MCP Apps optional.
+
 **Print this. Bring it. Win.**
 
 ---

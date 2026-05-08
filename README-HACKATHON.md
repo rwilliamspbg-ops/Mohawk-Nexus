@@ -8,9 +8,19 @@ If you want the shortest path to a strong demo, use the new [HACKATHON-GENUI-PLA
 
 It locks the hackathon entry to one main path: AG-UI for interaction, A2UI for the live UI, and one small MCP Apps bonus surface only if time remains.
 
+## Current Status
+
+Track work in [HACKATHON-PROGRESS.md](HACKATHON-PROGRESS.md). That file is the living checklist for what is done, what is pending, and what comes next.
+
+Current direction:
+
+- Primary: AG-UI + A2UI
+- Secondary: MCP Apps only if the core flow is stable
+- Public demo: Agentic Sovereignty Console
+
 ## 📚 What You Have
 
-I've created 5 documents to guide you through the hackathon:
+The active path is the new plan and the living tracker; the older strategy docs remain below as reference material:
 
 ### 1. **[HACKATHON-IDEAS.md](HACKATHON-IDEAS.md)** ⭐ START HERE
 
