@@ -1,14 +1,14 @@
-# Proto + Venmo Demo
+# Proto + Fleet Demo
 
-Mohawk Nexus is now presented as a single narrated demo that combines a protocol console with a Venmo-style payment flow.
-The goal is to show a clean, judge-friendly product story: one side proves protocol state, the other side shows a familiar consumer payment action, and both are tied together by live telemetry.
+Mohawk Nexus is now presented as a single narrated demo that combines a protocol console with a fleet operations flow.
+The goal is to show a clean, judge-friendly product story: one side proves protocol state, the other side shows real fleet activity, and both are tied together by live telemetry.
 
 ## What this demo shows
 
 The demo is built around two connected experiences:
 
 1. **Proto** - a protocol control surface that runs step-based sequences, shows live trace output, and records secure command attestations.
-2. **Venmo-style transfer flow** - a fast payment narrative that demonstrates sending, confirming, and tracking a transfer in a way that feels instantly recognizable.
+2. **Fleet operations flow** - a practical dispatch and tracking narrative that demonstrates vehicles, movement, and operational status in a way that feels immediately useful.
 
 The important idea is not just that the UI looks polished. It is that the demo makes a technical workflow feel understandable in seconds.
 
@@ -18,7 +18,7 @@ Most demos show separate panels with no story.
 This one is designed to feel like a product walkthrough:
 
 - Proto explains what the system is doing.
-- The payment flow shows why the action matters to a user.
+- The fleet flow shows why the action matters to an operator.
 - Prometheus keeps the telemetry visible.
 - The pages stay usable even if the data source is slow or unavailable.
 
@@ -38,13 +38,13 @@ Use this sequence when presenting the repo:
 2. Switch to the Proto tab and run a short sequence.
 3. Show the command attestation and audit trail.
 4. Open the Prometheus view and point out the live telemetry.
-5. Use the payment-style story to explain how the demo maps protocol output to a real user action.
+5. Use the fleet story to explain how the demo maps protocol output to an operational action.
 
 ## What to say in the room
 
 A short version of the story is:
 
-> This demo combines a protocol console and a Venmo-style transfer experience so the user can see both the system state and the user-visible effect. Proto explains the logic, Prometheus proves the telemetry, and the interface stays simple enough to understand immediately.
+> This demo combines a protocol console and a fleet operations experience so the user can see both the system state and the operator-visible effect. Proto explains the logic, Prometheus proves the telemetry, and the interface stays simple enough to understand immediately.
 
 ## Local usage
 
@@ -76,7 +76,7 @@ This repository is now easiest to understand as a product demo rather than a raw
 The core message is:
 
 - Proto gives the system a readable, inspectable workflow.
-- The Venmo-style flow makes that workflow feel like a real user action.
+- The fleet flow makes that workflow feel like a real operational action.
 - Prometheus gives you a proof surface outside the UI.
 - The whole demo stays lightweight enough to present without a long setup.
 
