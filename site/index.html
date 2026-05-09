@@ -2,6 +2,1020 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nexus Control Center — Multi-User Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <style>
+    :root {
+      --bg-primary: #0a0e27;
+      --bg-secondary: #141829;
+      --bg-tertiary: #1a202c;
+      --accent: #00d4ff;
+      --accent-alt: #00ff88;
+      --warning: #ff6b35;
+      --success: #00d084;
+      --error: #ff3366;
+      --text-primary: #e0e7ff;
+      --text-secondary: #a0aec0;
+      --border: #2d3748;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    body.light-mode {
+      --bg-primary: #f5f7fa;
+      --bg-secondary: #fff;
+      --bg-tertiary: #f0f2f5;
+      --text-primary: #0b1220;
+      --text-secondary: #6b7280;
+      --border: #e1e4e8;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10, 14, 39, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+    }
+
+    body.light-mode header {
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .header-content {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .role-selector {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      background: rgba(29, 39, 117, 0.4);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .role-selector label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .role-selector select {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: rgba(29, 39, 117, 0.4);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 200ms ease;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-alt);
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color 200ms;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1rem;
+      padding-bottom: 1.8rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-btn:hover {
+      color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: rgba(29, 39, 117, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 200ms;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 0.8rem;
+      color: var(--accent);
+    }
+
+    .card-value {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent-alt);
+      margin: 0.5rem 0;
+    }
+
+    .card-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .log {
+      height: 300px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .log div {
+      padding: 0.3rem 0;
+      line-height: 1.4;
+      color: var(--text-secondary);
+    }
+
+    .log div span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    #fleet-map {
+      height: 600px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    input, select {
+      flex: 1;
+      min-width: 150px;
+      padding: 0.8rem 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .table th {
+      background: rgba(0, 212, 255, 0.1);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .table td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table tbody tr:hover {
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-ok {
+      background: rgba(0, 208, 132, 0.2);
+      color: var(--success);
+    }
+
+    .status-error {
+      background: rgba(255, 51, 102, 0.2);
+      color: var(--error);
+    }
+
+    .proof-box {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+      word-break: break-all;
+      color: var(--accent);
+    }
+
+    .settings-panel {
+      background: rgba(29, 39, 117, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .settings-group {
+      margin-bottom: 2rem;
+    }
+
+    .settings-group h3 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin: 0 0 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-row:last-child {
+      border-bottom: none;
+    }
+
+    .setting-label {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+
+    .setting-control {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 14px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    .toggle-switch.active {
+      background: rgba(0, 208, 132, 0.3);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 12px;
+      top: 2px;
+      left: 2px;
+      transition: left 200ms;
+    }
+
+    .toggle-switch.active::after {
+      left: 24px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin: 0 0 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 1024px) {
+      .grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+      .header-content { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      .grid { grid-template-columns: 1fr; }
+      .tabs { flex-direction: column; }
+      .tab-btn { padding: 0.8rem; margin-bottom: 0; padding-bottom: 0.8rem; }
+      #fleet-map { height: 300px; }
+      .header-content { flex-direction: column; }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-header {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="brand">🚀 NEXUS</div>
+      <div class="role-selector">
+        <label for="user-role">Role:</label>
+        <select id="user-role">
+          <option value="fleet-owner">🏢 Fleet Owner</option>
+          <option value="protocol-analyst">🔬 Protocol Analyst</option>
+          <option value="driver">🚗 Driver</option>
+          <option value="engineer">⚙️ Engineer</option>
+        </select>
+      </div>
+      <div class="header-actions">
+        <button id="btn-settings">⚙️ Settings</button>
+        <button id="btn-profile">👤 Profile</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+      <button class="tab-btn" data-tab="proto">🤖 Proto</button>
+      <button class="tab-btn" data-tab="map">🗺️ Map</button>
+      <button class="tab-btn" data-tab="commands">🔐 Commands</button>
+      <button class="tab-btn" data-tab="metrics">📈 Metrics</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="tab-content active">
+      <h2>Fleet Operations Dashboard</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Total Fleet</h3>
+          <div class="card-value" id="kpi-total">847</div>
+          <div class="card-label">Vehicles</div>
+        </div>
+        <div class="card">
+          <h3>Active</h3>
+          <div class="card-value" id="kpi-active">624</div>
+          <div class="card-label">Operating</div>
+        </div>
+        <div class="card">
+          <h3>Idle</h3>
+          <div class="card-value" id="kpi-idle">156</div>
+          <div class="card-label">Maintenance</div>
+        </div>
+        <div class="card">
+          <h3>Incidents</h3>
+          <div class="card-value" id="kpi-incidents">3</div>
+          <div class="card-label">Attention</div>
+        </div>
+      </div>
+
+      <h2>Live Metrics</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Consensus Rounds</h3>
+          <div class="card-value" id="m-rounds">--</div>
+          <div class="card-label">From Prometheus</div>
+        </div>
+        <div class="card">
+          <h3>Active Nodes</h3>
+          <div class="card-value" id="m-nodes">--</div>
+          <div class="card-label">Network</div>
+        </div>
+        <div class="card">
+          <h3>P95 Latency</h3>
+          <div class="card-value" id="m-latency">--</div>
+          <div class="card-label">milliseconds</div>
+        </div>
+        <div class="card">
+          <h3>Errors</h3>
+          <div class="card-value" id="m-errors">--</div>
+          <div class="card-label">Total</div>
+        </div>
+      </div>
+
+      <h2>Event Stream</h2>
+      <div class="log" id="event-stream"></div>
+    </div>
+
+    <!-- PROTO -->
+    <div id="proto" class="tab-content">
+      <h2>Protocol Sequence Control</h2>
+      <div class="input-group">
+        <button class="btn-primary" id="proto-start">▶ Start</button>
+        <button id="proto-step">→ Step</button>
+        <button id="proto-verify">✓ Verify</button>
+        <button id="proto-reset">↻ Reset</button>
+        <select id="proto-speed">
+          <option value="slow">🐢 Slow</option>
+          <option value="normal" selected>◯ Normal</option>
+          <option value="fast">⚡ Fast</option>
+        </select>
+        <button id="proto-pause">⏸ Pause</button>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Custom Steps</h3>
+          <div class="input-group" style="margin-top: 1rem;">
+            <input id="proto-step-input" placeholder="New step name" />
+            <button id="proto-add" class="btn-primary">+ Add</button>
+          </div>
+          <div id="proto-steps" class="log" style="height: 200px;"></div>
+        </div>
+        <div class="card">
+          <h3>Status</h3>
+          <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 1rem;">
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">Proto State</div>
+            <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-top: 0.5rem;" id="proto-status">idle</div>
+          </div>
+          <div id="proto-action" style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 1rem; min-height: 80px; display: flex; align-items: center; color: var(--text-secondary);">No action</div>
+        </div>
+      </div>
+
+      <h2>Traces</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Sequence</h3>
+          <div id="proto-seq" class="log"></div>
+        </div>
+        <div class="card">
+          <h3>Events</h3>
+          <div id="proto-log" class="log"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div id="map" class="tab-content">
+      <h2>Fleet Location Map</h2>
+      <div id="fleet-map"></div>
+    </div>
+
+    <!-- COMMANDS -->
+    <div id="commands" class="tab-content">
+      <h2>Secure Commands with Attestation</h2>
+      <div class="card">
+        <div class="input-group">
+          <input id="cmd-name" placeholder="Command name" />
+          <input id="cmd-value" placeholder="Command value" />
+          <button id="cmd-send" class="btn-primary">🔐 Send</button>
+        </div>
+        <div id="cmd-proof-view" style="display: none; margin-top: 1rem;">
+          <div style="font-weight: 600; color: var(--accent); margin-bottom: 0.8rem;">✓ SHA256 Proof</div>
+          <div class="proof-box" id="cmd-proof"></div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">🕐 <span id="cmd-time"></span></div>
+        </div>
+      </div>
+
+      <h2>Audit Trail</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>Value</th>
+            <th>Status</th>
+            <th>Proof</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="cmd-audit">
+          <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No commands</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- METRICS -->
+    <div id="metrics" class="tab-content">
+      <h2>Prometheus Metrics</h2>
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="input-group">
+          <input id="prom-url" placeholder="Prometheus endpoint" value="http://localhost:9090" />
+          <button id="prom-connect" class="btn-primary">🔌 Connect</button>
+          <div style="padding: 0.8rem 1rem; background: rgba(255, 51, 102, 0.2); border: 1px solid rgba(255, 51, 102, 0.5); border-radius: 6px; color: var(--error); font-weight: 600;" id="prom-status">Disconnected</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Rounds</h3>
+          <div class="card-value" id="prom-rounds">--</div>
+        </div>
+        <div class="card">
+          <h3>Nodes</h3>
+          <div class="card-value" id="prom-nodes">--</div>
+        </div>
+        <div class="card">
+          <h3>Latency (ms)</h3>
+          <div class="card-value" id="prom-latency">--</div>
+        </div>
+        <div class="card">
+          <h3>Errors</h3>
+          <div class="card-value" id="prom-errors">--</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="close-settings">✕</button>
+      <div class="modal-header">Settings & Preferences</div>
+      
+      <div class="settings-panel">
+        <div class="settings-group">
+          <h3>Display</h3>
+          <div class="setting-row">
+            <div class="setting-label">Dark Mode</div>
+            <div class="toggle-switch active" id="toggle-theme"></div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">Refresh Rate (sec)</div>
+            <input type="number" id="refresh-input" min="1" max="60" value="5" style="width: 80px; margin: 0;" />
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>Notifications</h3>
+          <div class="setting-row">
+            <div class="setting-label">Enable Alerts</div>
+            <div class="toggle-switch active" id="toggle-alerts"></div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">Sound</div>
+            <div class="toggle-switch" id="toggle-sound"></div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>Data</h3>
+          <button id="clear-btn" style="width: 100%; padding: 0.8rem;">Clear Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    const state = {
+      role: localStorage.getItem('role') || 'fleet-owner',
+      theme: localStorage.getItem('theme') || 'dark',
+      refresh: parseInt(localStorage.getItem('refresh') || '5'),
+      protoRunning: false,
+      protoPaused: false,
+      customSteps: [],
+      audit: [],
+    };
+
+    const ts = () => new Date().toISOString().replace('T', ' ').slice(0, 19);
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        document.getElementById(tab).classList.add('active');
+        log(`Switched to ${tab}`);
+        if (tab === 'map' && !window.mapInit) initMap();
+      });
+    });
+
+    // User role
+    document.getElementById('user-role').addEventListener('change', (e) => {
+      state.role = e.target.value;
+      localStorage.setItem('role', e.target.value);
+      log(`Role: ${e.target.value}`);
+    });
+
+    // Settings
+    document.getElementById('btn-settings').addEventListener('click', () => {
+      document.getElementById('settings-modal').classList.add('active');
+    });
+
+    document.getElementById('close-settings').addEventListener('click', () => {
+      document.getElementById('settings-modal').classList.remove('active');
+    });
+
+    document.getElementById('toggle-theme').addEventListener('click', function() {
+      this.classList.toggle('active');
+      document.body.classList.toggle('light-mode');
+      state.theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+      localStorage.setItem('theme', state.theme);
+    });
+
+    document.getElementById('toggle-alerts').addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+
+    document.getElementById('toggle-sound').addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+
+    document.getElementById('refresh-input').addEventListener('change', (e) => {
+      state.refresh = parseInt(e.target.value);
+      localStorage.setItem('refresh', state.refresh);
+    });
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      if (confirm('Clear all data?')) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
+
+    document.getElementById('btn-profile').addEventListener('click', () => {
+      alert(`Profile\n\nRole: ${state.role}\nTheme: ${state.theme}\nRefresh: ${state.refresh}s\nCustom Steps: ${state.customSteps.length}\nAudit Entries: ${state.audit.length}`);
+    });
+
+    // Logging
+    function log(msg) {
+      const el = document.getElementById('event-stream');
+      if (!el) return;
+      const div = document.createElement('div');
+      div.innerHTML = `<span>[${ts()}]</span> ${msg}`;
+      el.prepend(div);
+      if (el.children.length > 100) el.removeChild(el.lastChild);
+    }
+
+    // Proto
+    const getDelay = () => {
+      const s = document.getElementById('proto-speed')?.value || 'normal';
+      return s === 'fast' ? 120 : s === 'slow' ? 600 : 300;
+    };
+
+    async function runProto(name, steps) {
+      state.protoRunning = true;
+      document.getElementById('proto-status').textContent = 'running';
+      pushProtoLog(`${name} (started)`, '▶');
+      for (let i = 0; i < steps.length; i++) {
+        const step = steps[i];
+        pushProtoSeq(`${name} → ${step}`);
+        pushProtoLog(`${name} : ${step}`, '→');
+        document.getElementById('proto-action').textContent = step;
+        await new Promise(r => setTimeout(r, getDelay()));
+      }
+      state.protoRunning = false;
+      document.getElementById('proto-status').textContent = 'idle';
+      document.getElementById('proto-action').textContent = 'Idle';
+      pushProtoLog(`${name} (completed)`, '✓');
+    }
+
+    const pushProtoLog = (txt, p = '•') => {
+      const el = document.getElementById('proto-log');
+      const div = document.createElement('div');
+      div.textContent = `[${ts()}] ${p} ${txt}`;
+      el.prepend(div);
+    };
+
+    const pushProtoSeq = (txt) => {
+      const el = document.getElementById('proto-seq');
+      const div = document.createElement('div');
+      div.textContent = `[${ts()}] ${txt}`;
+      el.prepend(div);
+    };
+
+    document.getElementById('proto-start').addEventListener('click', () => runProto('Start', state.customSteps.length ? state.customSteps : ['init', 'load', 'alloc', 'spawn', 'loop']));
+    document.getElementById('proto-step').addEventListener('click', () => runProto('Step', ['plan', 'exec', 'send', 'collect']));
+    document.getElementById('proto-verify').addEventListener('click', () => runProto('Verify', ['gather', 'query', 'compare', 'proof']));
+    document.getElementById('proto-reset').addEventListener('click', () => {
+      document.getElementById('proto-seq').innerHTML = '';
+      document.getElementById('proto-log').innerHTML = '';
+      state.customSteps = [];
+      renderSteps();
+      pushProtoLog('Reset', '↻');
+    });
+
+    document.getElementById('proto-pause').addEventListener('click', function() {
+      state.protoPaused = !state.protoPaused;
+      this.textContent = state.protoPaused ? '▶ Resume' : '⏸ Pause';
+    });
+
+    const renderSteps = () => {
+      const el = document.getElementById('proto-steps');
+      el.innerHTML = '';
+      if (state.customSteps.length === 0) {
+        el.textContent = 'No custom steps';
+        return;
+      }
+      state.customSteps.forEach((s, i) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.1)';
+        div.innerHTML = `<span>${s}</span><button onclick="state.customSteps.splice(${i},1);renderSteps()" style="padding:0.4rem 0.8rem;font-size:0.85rem;">✕</button>`;
+        el.appendChild(div);
+      });
+    };
+
+    document.getElementById('proto-add').addEventListener('click', () => {
+      const inp = document.getElementById('proto-step-input');
+      const val = (inp.value || '').trim();
+      if (!val) return;
+      state.customSteps.push(val);
+      inp.value = '';
+      renderSteps();
+      pushProtoLog(`Added: ${val}`, '+');
+    });
+
+    // Crypto & Commands
+    async function sha256(msg) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function sendCmd() {
+      const name = (document.getElementById('cmd-name').value || '').trim();
+      const val = (document.getElementById('cmd-value').value || '').trim();
+      if (!name || !val) { log('⚠ Incomplete'); return; }
+
+      const ts_now = new Date().toISOString();
+      const nonce = Math.random().toString(36).substring(2, 15);
+      const proof = await sha256(`${name}|${val}|${ts_now}|${nonce}`);
+
+      document.getElementById('cmd-proof').textContent = proof;
+      document.getElementById('cmd-time').textContent = ts_now;
+      document.getElementById('cmd-proof-view').style.display = 'block';
+
+      state.audit.unshift({ name, val, proof: proof.substring(0, 16) + '...', time: new Date().toLocaleTimeString() });
+      updateAudit();
+
+      document.getElementById('cmd-name').value = '';
+      document.getElementById('cmd-value').value = '';
+      log(`🔐 ${name} → ${proof.substring(0, 16)}...`);
+    }
+
+    const updateAudit = () => {
+      const table = document.getElementById('cmd-audit');
+      if (state.audit.length === 0) {
+        table.innerHTML = '<tr><td colspan="5">No commands</td></tr>';
+        return;
+      }
+      table.innerHTML = state.audit.slice(0, 20).map(e => 
+        `<tr><td>${e.name}</td><td>${e.val}</td><td><span class="status-badge status-ok">✓</span></td><td style="font-family:monospace;font-size:0.9rem">${e.proof}</td><td>${e.time}</td></tr>`
+      ).join('');
+    };
+
+    document.getElementById('cmd-send').addEventListener('click', sendCmd);
+
+    // Prometheus
+    async function queryProm(base, q) {
+      try {
+        const url = new URL('/api/v1/query', base);
+        url.searchParams.set('query', q);
+        const r = await fetch(url.toString(), { headers: { accept: 'application/json' } });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const body = await r.json();
+        if (body.status !== 'success') throw new Error(body.error);
+        const v = body.data?.result?.[0]?.value?.[1];
+        const n = Number(v);
+        return Number.isFinite(n) ? n : null;
+      } catch (e) {
+        throw e;
+      }
+    }
+
+    async function refreshProm() {
+      const base = (document.getElementById('prom-url').value || '').trim() || 'http://localhost:9090';
+      const status = document.getElementById('prom-status');
+      status.textContent = 'Querying...';
+      status.style.color = '#ff6b35';
+
+      try {
+        const [r, n, l, e] = await Promise.all([
+          queryProm(base, 'consensus_rounds_total'),
+          queryProm(base, 'nodes_participating'),
+          queryProm(base, 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))'),
+          queryProm(base, 'update_verification_errors'),
+        ]);
+
+        ['prom-rounds', 'prom-nodes', 'm-rounds', 'm-nodes'].forEach(id => 
+          document.getElementById(id).textContent = Number.isFinite(n) ? Math.round(n) : '--'
+        );
+        ['prom-latency', 'm-latency'].forEach(id => 
+          document.getElementById(id).textContent = Number.isFinite(l) ? Number(l).toFixed(1) : '--'
+        );
+        ['prom-errors', 'm-errors'].forEach(id => 
+          document.getElementById(id).textContent = Number.isFinite(e) ? Math.round(e) : '--'
+        );
+
+        status.textContent = '✓ Connected';
+        status.style.color = '#00d084';
+        log('Prometheus: connected');
+      } catch (err) {
+        status.textContent = '✗ Error';
+        status.style.color = '#ff3366';
+        log('Prometheus error');
+      }
+    }
+
+    document.getElementById('prom-connect').addEventListener('click', refreshProm);
+    document.getElementById('prom-url').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') refreshProm();
+    });
+    setInterval(() => {
+      if (document.getElementById('prom-status').textContent.includes('Connected')) refreshProm();
+    }, state.refresh * 1000);
+
+    // Map
+    let map;
+    const initMap = () => {
+      map = L.map('fleet-map').setView([37.7749, -122.4194], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(map);
+      
+      [{lat: 37.7749, lng: -122.4194, name: 'SF'}, {lat: 37.8044, lng: -122.2712, name: 'East Bay'}, {lat: 37.3382, lng: -121.8863, name: 'South Bay'}].forEach(s => {
+        L.marker([s.lat, s.lng]).bindPopup(`🔌 ${s.name}`).addTo(map);
+      });
+
+      [{id: 'V1', lat: 37.7749, lng: -122.4194}, {id: 'V2', lat: 37.7849, lng: -122.4094}, {id: 'V3', lat: 37.7649, lng: -122.4294}].forEach(v => {
+        L.circleMarker([v.lat, v.lng], {radius: 8, fillColor: '#00ff88', fillOpacity: 0.8, stroke: true, strokeColor: '#00d4ff', strokeWidth: 2}).bindPopup(v.id).addTo(map);
+      });
+
+      window.mapInit = true;
+      log('Map ready');
+    };
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      if (state.theme === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('toggle-theme').classList.add('active');
+      }
+      document.getElementById('user-role').value = state.role;
+      document.getElementById('refresh-input').value = state.refresh;
+      log('🚀 Nexus initialized');
+      setTimeout(() => refreshProm(), 1000);
+    });
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Waymo Fleet Control — Live Operations Dashboard</title>
   <meta name="description" content="Real-time Waymo autonomous vehicle fleet monitoring, area-based vehicle tracking, and operational dispatch." />
