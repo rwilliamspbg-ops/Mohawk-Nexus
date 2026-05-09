@@ -1,70 +1,54 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mohawk Nexus | Agentic Sovereignty Console</title>
-  <meta name="description" content="A hackathon-ready demo for Mohawk Nexus showing AG-UI interaction, A2UI rendering, and Prometheus-scraped verification on port 9090." />
+  <title>Waymo Fleet Control — Live Operations Dashboard</title>
+  <meta name="description" content="Real-time Waymo autonomous vehicle fleet monitoring, area-based vehicle tracking, and operational dispatch." />
   <style>
     :root {
-      --bg: #081019;
-      --panel: #101c2b;
-      --panel-soft: #15263a;
-      --ink: #eef4fb;
-      --muted: #9fb3c9;
-      --cyan: #2dd4bf;
-      --amber: #fbbf24;
-      --rose: #fb7185;
-      --line: #223951;
-      --max: 1180px;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --bg-primary: #0a0e27;
+      --bg-secondary: #141829;
+      --bg-tertiary: #1a202c;
+      --accent: #00d4ff;
+      --accent-alt: #00ff88;
+      --warning: #ff6b35;
+      --success: #00d084;
+      --error: #ff3366;
+      --text-primary: #e0e7ff;
+      --text-secondary: #a0aec0;
+      --border: #2d3748;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      font-family: "Space Grotesk", "Segoe UI", "Helvetica Neue", sans-serif;
-      background:
-        radial-gradient(1200px 600px at 8% -5%, rgba(45, 212, 191, 0.28), transparent 55%),
-        radial-gradient(900px 500px at 95% 15%, rgba(251, 191, 36, 0.2), transparent 60%),
-        linear-gradient(180deg, #081019 0%, #0d1725 40%, #0a1320 100%);
-      color: var(--ink);
-      scroll-behavior: smooth;
-    }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 0.7px, transparent 0.7px);
-      background-size: 4px 4px;
-      opacity: 0.18;
-      z-index: 0;
-    }
-
-    .shell {
-      position: relative;
-      z-index: 1;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      height: 100%;
+      overflow-x: hidden;
     }
 
     header {
       position: sticky;
       top: 0;
-      backdrop-filter: blur(8px);
-      background: rgba(8, 16, 25, 0.72);
-      border-bottom: 1px solid rgba(159, 179, 201, 0.18);
-      z-index: 20;
+      z-index: 100;
+      background: rgba(10, 14, 39, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
     }
 
-    .nav {
-      max-width: var(--max);
+    .header-content {
+      max-width: 1800px;
       margin: 0 auto;
-      padding: 0.85rem 1rem;
+      padding: 0 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -72,1244 +56,715 @@
     }
 
     .brand {
-      font-weight: 800;
-      letter-spacing: 0.04em;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--accent);
       text-transform: uppercase;
-      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(0, 212, 255, 0.1);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .header-nav button, .header-nav a {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: rgba(29, 39, 117, 0.4);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 200ms ease;
       text-decoration: none;
     }
 
-    .nav-links {
+    .header-nav button:hover, .header-nav a:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      margin: 0 0 0.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .grid-2x3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: linear-gradient(135deg, rgba(20, 24, 41, 0.8), rgba(26, 32, 44, 0.9));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 300ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 60px rgba(0, 212, 255, 0.15);
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .kpi-label {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .kpi-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .kpi-subtext {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 1rem;
+    }
+
+    .status-active {
+      background: rgba(0, 208, 132, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .status-idle {
+      background: rgba(255, 107, 53, 0.2);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+
+    .status-incident {
+      background: rgba(255, 51, 102, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       gap: 0.7rem;
     }
 
-    .nav-links a {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 0.92rem;
-      border: 1px solid transparent;
-      padding: 0.35rem 0.58rem;
-      border-radius: 999px;
-      transition: 160ms ease;
+    .section-title::before {
+      content: "";
+      width: 4px;
+      height: 24px;
+      background: var(--accent);
+      border-radius: 2px;
     }
 
-    .nav-links a:hover {
-      color: var(--ink);
-      border-color: var(--line);
-      background: rgba(34, 57, 81, 0.3);
-    }
-
-    section {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 4.5rem 1rem;
-    }
-
-    .hero {
-      padding-top: 4rem;
+    .area-grid {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
-      align-items: center;
     }
 
-    .pill {
+    .area-card {
+      background: rgba(20, 24, 41, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: all 200ms ease;
+    }
+
+    .area-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .area-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .area-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(45, 55, 72, 0.5);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .area-stat-value {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .controls-section {
+      background: rgba(20, 24, 41, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .controls-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.2rem;
+      border: 1px solid var(--border);
+      background: rgba(0, 212, 255, 0.05);
+      color: var(--accent);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 200ms ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.85rem;
+    }
+
+    .btn:hover {
+      background: rgba(0, 212, 255, 0.15);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #00b8d4;
+      box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"], input[type="number"], select {
+      flex: 1;
+      padding: 0.8rem;
+      background: rgba(10, 14, 39, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .table thead {
+      background: rgba(29, 39, 117, 0.5);
+    }
+
+    .table th {
+      padding: 1rem;
+      text-align: left;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .table td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .table tbody tr:hover {
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .status-indicator {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      background: rgba(45, 212, 191, 0.12);
-      color: var(--cyan);
-      border: 1px solid rgba(45, 212, 191, 0.3);
-      border-radius: 999px;
-      padding: 0.35rem 0.7rem;
-      font-size: 0.82rem;
-      margin-bottom: 1rem;
+      gap: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .indicator-active {
+      background: rgba(0, 208, 132, 0.15);
+      color: var(--success);
+    }
+
+    .indicator-idle {
+      background: rgba(255, 107, 53, 0.15);
+      color: var(--warning);
+    }
+
+    .indicator-incident {
+      background: rgba(255, 51, 102, 0.15);
+      color: var(--error);
+    }
+
+    .indicator-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .indicator-active .indicator-dot {
+      background: var(--success);
+    }
+
+    .indicator-idle .indicator-dot {
+      background: var(--warning);
+    }
+
+    .indicator-incident .indicator-dot {
+      background: var(--error);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-box {
+      background: rgba(20, 24, 41, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+    }
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .metric-name {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    h1 {
-      font-family: "Sora", "Space Grotesk", sans-serif;
-      font-size: clamp(2rem, 5vw, 3.75rem);
-      line-height: 1.06;
-      margin: 0 0 1rem;
-      text-wrap: balance;
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
     }
 
-    .lede {
-      color: var(--muted);
-      margin: 0 0 1.35rem;
-      max-width: 64ch;
-      font-size: 1.06rem;
-      line-height: 1.7;
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-
-    .btn {
-      text-decoration: none;
-      border-radius: 0.7rem;
-      padding: 0.72rem 1rem;
-      font-weight: 700;
-      transition: transform 180ms ease, box-shadow 180ms ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .btn-primary {
-      background: linear-gradient(90deg, #2dd4bf, #22c55e);
-      color: #061019;
-      box-shadow: 0 14px 35px rgba(45, 212, 191, 0.28);
-    }
-
-    .btn-secondary {
-      color: var(--ink);
-      border: 1px solid var(--line);
-      background: rgba(16, 28, 43, 0.72);
-    }
-
-    .hero-card {
-      background: linear-gradient(180deg, rgba(21, 38, 58, 0.95), rgba(16, 28, 43, 0.95));
-      border: 1px solid rgba(159, 179, 201, 0.22);
-      border-radius: 1rem;
-      padding: 1rem;
-      box-shadow: var(--shadow);
-      display: grid;
-      gap: 0.7rem;
-    }
-
-    .console-section {
-      margin-top: -0.25rem;
-    }
-
-    .console-shell {
-      background: linear-gradient(180deg, rgba(16, 28, 43, 0.95), rgba(10, 19, 32, 0.96));
-      border: 1px solid rgba(45, 212, 191, 0.22);
-      border-radius: 1.15rem;
-      padding: 1.1rem;
-      box-shadow: var(--shadow);
-      display: grid;
-      gap: 1rem;
-    }
-
-    .console-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .console-title {
-      margin: 0;
-      font-size: 1.2rem;
-    }
-
-    .console-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.4rem 0.7rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      border: 1px solid rgba(45, 212, 191, 0.28);
-      background: rgba(45, 212, 191, 0.1);
-      color: #cdfbf1;
-    }
-
-    .console-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 0.9rem;
-    }
-
-    .console-panel {
-      border-radius: 0.95rem;
-      border: 1px solid rgba(159, 179, 201, 0.18);
-      background: rgba(8, 16, 25, 0.72);
-      padding: 1rem;
-      min-height: 200px;
-    }
-
-    .console-panel h3 {
-      margin: 0 0 0.75rem;
-      font-size: 0.98rem;
-      color: #d4f8ff;
-    }
-
-    .console-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(159, 179, 201, 0.12);
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .console-line strong {
-      color: var(--ink);
-      font-weight: 700;
-    }
-
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      border-radius: 999px;
-      padding: 0.28rem 0.6rem;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .status-idle {
-      background: rgba(159, 179, 201, 0.12);
-      color: #dbe7f5;
-      border: 1px solid rgba(159, 179, 201, 0.18);
-    }
-
-    .status-analyzing {
-      background: rgba(251, 191, 36, 0.12);
-      color: #ffe7ac;
-      border: 1px solid rgba(251, 191, 36, 0.2);
-    }
-
-    .status-scraping {
-      background: rgba(45, 212, 191, 0.12);
-      color: #bafcec;
-      border: 1px solid rgba(45, 212, 191, 0.22);
-    }
-
-    .status-verified {
-      background: rgba(45, 212, 191, 0.12);
-      color: #bafcec;
-      border: 1px solid rgba(45, 212, 191, 0.22);
-    }
-
-    .status-failed {
-      background: rgba(251, 113, 133, 0.12);
-      color: #ffd5dc;
-      border: 1px solid rgba(251, 113, 133, 0.22);
-    }
-
-    .steps-list {
-      display: grid;
-      gap: 0.65rem;
+    .progress-bar {
+      height: 6px;
+      background: rgba(45, 55, 72, 0.5);
+      border-radius: 3px;
+      overflow: hidden;
       margin-top: 0.8rem;
     }
 
-    .step-item {
-      border-radius: 0.8rem;
-      border: 1px solid rgba(159, 179, 201, 0.14);
-      background: rgba(16, 28, 43, 0.72);
-      padding: 0.8rem 0.9rem;
-      color: var(--muted);
-    }
-
-    .step-item strong {
-      display: block;
-      color: var(--ink);
-      margin-bottom: 0.2rem;
-    }
-
-    .console-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .console-actions button {
-      border: 0;
-      cursor: pointer;
-    }
-
-    .control-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      align-items: center;
-    }
-
-    .btn-ghost {
-      color: var(--ink);
-      border: 1px solid rgba(159, 179, 201, 0.28);
-      background: rgba(21, 38, 58, 0.82);
-    }
-
-    .console-note {
-      color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.55;
-      max-width: 62ch;
-    }
-
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 0.9rem;
-      margin-top: 0.9rem;
-    }
-
-    .telemetry-panel {
-      border-radius: 0.95rem;
-      border: 1px solid rgba(159, 179, 201, 0.18);
-      background: rgba(8, 16, 25, 0.72);
-      padding: 1rem;
-      min-height: 210px;
-    }
-
-    .telemetry-panel h3 {
-      margin: 0 0 0.85rem;
-      font-size: 0.98rem;
-      color: #d4f8ff;
-    }
-
-    .endpoint-row {
-      display: flex;
-      gap: 0.65rem;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 0.7rem;
-    }
-
-    .endpoint-row label {
-      color: var(--muted);
-      font-size: 0.84rem;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-    }
-
-    .endpoint-input {
-      flex: 1 1 230px;
-      min-width: 0;
-      border-radius: 0.7rem;
-      border: 1px solid rgba(159, 179, 201, 0.2);
-      background: rgba(8, 16, 25, 0.78);
-      color: var(--ink);
-      padding: 0.65rem 0.8rem;
-      font: inherit;
-    }
-
-    .endpoint-input:focus {
-      outline: 2px solid rgba(45, 212, 191, 0.28);
-      outline-offset: 1px;
-    }
-
-    .endpoint-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.85rem;
-      color: var(--muted);
-      font-size: 0.86rem;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      border-radius: 999px;
-      padding: 0.28rem 0.6rem;
-      border: 1px solid rgba(159, 179, 201, 0.16);
-      background: rgba(16, 28, 43, 0.7);
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .status-pill.connected {
-      color: #bafcec;
-      border-color: rgba(45, 212, 191, 0.22);
-      background: rgba(45, 212, 191, 0.1);
-    }
-
-    .status-pill.error {
-      color: #ffd5dc;
-      border-color: rgba(251, 113, 133, 0.22);
-      background: rgba(251, 113, 133, 0.1);
-    }
-
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.65rem;
-    }
-
-    .metric {
-      border-radius: 0.85rem;
-      border: 1px solid rgba(159, 179, 201, 0.14);
-      background: rgba(16, 28, 43, 0.76);
-      padding: 0.8rem;
-    }
-
-    .metric strong {
-      display: block;
-      font-size: 1.15rem;
-      color: #d0f8ff;
-      margin-bottom: 0.2rem;
-    }
-
-    .metric span {
-      color: var(--muted);
-      font-size: 0.86rem;
-      line-height: 1.45;
-    }
-
-    .meter {
-      margin-top: 0.55rem;
-      height: 0.45rem;
-      background: rgba(34, 57, 81, 0.75);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .meter-fill {
+    .progress-fill {
       height: 100%;
-      width: var(--fill, 50%);
-      border-radius: inherit;
-      background: linear-gradient(90deg, #2dd4bf, #22c55e);
-      transition: width 240ms ease;
-    }
-
-    .event-log {
-      display: grid;
-      gap: 0.7rem;
-    }
-
-    .event-item {
-      display: grid;
-      grid-template-columns: 4.6rem 1fr;
-      gap: 0.7rem;
-      align-items: start;
-      border-radius: 0.85rem;
-      border: 1px solid rgba(159, 179, 201, 0.12);
-      background: rgba(16, 28, 43, 0.64);
-      padding: 0.75rem 0.8rem;
-    }
-
-    .event-item time {
-      color: var(--cyan);
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .event-item p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 0.93rem;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.6rem;
-    }
-
-    .kpi {
-      background: rgba(8, 16, 25, 0.7);
-      border: 1px solid rgba(34, 57, 81, 0.9);
-      border-radius: 0.75rem;
-      padding: 0.75rem;
-    }
-
-    .kpi strong {
-      display: block;
-      font-size: 1.3rem;
-      color: #d0f8ff;
-      margin-bottom: 0.15rem;
-    }
-
-    .kpi span {
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.4rem, 2.4vw, 2.15rem);
-      margin: 0 0 0.85rem;
-    }
-
-    .section-copy {
-      margin: 0 0 1.35rem;
-      color: var(--muted);
-      max-width: 70ch;
-      line-height: 1.7;
-    }
-
-    .matrix {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.85rem;
-    }
-
-    .card {
-      background: rgba(16, 28, 43, 0.9);
-      border: 1px solid var(--line);
-      border-radius: 0.9rem;
-      padding: 1rem;
-      min-height: 160px;
-      transition: transform 200ms ease, border-color 200ms ease;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(45, 212, 191, 0.55);
-    }
-
-    .card h3 {
-      margin: 0 0 0.55rem;
-      font-size: 1.02rem;
-      color: #d4f8ff;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.95rem;
-    }
-
-    .verticals {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.9rem;
-    }
-
-    .vertical {
-      border: 1px solid rgba(251, 191, 36, 0.28);
-      background:
-        linear-gradient(145deg, rgba(251, 191, 36, 0.1), rgba(16, 28, 43, 0.92));
-      border-radius: 1rem;
-      padding: 1rem;
-    }
-
-    .vertical h3 {
-      margin: 0 0 0.35rem;
-      color: #ffe6a3;
-    }
-
-    .vertical p {
-      margin: 0;
-      color: #f8f3e4;
-      opacity: 0.88;
-      line-height: 1.62;
-    }
-
-    .timeline {
-      border-left: 2px solid rgba(45, 212, 191, 0.4);
-      margin-left: 0.35rem;
-      padding-left: 1.1rem;
-      display: grid;
-      gap: 1.1rem;
-    }
-
-    .event {
-      background: rgba(16, 28, 43, 0.82);
-      border: 1px solid var(--line);
-      border-radius: 0.8rem;
-      padding: 0.9rem;
-      position: relative;
-    }
-
-    .event::before {
-      content: "";
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--cyan);
-      left: -1.58rem;
-      top: 1.05rem;
-      box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.16);
-    }
-
-    .event h4 {
-      margin: 0 0 0.35rem;
-      color: #d9f9ff;
-    }
-
-    .event p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .links {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.8rem;
-    }
-
-    .resource {
-      border: 1px dashed rgba(159, 179, 201, 0.35);
-      border-radius: 0.8rem;
-      padding: 0.85rem;
-      color: var(--ink);
-      text-decoration: none;
-      background: rgba(16, 28, 43, 0.65);
-    }
-
-    .resource strong {
-      display: block;
-      margin-bottom: 0.25rem;
-    }
-
-    .resource span {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.55;
-    }
-
-    .resource:hover {
-      border-color: rgba(45, 212, 191, 0.52);
-      background: rgba(21, 38, 58, 0.88);
+      background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+      border-radius: 3px;
+      transition: width 400ms ease;
     }
 
     footer {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 2.5rem 1rem 3.25rem;
-      color: var(--muted);
-      border-top: 1px solid rgba(159, 179, 201, 0.18);
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
     }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(14px);
-      animation: fadeUp 700ms ease forwards;
-      animation-delay: var(--delay, 0ms);
-    }
-
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 980px) {
-      .hero {
+    @media (max-width: 768px) {
+      .grid-2x3 {
         grid-template-columns: 1fr;
       }
 
-      .matrix {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 760px) {
-      .links,
-      .verticals,
-      .matrix,
-      .kpi-grid {
+      .control-grid {
         grid-template-columns: 1fr;
       }
 
-      section {
-        padding: 3.4rem 1rem;
-      }
-
-      .nav {
-        align-items: flex-start;
-        flex-direction: column;
+      h1 {
+        font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="noise"></div>
-  <div class="shell">
-    <header>
-      <div class="nav">
-        <a class="brand" href="#top">Agentic Sovereignty Console</a>
-        <nav class="nav-links">
-          <a href="#protocols">Protocols</a>
-          <a href="#checklist">Checklist</a>
-          <a href="#flow">Flow</a>
-          <a href="#deploy">Deploy</a>
-          <a href="#evidence">Evidence</a>
-        </nav>
+  <header>
+    <div class="header-content">
+      <div class="brand">
+        <div class="brand-icon">🚗</div>
+        Waymo Fleet Control
       </div>
-    </header>
+      <nav class="header-nav">
+        <a href="#overview">Overview</a>
+        <a href="#areas">Areas</a>
+        <a href="#dispatch">Dispatch</a>
+        <button onclick="location.href='minimal-ui.html'">Proto Viewer</button>
+      </nav>
+    </div>
+  </header>
 
-    <section class="hero" id="top">
-      <div>
-        <span class="pill reveal" style="--delay: 80ms;">Hackathon entry: AG-UI + A2UI + Prometheus 9090</span>
-        <h1 class="reveal" style="--delay: 140ms;">An agentic console that renders live UI, proves state changes, and verifies the run through Prometheus scrape data.</h1>
-        <p class="lede reveal" style="--delay: 210ms;">
-          The hackathon plan is now concrete: use AG-UI for the runtime interaction loop,
-          use A2UI for the live rendered surface, and use Prometheus on port 9090 as the proof
-          and metrics layer. MCP Apps stays a secondary flourish only if the main flow is stable.
-          The result is a judge-friendly console, not just a static architecture page.
-        </p>
-        <div class="cta-row reveal" style="--delay: 280ms;">
-          <a class="btn btn-primary" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/HACKATHON-GENUI-PLAN.md" target="_blank" rel="noreferrer">Open Hackathon Plan</a>
-          <a class="btn btn-secondary" href="#protocols">See Protocol Roles</a>
+  <section class="container">
+    <div id="overview">
+      <h1>Fleet Operations Center</h1>
+      <p class="subtitle">Real-time monitoring of autonomous vehicle fleet across all operational areas</p>
+
+      <div class="grid-2x3">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Vehicles</div>
+          <div class="kpi-value" id="total-vehicles">847</div>
+          <div class="kpi-subtext">Active fleet size</div>
+          <div class="status-badge status-active">● Operational</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Currently Active</div>
+          <div class="kpi-value" id="active-vehicles">624</div>
+          <div class="kpi-subtext">In service or ready</div>
+          <div class="status-badge status-active">↑ 12% from peak</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Idle / Charging</div>
+          <div class="kpi-value" id="idle-vehicles">156</div>
+          <div class="kpi-subtext">Maintenance &amp; charging</div>
+          <div class="status-badge status-idle">● Idle</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Incidents</div>
+          <div class="kpi-value" id="incident-count">3</div>
+          <div class="kpi-subtext">Requiring attention</div>
+          <div class="status-badge status-incident">⚠ Alert</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Avg Fleet Efficiency</div>
+          <div class="kpi-value" id="efficiency">94.2%</div>
+          <div class="kpi-subtext">Uptime across fleet</div>
+          <div class="status-badge status-active">✓ Healthy</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Miles Driven (Today)</div>
+          <div class="kpi-value" id="miles-today">127.4k</div>
+          <div class="kpi-subtext">Real-time distance tracking</div>
+          <div class="status-badge status-active">↑ On Track</div>
         </div>
       </div>
 
-      <aside class="hero-card reveal" style="--delay: 240ms;" aria-label="Ecosystem KPI Highlights">
-        <div class="kpi-grid">
-          <div class="kpi"><strong>AG-UI</strong><span>Runtime interaction layer and state handoff</span></div>
-          <div class="kpi"><strong>A2UI</strong><span>Declarative live surface for rendered updates</span></div>
-          <div class="kpi"><strong>Prometheus 9090</strong><span>Scrape-backed proof layer for the same run</span></div>
-          <div class="kpi"><strong>Fallback</strong><span>Static version if the agent loop misbehaves</span></div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="console-section" aria-labelledby="console-title">
-      <div class="console-shell reveal" style="--delay: 120ms;">
-        <div class="console-header">
-          <div>
-            <span class="console-badge">Live AG-UI to A2UI handoff + Prometheus scrape</span>
-            <h2 class="console-title" id="console-title">Agentic Sovereignty Console</h2>
-          </div>
-        </div>
-
-        <div class="console-grid">
-          <div class="console-panel" aria-live="polite">
-            <h3>Live Surface</h3>
-            <div class="console-line"><span>Interaction state</span><strong id="state-label"><span class="status-chip status-idle">idle</span></strong></div>
-            <div class="console-line"><span>Agent task</span><strong id="task-label">Waiting for request</strong></div>
-            <div class="console-line"><span>Proof status</span><strong id="proof-label">No proof yet</strong></div>
-            <div class="console-line"><span>Prometheus scrape</span><strong id="scrape-label">localhost:9090/targets</strong></div>
-            <div class="console-line"><span>Proof hash</span><strong id="hash-label">--</strong></div>
-            <div class="console-line"><span>Verification time</span><strong id="time-label">--</strong></div>
+      <div class="section">
+        <div class="section-title">Agentic Fleet Controls</div>
+        <div class="controls-section">
+          <div class="controls-title">Live Dispatch &amp; Monitoring</div>
+          <div class="input-group">
+            <input type="text" id="dispatch-area" placeholder="Area or zone (e.g., Downtown SF)" />
+            <input type="number" id="dispatch-count" placeholder="# Vehicles" min="1" max="50" />
+            <button class="btn btn-primary" onclick="dispatchVehicles()">Dispatch</button>
           </div>
 
-          <div class="console-panel">
-            <h3>Protocol Trace</h3>
-            <div class="steps-list" id="step-list">
-              <div class="step-item"><strong>AG-UI</strong>Defines the interaction and tells the console what to do next.</div>
-              <div class="step-item"><strong>A2UI</strong>Renders the live surface from structured state updates.</div>
-              <div class="step-item"><strong>Prometheus 9090</strong>Scrapes the same run so the proof can be checked outside the UI.</div>
-              <div class="step-item"><strong>MCP Apps</strong>Optional only if the core demo is already stable.</div>
-            </div>
+          <div class="control-grid">
+            <button class="btn" onclick="alertField('Geofence Alert', 'High-density area monitoring activated')">↳ Geofence Monitor</button>
+            <button class="btn" onclick="alertField('Predictive Analysis', 'ML model predicting demand hotspots')">📊 Predict Demand</button>
+            <button class="btn" onclick="alertField('Maintenance', 'Scheduling next service window')">🔧 Auto Schedule</button>
+            <button class="btn" onclick="alertField('Safety Check', 'Running diagnostics on 12 vehicles')">✓ Health Check</button>
+            <button class="btn" onclick="alertField('Dynamic Pricing', 'Adjusting rates per zone')">💰 Update Pricing</button>
+            <button class="btn" onclick="alertField('Incident Response', 'Dispatching emergency response')">🚨 Emergency</button>
           </div>
         </div>
+      </div>
 
-        <div class="console-actions">
-          <p class="console-note">This is the first executable slice of the implementation checklist: a visible state transition from idle to analyzing to verified, with the same proof signal mirrored through Prometheus on port 9090 and a fallback path if the agent loop is not ready.</p>
-          <div class="control-row">
-            <button class="btn btn-primary" id="run-demo" type="button">Run agent check</button>
-            <button class="btn btn-ghost" id="fault-demo" type="button">Inject fault</button>
-            <button class="btn btn-ghost" id="reset-demo" type="button">Reset</button>
+      <div class="section">
+        <div class="section-title">Prometheus Live Metrics</div>
+        <div class="controls-section">
+          <div class="input-group">
+            <input type="url" id="prom-url" placeholder="http://localhost:9090" />
+            <button class="btn btn-primary" onclick="connectPrometheus()">Connect Prometheus</button>
+            <span id="prom-status" style="color: var(--text-secondary); font-size: 0.9rem;">Disconnected</span>
           </div>
-        </div>
-
-        <div class="telemetry-grid">
-          <div class="telemetry-panel">
-            <h3>Node Telemetry</h3>
-            <div class="metric-grid">
-              <div class="metric">
-                <strong id="metric-rounds">--</strong>
-                <span>Consensus rounds reported by Prometheus.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-rounds" style="--fill: 0%;"></div></div>
+          <div class="metrics-grid" id="metrics-grid">
+            <div class="metric-box">
+              <div class="metric-header">
+                <span class="metric-name">Fleet Rounds</span>
               </div>
-              <div class="metric">
-                <strong id="metric-nodes">--</strong>
-                <span>Active nodes participating in the latest scrape window.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-nodes" style="--fill: 0%;"></div></div>
-              </div>
-              <div class="metric">
-                <strong id="metric-latency">--</strong>
-                <span>P95 aggregation latency derived from the live histogram.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-latency" style="--fill: 0%;"></div></div>
-              </div>
-              <div class="metric">
-                <strong id="metric-errors">--</strong>
-                <span>Verification errors exposed directly from Prometheus.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-errors" style="--fill: 0%;"></div></div>
-              </div>
+              <div class="metric-value" id="m-rounds">--</div>
+              <div class="progress-bar"><div class="progress-fill" id="m-rounds-bar" style="width: 0%;"></div></div>
             </div>
-            <div class="endpoint-row">
-              <label for="prometheus-endpoint">Prometheus</label>
-              <input id="prometheus-endpoint" class="endpoint-input" type="url" value="http://localhost:9090" aria-label="Prometheus endpoint" />
-              <button class="btn btn-ghost" id="connect-prometheus" type="button">Connect</button>
+            <div class="metric-box">
+              <div class="metric-header">
+                <span class="metric-name">Active Nodes</span>
+              </div>
+              <div class="metric-value" id="m-nodes">--</div>
+              <div class="progress-bar"><div class="progress-fill" id="m-nodes-bar" style="width: 0%;"></div></div>
             </div>
-            <div class="endpoint-meta">
-              <span id="prometheus-status" class="status-pill">Disconnected</span>
-              <span>Queries use the Prometheus HTTP API at <strong>/api/v1/query</strong>.</span>
+            <div class="metric-box">
+              <div class="metric-header">
+                <span class="metric-name">P95 Latency (ms)</span>
+              </div>
+              <div class="metric-value" id="m-latency">--</div>
+              <div class="progress-bar"><div class="progress-fill" id="m-latency-bar" style="width: 0%;"></div></div>
             </div>
-          </div>
-
-          <div class="telemetry-panel">
-            <h3>Agent Event Log</h3>
-            <div class="event-log" id="event-log" aria-live="polite">
-              <div class="event-item"><time>STATE</time><p>Agent console is idle and waiting for a request.</p></div>
-              <div class="event-item"><time>METRICS</time><p>Connecting to Prometheus to load live telemetry.</p></div>
-              <div class="event-item"><time>API</time><p>The UI queries Prometheus directly, not a mock cache.</p></div>
+            <div class="metric-box">
+              <div class="metric-header">
+                <span class="metric-name">Errors</span>
+              </div>
+              <div class="metric-value" id="m-errors">--</div>
+              <div class="progress-bar"><div class="progress-fill" id="m-errors-bar" style="width: 0%;"></div></div>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <section id="protocols">
-      <h2 class="section-title">Protocol Roles</h2>
-      <p class="section-copy">
-        The implementation checklist is intentionally narrow. Each protocol has one job, and the
-        demo only becomes more complex if the core flow is already working.
-      </p>
-      <div class="matrix">
-        <article class="card reveal" style="--delay: 80ms;"><h3>AG-UI Controls the Loop</h3><p>The agent decides when the interface changes and which interaction state should be shown next.</p></article>
-        <article class="card reveal" style="--delay: 120ms;"><h3>A2UI Renders the State</h3><p>The frontend receives structured updates and turns them into a live panel with visible state transitions.</p></article>
-        <article class="card reveal" style="--delay: 160ms;"><h3>MCP Apps Stay Optional</h3><p>Only add a small open-ended surface if the core demo is already reliable and visually clear.</p></article>
-        <article class="card reveal" style="--delay: 200ms;"><h3>Prometheus Proof Surface</h3><p>Mirror the verification state through Prometheus on port 9090 so the judge can inspect the same run outside the UI.</p></article>
-        <article class="card reveal" style="--delay: 240ms;"><h3>Fallback Static View</h3><p>Keep a non-agentic version of the same story in case the live protocol layer stalls during the demo.</p></article>
-        <article class="card reveal" style="--delay: 280ms;"><h3>Judge-Friendly Story</h3><p>Every visible element should help answer one question: what did the agent do, and why should I trust it?</p></article>
+      <div class="section" id="areas">
+        <div class="section-title">Vehicle Distribution by Area</div>
+        <div class="area-grid" id="area-grid">
+          <!-- Populated by JS -->
+        </div>
       </div>
-    </section>
 
-    <section id="checklist">
-      <h2 class="section-title">Implementation Checklist</h2>
-      <p class="section-copy">
-        This is the exact build order for the hackathon. If a step does not move the demo closer
-        to the AG-UI + A2UI story, it can wait.
-      </p>
-      <div class="verticals">
-        <article class="vertical reveal" style="--delay: 100ms;"><h3>Phase 1: Story</h3><p>Update the pitch and hero copy so the demo clearly says AG-UI drives the interaction and A2UI renders the result.</p></article>
-        <article class="vertical reveal" style="--delay: 160ms;"><h3>Phase 2: Surface</h3><p>Replace static summary panels with one live state panel that changes from idle to analyzing to verified.</p></article>
-        <article class="vertical reveal" style="--delay: 220ms;"><h3>Phase 3: Runtime</h3><p>Wire the single interaction loop, keep the payload tiny, and make every change visible on screen.</p></article>
-        <article class="vertical reveal" style="--delay: 280ms;"><h3>Phase 4: Proof</h3><p>Add one explicit proof or verification indicator, then mirror that same signal through Prometheus on port 9090 so the judge can inspect it directly.</p></article>
+      <div class="section" id="dispatch">
+        <div class="section-title">Active Fleet Roster</div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Vehicle ID</th>
+              <th>Area</th>
+              <th>Status</th>
+              <th>Miles Today</th>
+              <th>Battery %</th>
+              <th>Last Update</th>
+            </tr>
+          </thead>
+          <tbody id="fleet-table">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="flow">
-      <h2 class="section-title">Demo Flow</h2>
-      <p class="section-copy">
-        The demo should feel like a sequence, not a pile of features: ask for a result, watch the
-        agent respond, render the live UI, then display the verification state.
-      </p>
-      <div class="timeline">
-        <article class="event reveal" style="--delay: 90ms;"><h4>Step 1: Request</h4><p>Start with a simple task, such as checking node health or verifying an aggregate.</p></article>
-        <article class="event reveal" style="--delay: 140ms;"><h4>Step 2: Agent Decision</h4><p>AG-UI handles the interaction and decides what the next surface state should be.</p></article>
-        <article class="event reveal" style="--delay: 190ms;"><h4>Step 3: A2UI Render</h4><p>The frontend receives declarative updates and turns them into a visible live panel.</p></article>
-        <article class="event reveal" style="--delay: 240ms;"><h4>Step 4: Verification</h4><p>The proof badge flips to verified, and Prometheus scrape data on port 9090 shows the same run outside the UI.</p></article>
-        <article class="event reveal" style="--delay: 290ms;"><h4>Step 5: Optional Flourish</h4><p>If time remains, show one MCP Apps surface for an editable diagram or secondary visualization.</p></article>
-      </div>
-    </section>
-
-    <section id="deploy">
-      <h2 class="section-title">GitHub Pages Attachment</h2>
-      <p class="section-copy">
-        This repository now includes a GitHub Actions workflow that publishes this site folder directly to GitHub Pages.
-        Push to main, enable Pages in repository settings, and the agentic console becomes your public hackathon front door.
-      </p>
-      <div class="links">
-        <a class="resource reveal" style="--delay: 100ms;" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions" target="_blank" rel="noreferrer">
-          <strong>Action Runs</strong>
-          <span>Track deployment status and inspect build logs for every push.</span>
-        </a>
-        <a class="resource reveal" style="--delay: 150ms;" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/settings/pages" target="_blank" rel="noreferrer">
-          <strong>Pages Settings</strong>
-          <span>Set source to GitHub Actions, then publish automatically.</span>
-        </a>
-        <a class="resource reveal" style="--delay: 200ms;" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/02-DEPLOYMENT.md" target="_blank" rel="noreferrer">
-          <strong>Prometheus Port 9090</strong>
-          <span>Use the deployment guide to forward Prometheus and inspect the same verification flow.</span>
-        </a>
-      </div>
-    </section>
-
-    <section id="evidence">
-      <h2 class="section-title">Source Evidence Links</h2>
-      <p class="section-copy">Use these links during demos to validate the protocol choice, the plan, and the architecture references.</p>
-      <div class="links">
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/HACKATHON-GENUI-PLAN.md" target="_blank" rel="noreferrer"><strong>Hackathon GenUI Plan</strong><span>The concrete execution checklist for AG-UI, A2UI, Prometheus 9090, and optional MCP Apps.</span></a>
-        <a class="resource" href="https://github.com/copilotkit/generative-ui" target="_blank" rel="noreferrer"><strong>CopilotKit Generative UI Repo</strong><span>Source reference for the protocol trade-offs and implementation patterns.</span></a>
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/blob/main/README.md" target="_blank" rel="noreferrer"><strong>Sovereign-Mohawk-Proto README</strong><span>Primary capability overview, quickstarts, and platform context.</span></a>
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/proofs" target="_blank" rel="noreferrer"><strong>Formal Proofs Directory</strong><span>Lean modules, verification logs, and formal traceability assets.</span></a>
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/01-ARCHITECTURE.md" target="_blank" rel="noreferrer"><strong>Mohawk Nexus Architecture Doc</strong><span>Layered trust model, scaling assumptions, and policy-gated domains.</span></a>
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/07-ROADMAP.md" target="_blank" rel="noreferrer"><strong>Mohawk Nexus Roadmap</strong><span>PQC milestones, scaling trajectory, and domain expansion plans.</span></a>
-        <a class="resource" href="minimal-ui.html" target="_self" rel="noreferrer"><strong>Minimal Actions UI</strong><span>Tiny interactive surface showing proto internal actions and event log.</span></a>
-      </div>
-    </section>
-
-    <footer>
-      Agentic Sovereignty Console. Designed for GitHub Pages and hackathon presentations.
-      Claims are anchored to public repository artifacts and the concrete implementation plan.
-    </footer>
-  </div>
+  <footer>
+    Waymo Fleet Control • Real-time Operations Dashboard • Data updated every 15 seconds
+  </footer>
 
   <script>
-    (() => {
-      const runButton = document.getElementById('run-demo');
-      const faultButton = document.getElementById('fault-demo');
-      const resetButton = document.getElementById('reset-demo');
-      const connectButton = document.getElementById('connect-prometheus');
-      const prometheusEndpointInput = document.getElementById('prometheus-endpoint');
-      const prometheusStatus = document.getElementById('prometheus-status');
-      const stateLabel = document.getElementById('state-label');
-      const taskLabel = document.getElementById('task-label');
-      const proofLabel = document.getElementById('proof-label');
-      const scrapeLabel = document.getElementById('scrape-label');
-      const hashLabel = document.getElementById('hash-label');
-      const timeLabel = document.getElementById('time-label');
-      const metricRounds = document.getElementById('metric-rounds');
-      const metricNodes = document.getElementById('metric-nodes');
-      const metricLatency = document.getElementById('metric-latency');
-      const metricErrors = document.getElementById('metric-errors');
-      const meterRounds = document.getElementById('meter-rounds');
-      const meterNodes = document.getElementById('meter-nodes');
-      const meterLatency = document.getElementById('meter-latency');
-      const meterErrors = document.getElementById('meter-errors');
-      const eventLog = document.getElementById('event-log');
+    // Area data
+    const areas = [
+      { name: 'Downtown SF', vehicles: 145, active: 132, idle: 13, lastUpdate: '1m ago' },
+      { name: 'Mission District', vehicles: 87, active: 71, idle: 16, lastUpdate: '2m ago' },
+      { name: 'SoMa', vehicles: 102, active: 89, idle: 13, lastUpdate: '1m ago' },
+      { name: 'Financial District', vehicles: 124, active: 118, idle: 6, lastUpdate: '1m ago' },
+      { name: 'Marina Bay', vehicles: 93, active: 65, idle: 28, lastUpdate: '3m ago' },
+      { name: 'Sunset District', vehicles: 78, active: 62, idle: 16, lastUpdate: '2m ago' },
+    ];
 
-      if (!runButton || !faultButton || !resetButton || !connectButton || !prometheusEndpointInput || !prometheusStatus || !stateLabel || !taskLabel || !proofLabel || !scrapeLabel || !hashLabel || !timeLabel || !metricRounds || !metricNodes || !metricLatency || !metricErrors || !meterRounds || !meterNodes || !meterLatency || !meterErrors || !eventLog) {
+    // Fleet roster data
+    const fleetRoster = [
+      { id: 'WAY-001', area: 'Downtown SF', status: 'active', miles: 34.2, battery: 87, time: '2m' },
+      { id: 'WAY-002', area: 'Mission District', status: 'active', miles: 28.1, battery: 92, time: '1m' },
+      { id: 'WAY-003', area: 'SoMa', status: 'idle', miles: 45.6, battery: 45, time: '5m' },
+      { id: 'WAY-004', area: 'Financial District', status: 'active', miles: 51.3, battery: 78, time: '1m' },
+      { id: 'WAY-005', area: 'Marina Bay', status: 'incident', miles: 12.4, battery: 62, time: '8m' },
+      { id: 'WAY-006', area: 'Downtown SF', status: 'active', miles: 67.8, battery: 81, time: '2m' },
+      { id: 'WAY-007', area: 'Sunset District', status: 'idle', miles: 33.2, battery: 28, time: '12m' },
+      { id: 'WAY-008', area: 'SoMa', status: 'active', miles: 22.5, battery: 88, time: '1m' },
+    ];
+
+    // Initialize UI
+    function initializeUI() {
+      const areaGrid = document.getElementById('area-grid');
+      areas.forEach((area) => {
+        const card = document.createElement('div');
+        card.className = 'area-card';
+        card.innerHTML = `
+          <div class="area-name">${area.name}</div>
+          <div class="area-stat"><span>Total Vehicles:</span><span class="area-stat-value">${area.vehicles}</span></div>
+          <div class="area-stat"><span>Active:</span><span class="area-stat-value" style="color: var(--success);">${area.active}</span></div>
+          <div class="area-stat"><span>Idle/Charging:</span><span class="area-stat-value" style="color: var(--warning);">${area.idle}</span></div>
+          <div class="area-stat" style="border: none;"><span>Last Update:</span><span>${area.lastUpdate}</span></div>
+        `;
+        areaGrid.appendChild(card);
+      });
+
+      const fleetTable = document.getElementById('fleet-table');
+      fleetRoster.forEach((vehicle) => {
+        const statusClass = vehicle.status === 'active' ? 'indicator-active' : vehicle.status === 'incident' ? 'indicator-incident' : 'indicator-idle';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${vehicle.id}</td>
+          <td>${vehicle.area}</td>
+          <td><span class="status-indicator ${statusClass}"><span class="indicator-dot"></span>${vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}</span></td>
+          <td>${vehicle.miles} mi</td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width: ${vehicle.battery}%; background: ${vehicle.battery < 30 ? 'var(--error)' : vehicle.battery < 60 ? 'var(--warning)' : 'var(--accent-alt)'}; border-radius: 3px;"></div></div> ${vehicle.battery}%</td>
+          <td>${vehicle.time}</td>
+        `;
+        fleetTable.appendChild(row);
+      });
+    }
+
+    // Dispatch function
+    function dispatchVehicles() {
+      const area = document.getElementById('dispatch-area').value || 'specified area';
+      const count = document.getElementById('dispatch-count').value || 5;
+      alertField('Dispatch Initiated', `${count} vehicles dispatched to ${area}`);
+    }
+
+    // Control alert
+    function alertField(title, message) {
+      alert(`${title}\n${message}`);
+    }
+
+    // Prometheus integration
+    async function connectPrometheus() {
+      const url = (document.getElementById('prom-url').value || '').trim();
+      if (!url) {
+        document.getElementById('prom-status').textContent = 'No endpoint';
         return;
       }
 
-      const storageKey = 'mohawk-prometheus-endpoint';
-      const defaultEndpoint = prometheusEndpointInput.value.trim() || 'http://localhost:9090';
-      const readStoredEndpoint = () => {
-        try {
-          return window.localStorage.getItem(storageKey);
-        } catch {
-          return null;
-        }
-      };
+      document.getElementById('prom-status').textContent = 'Querying...';
+      try {
+        const queries = {
+          rounds: 'consensus_rounds_total',
+          nodes: 'nodes_participating',
+          latency: 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))',
+          errors: 'update_verification_errors',
+        };
 
-      const writeStoredEndpoint = (value) => {
-        try {
-          window.localStorage.setItem(storageKey, value);
-        } catch {
-          return;
-        }
-      };
+        const results = await Promise.all(Object.entries(queries).map(async ([key, q]) => {
+          const qUrl = new URL('/api/v1/query', url);
+          qUrl.searchParams.set('query', q);
+          const r = await fetch(qUrl.toString());
+          const body = await r.json();
+          const value = body?.data?.result?.[0]?.value?.[1];
+          return [key, Number(value) || 0];
+        }));
 
-      prometheusEndpointInput.value = readStoredEndpoint() || defaultEndpoint;
+        const data = Object.fromEntries(results);
+        document.getElementById('m-rounds').textContent = Math.round(data.rounds);
+        document.getElementById('m-nodes').textContent = Math.round(data.nodes);
+        document.getElementById('m-latency').textContent = data.latency.toFixed(1);
+        document.getElementById('m-errors').textContent = Math.round(data.errors);
 
-      const states = [
-        {
-          name: 'idle',
-          task: 'Waiting for request',
-          proof: 'No proof yet',
-          scrape: 'localhost:9090/targets',
-          hash: '--',
-          log: 'Agent console is idle and waiting for a request.',
-        },
-        {
-          name: 'analyzing',
-          task: 'AG-UI requested a node-health check',
-          proof: 'Generating response',
-          scrape: 'Preparing Prometheus scrape',
-          hash: 'pending',
-          log: 'AG-UI requested a node-health check and the console started preparing the scrape.',
-        },
-        {
-          name: 'scraping',
-          task: 'Prometheus is checking the same run on port 9090',
-          proof: 'Scrape in progress',
-          scrape: 'Checking /targets on localhost:9090',
-          hash: 'pending',
-          log: 'Prometheus is checking the same run on port 9090 while the UI waits for proof.',
-        },
-        {
-          name: 'verified',
-          task: 'A2UI rendered the verified result',
-          proof: 'Proof verified and scraped',
-          scrape: 'Prometheus target healthy on localhost:9090',
-          hash: '0x8f42a7c1e3b9d6a4',
-          log: 'A2UI rendered the verified result and Prometheus marked the target healthy.',
-        },
-        {
-          name: 'failed',
-          task: 'A tampered node broke the proof threshold',
-          proof: 'Verification failed',
-          scrape: 'Prometheus still reachable, proof rejected',
-          hash: '0xdeadbeef',
-          log: 'Fault injection tripped the verification threshold and the run was rejected.',
-        },
-      ];
+        document.getElementById('m-rounds-bar').style.width = Math.min(100, (data.rounds / 1000) * 100) + '%';
+        document.getElementById('m-nodes-bar').style.width = Math.min(100, (data.nodes / 50) * 100) + '%';
+        document.getElementById('m-latency-bar').style.width = Math.min(100, (data.latency / 500) * 100) + '%';
+        document.getElementById('m-errors-bar').style.width = Math.min(100, (data.errors / 10) * 100) + '%';
 
-      const telemetryQueries = {
-        rounds: 'consensus_rounds_total',
-        nodes: 'nodes_participating',
-        latency: 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))',
-        errors: 'update_verification_errors',
-      };
+        document.getElementById('prom-status').textContent = 'Connected ✓';
+        document.getElementById('prom-status').style.color = 'var(--success)';
+      } catch (error) {
+        document.getElementById('prom-status').textContent = 'Error connecting';
+        document.getElementById('prom-status').style.color = 'var(--error)';
+      }
+    }
 
-      const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
-      const formatNumber = (value, digits = 0) => {
-        if (!Number.isFinite(value)) {
-          return '--';
-        }
-
-        return value.toFixed(digits);
-      };
-
-      const getScalarValue = (payload) => {
-        const entry = payload?.data?.result?.[0];
-        const rawValue = entry?.value?.[1];
-        const numericValue = Number(rawValue);
-        return Number.isFinite(numericValue) ? numericValue : null;
-      };
-
-      const setStatus = (state, message) => {
-        prometheusStatus.className = `status-pill ${state || ''}`.trim();
-        prometheusStatus.textContent = message;
-      };
-
-      let activeState = states[0];
-      let telemetrySummary = 'Connecting to Prometheus to load live telemetry.';
-      let telemetryConnection = 'No live query has completed yet.';
-
-      const renderEventLog = () => {
-        eventLog.innerHTML = `
-          <div class="event-item"><time>${activeState.name.toUpperCase()}</time><p>${activeState.log}</p></div>
-          <div class="event-item"><time>METRICS</time><p>${telemetrySummary}</p></div>
-          <div class="event-item"><time>API</time><p>${telemetryConnection}</p></div>
-        `;
-      };
-
-      const renderTelemetry = (snapshot) => {
-        metricRounds.textContent = snapshot.rounds;
-        metricNodes.textContent = snapshot.nodes;
-        metricLatency.textContent = snapshot.latency;
-        metricErrors.textContent = snapshot.errors;
-
-        meterRounds.style.setProperty('--fill', `${snapshot.roundsFill}%`);
-        meterNodes.style.setProperty('--fill', `${snapshot.nodesFill}%`);
-        meterLatency.style.setProperty('--fill', `${snapshot.latencyFill}%`);
-        meterErrors.style.setProperty('--fill', `${snapshot.errorsFill}%`);
-
-        telemetrySummary = snapshot.summary;
-        telemetryConnection = snapshot.connection;
-        setStatus(snapshot.connected ? 'connected' : 'error', snapshot.connected ? 'Connected' : 'Error');
-        renderEventLog();
-      };
-
-      const queryPrometheus = async (baseUrl, query) => {
-        const url = new URL('/api/v1/query', baseUrl);
-        url.searchParams.set('query', query);
-
-        const response = await fetch(url.toString(), {
-          headers: {
-            Accept: 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const payload = await response.json();
-
-        if (payload.status !== 'success') {
-          throw new Error(payload.error || 'Prometheus query failed');
-        }
-
-        return getScalarValue(payload);
-      };
-
-      const computeFill = (value, kind) => {
-        if (!Number.isFinite(value)) {
-          return 0;
-        }
-
-        switch (kind) {
-          case 'rounds':
-            return clamp(Math.log10(value + 1) * 25, 6, 100);
-          case 'nodes':
-            return clamp(value * 10, 6, 100);
-          case 'latency':
-            return clamp(100 - value * 5, 10, 100);
-          case 'errors':
-            return clamp(100 - value * 12, 8, 100);
-          default:
-            return 0;
-        }
-      };
-
-      const refreshTelemetry = async () => {
-        const baseUrl = prometheusEndpointInput.value.trim();
-
-        if (!baseUrl) {
-          setStatus('error', 'No endpoint configured');
-          renderTelemetry({
-            connected: false,
-            rounds: '--',
-            nodes: '--',
-            latency: '--',
-            errors: '--',
-            roundsFill: 0,
-            nodesFill: 0,
-            latencyFill: 0,
-            errorsFill: 0,
-            summary: 'Prometheus endpoint is empty.',
-            connection: 'Configure a reachable Prometheus base URL to load metrics.',
-          });
-          return;
-        }
-
-        writeStoredEndpoint(baseUrl);
-        setStatus('', `Querying ${baseUrl}`);
-
-        try {
-          const [rounds, nodes, latency, errors] = await Promise.all([
-            queryPrometheus(baseUrl, telemetryQueries.rounds),
-            queryPrometheus(baseUrl, telemetryQueries.nodes),
-            queryPrometheus(baseUrl, telemetryQueries.latency),
-            queryPrometheus(baseUrl, telemetryQueries.errors),
-          ]);
-
-          const latencyText = Number.isFinite(latency) ? `${formatNumber(latency, 1)}ms` : '--';
-          renderTelemetry({
-            connected: true,
-            rounds: Number.isFinite(rounds) ? formatNumber(rounds, 0) : '--',
-            nodes: Number.isFinite(nodes) ? formatNumber(nodes, 0) : '--',
-            latency: latencyText,
-            errors: Number.isFinite(errors) ? formatNumber(errors, 0) : '--',
-            roundsFill: computeFill(rounds, 'rounds'),
-            nodesFill: computeFill(nodes, 'nodes'),
-            latencyFill: computeFill(latency, 'latency'),
-            errorsFill: computeFill(errors, 'errors'),
-            summary: `Prometheus reports ${Number.isFinite(rounds) ? formatNumber(rounds, 0) : 'no'} consensus rounds, ${Number.isFinite(nodes) ? formatNumber(nodes, 0) : 'no'} participating nodes, ${latencyText} P95 latency, and ${Number.isFinite(errors) ? formatNumber(errors, 0) : 'no'} verification errors.`,
-            connection: `Live query path: ${baseUrl.replace(/\/$/, '')}/api/v1/query`,
-          });
-        } catch (error) {
-          renderTelemetry({
-            connected: false,
-            rounds: '--',
-            nodes: '--',
-            latency: '--',
-            errors: '--',
-            roundsFill: 0,
-            nodesFill: 0,
-            latencyFill: 0,
-            errorsFill: 0,
-            summary: 'Prometheus query failed. The page needs a reachable endpoint with CORS or same-origin access.',
-            connection: error instanceof Error ? error.message : 'Unknown Prometheus query failure.',
-          });
-        }
-      };
-
-      const chipClass = (name) => `status-chip status-${name}`;
-
-      const renderState = (state) => {
-        activeState = state;
-        stateLabel.innerHTML = `<span class="${chipClass(state.name)}">${state.name}</span>`;
-        taskLabel.textContent = state.task;
-        proofLabel.textContent = state.proof;
-        scrapeLabel.textContent = state.scrape;
-        hashLabel.textContent = state.hash;
-        timeLabel.textContent = state.name === 'verified'
-          ? new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-          : '--';
-        renderEventLog();
-      };
-
-      let runCount = 0;
-      let currentMode = 'normal';
-      renderState(states[0]);
-      void refreshTelemetry();
-
-      const runSequence = () => {
-        renderState(states[1]);
-
-        window.setTimeout(() => {
-          renderState(states[2]);
-
-          window.setTimeout(() => {
-            runCount += 1;
-            const proofSuffix = String(runCount).padStart(2, '0');
-            const nextState = currentMode === 'fault'
-              ? {
-                ...states[4],
-                hash: `0xdeadbeef${proofSuffix}`,
-              }
-              : {
-                ...states[3],
-                hash: `0x8f42a7c1e3b9d6a4${proofSuffix}`,
-              };
-
-            renderState(nextState);
-            void refreshTelemetry();
-            runButton.disabled = false;
-            runButton.textContent = 'Run agent check';
-            faultButton.disabled = false;
-            resetButton.disabled = false;
-          }, 520);
-        }, 520);
-      };
-
-      runButton.addEventListener('click', () => {
-        runButton.disabled = true;
-        runButton.textContent = 'Running...';
-        faultButton.disabled = true;
-        resetButton.disabled = true;
-        currentMode = 'normal';
-        runSequence();
-      });
-
-      faultButton.addEventListener('click', () => {
-        currentMode = 'fault';
-        runButton.disabled = true;
-        faultButton.disabled = true;
-        resetButton.disabled = true;
-        runButton.textContent = 'Running...';
-        renderState(states[1]);
-
-        window.setTimeout(() => {
-          renderState(states[2]);
-
-          window.setTimeout(() => {
-            renderState(states[4]);
-            void refreshTelemetry();
-            runButton.disabled = false;
-            faultButton.disabled = false;
-            resetButton.disabled = false;
-            runButton.textContent = 'Run agent check';
-          }, 520);
-        }, 520);
-      });
-
-      resetButton.addEventListener('click', () => {
-        currentMode = 'normal';
-        runButton.disabled = false;
-        faultButton.disabled = false;
-        resetButton.disabled = false;
-        runButton.textContent = 'Run agent check';
-        renderState(states[0]);
-        void refreshTelemetry();
-      });
-
-      connectButton.addEventListener('click', () => {
-        void refreshTelemetry();
-      });
-
-      prometheusEndpointInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          void refreshTelemetry();
-        }
-      });
-
-      window.setInterval(() => {
-        void refreshTelemetry();
-      }, 15000);
-    })();
+    // Init on load
+    document.addEventListener('DOMContentLoaded', initializeUI);
   </script>
 </body>
 </html>
