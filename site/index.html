@@ -376,6 +376,75 @@
       color: #d4f8ff;
     }
 
+    .endpoint-row {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.7rem;
+    }
+
+    .endpoint-row label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .endpoint-input {
+      flex: 1 1 230px;
+      min-width: 0;
+      border-radius: 0.7rem;
+      border: 1px solid rgba(159, 179, 201, 0.2);
+      background: rgba(8, 16, 25, 0.78);
+      color: var(--ink);
+      padding: 0.65rem 0.8rem;
+      font: inherit;
+    }
+
+    .endpoint-input:focus {
+      outline: 2px solid rgba(45, 212, 191, 0.28);
+      outline-offset: 1px;
+    }
+
+    .endpoint-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border-radius: 999px;
+      padding: 0.28rem 0.6rem;
+      border: 1px solid rgba(159, 179, 201, 0.16);
+      background: rgba(16, 28, 43, 0.7);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .status-pill.connected {
+      color: #bafcec;
+      border-color: rgba(45, 212, 191, 0.22);
+      background: rgba(45, 212, 191, 0.1);
+    }
+
+    .status-pill.error {
+      color: #ffd5dc;
+      border-color: rgba(251, 113, 133, 0.22);
+      background: rgba(251, 113, 133, 0.1);
+    }
+
     .metric-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -753,34 +822,43 @@
             <h3>Node Telemetry</h3>
             <div class="metric-grid">
               <div class="metric">
-                <strong id="metric-nodes">10</strong>
-                <span>Active sovereign nodes contributing to the aggregate.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-nodes" style="--fill: 84%;"></div></div>
+                <strong id="metric-rounds">--</strong>
+                <span>Consensus rounds reported by Prometheus.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-rounds" style="--fill: 0%;"></div></div>
               </div>
               <div class="metric">
-                <strong id="metric-latency">12ms</strong>
-                <span>Proof latency surfaced to the judge in the live console.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-latency" style="--fill: 72%;"></div></div>
+                <strong id="metric-nodes">--</strong>
+                <span>Active nodes participating in the latest scrape window.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-nodes" style="--fill: 0%;"></div></div>
               </div>
               <div class="metric">
-                <strong id="metric-faults">1/3</strong>
-                <span>Byzantine fault budget still available before verification fails.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-faults" style="--fill: 66%;"></div></div>
+                <strong id="metric-latency">--</strong>
+                <span>P95 aggregation latency derived from the live histogram.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-latency" style="--fill: 0%;"></div></div>
               </div>
               <div class="metric">
-                <strong id="metric-scrape">Healthy</strong>
-                <span>Prometheus on port 9090 exposes the same proof state.</span>
-                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-scrape" style="--fill: 88%;"></div></div>
+                <strong id="metric-errors">--</strong>
+                <span>Verification errors exposed directly from Prometheus.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-errors" style="--fill: 0%;"></div></div>
               </div>
+            </div>
+            <div class="endpoint-row">
+              <label for="prometheus-endpoint">Prometheus</label>
+              <input id="prometheus-endpoint" class="endpoint-input" type="url" value="http://localhost:9090" aria-label="Prometheus endpoint" />
+              <button class="btn btn-ghost" id="connect-prometheus" type="button">Connect</button>
+            </div>
+            <div class="endpoint-meta">
+              <span id="prometheus-status" class="status-pill">Disconnected</span>
+              <span>Queries use the Prometheus HTTP API at <strong>/api/v1/query</strong>.</span>
             </div>
           </div>
 
           <div class="telemetry-panel">
             <h3>Agent Event Log</h3>
             <div class="event-log" id="event-log" aria-live="polite">
-              <div class="event-item"><time>00:00</time><p>Agent console is idle and waiting for a request.</p></div>
-              <div class="event-item"><time>00:01</time><p>Prometheus target is available at localhost:9090/targets.</p></div>
-              <div class="event-item"><time>00:02</time><p>A2UI will render the next state change once the check runs.</p></div>
+              <div class="event-item"><time>STATE</time><p>Agent console is idle and waiting for a request.</p></div>
+              <div class="event-item"><time>METRICS</time><p>Connecting to Prometheus to load live telemetry.</p></div>
+              <div class="event-item"><time>API</time><p>The UI queries Prometheus directly, not a mock cache.</p></div>
             </div>
           </div>
         </div>
@@ -878,25 +956,48 @@
       const runButton = document.getElementById('run-demo');
       const faultButton = document.getElementById('fault-demo');
       const resetButton = document.getElementById('reset-demo');
+      const connectButton = document.getElementById('connect-prometheus');
+      const prometheusEndpointInput = document.getElementById('prometheus-endpoint');
+      const prometheusStatus = document.getElementById('prometheus-status');
       const stateLabel = document.getElementById('state-label');
       const taskLabel = document.getElementById('task-label');
       const proofLabel = document.getElementById('proof-label');
       const scrapeLabel = document.getElementById('scrape-label');
       const hashLabel = document.getElementById('hash-label');
       const timeLabel = document.getElementById('time-label');
+      const metricRounds = document.getElementById('metric-rounds');
       const metricNodes = document.getElementById('metric-nodes');
       const metricLatency = document.getElementById('metric-latency');
-      const metricFaults = document.getElementById('metric-faults');
-      const metricScrape = document.getElementById('metric-scrape');
+      const metricErrors = document.getElementById('metric-errors');
+      const meterRounds = document.getElementById('meter-rounds');
       const meterNodes = document.getElementById('meter-nodes');
       const meterLatency = document.getElementById('meter-latency');
-      const meterFaults = document.getElementById('meter-faults');
-      const meterScrape = document.getElementById('meter-scrape');
+      const meterErrors = document.getElementById('meter-errors');
       const eventLog = document.getElementById('event-log');
 
-      if (!runButton || !faultButton || !resetButton || !stateLabel || !taskLabel || !proofLabel || !scrapeLabel || !hashLabel || !timeLabel || !metricNodes || !metricLatency || !metricFaults || !metricScrape || !meterNodes || !meterLatency || !meterFaults || !meterScrape || !eventLog) {
+      if (!runButton || !faultButton || !resetButton || !connectButton || !prometheusEndpointInput || !prometheusStatus || !stateLabel || !taskLabel || !proofLabel || !scrapeLabel || !hashLabel || !timeLabel || !metricRounds || !metricNodes || !metricLatency || !metricErrors || !meterRounds || !meterNodes || !meterLatency || !meterErrors || !eventLog) {
         return;
       }
+
+      const storageKey = 'mohawk-prometheus-endpoint';
+      const defaultEndpoint = prometheusEndpointInput.value.trim() || 'http://localhost:9090';
+      const readStoredEndpoint = () => {
+        try {
+          return window.localStorage.getItem(storageKey);
+        } catch {
+          return null;
+        }
+      };
+
+      const writeStoredEndpoint = (value) => {
+        try {
+          window.localStorage.setItem(storageKey, value);
+        } catch {
+          return;
+        }
+      };
+
+      prometheusEndpointInput.value = readStoredEndpoint() || defaultEndpoint;
 
       const states = [
         {
@@ -905,7 +1006,6 @@
           proof: 'No proof yet',
           scrape: 'localhost:9090/targets',
           hash: '--',
-          metrics: { nodes: '10', latency: '12ms', faults: '1/3', scrape: 'Healthy', fill: { nodes: 84, latency: 72, faults: 66, scrape: 88 } },
           log: 'Agent console is idle and waiting for a request.',
         },
         {
@@ -914,7 +1014,6 @@
           proof: 'Generating response',
           scrape: 'Preparing Prometheus scrape',
           hash: 'pending',
-          metrics: { nodes: '10', latency: '18ms', faults: '1/3', scrape: 'Polling', fill: { nodes: 84, latency: 60, faults: 66, scrape: 72 } },
           log: 'AG-UI requested a node-health check and the console started preparing the scrape.',
         },
         {
@@ -923,7 +1022,6 @@
           proof: 'Scrape in progress',
           scrape: 'Checking /targets on localhost:9090',
           hash: 'pending',
-          metrics: { nodes: '10', latency: '15ms', faults: '1/3', scrape: 'Scraping', fill: { nodes: 84, latency: 68, faults: 66, scrape: 80 } },
           log: 'Prometheus is checking the same run on port 9090 while the UI waits for proof.',
         },
         {
@@ -932,7 +1030,6 @@
           proof: 'Proof verified and scraped',
           scrape: 'Prometheus target healthy on localhost:9090',
           hash: '0x8f42a7c1e3b9d6a4',
-          metrics: { nodes: '10', latency: '9ms', faults: '1/3', scrape: 'Healthy', fill: { nodes: 84, latency: 92, faults: 66, scrape: 94 } },
           log: 'A2UI rendered the verified result and Prometheus marked the target healthy.',
         },
         {
@@ -941,14 +1038,176 @@
           proof: 'Verification failed',
           scrape: 'Prometheus still reachable, proof rejected',
           hash: '0xdeadbeef',
-          metrics: { nodes: '10', latency: '44ms', faults: '2/3', scrape: 'Alerting', fill: { nodes: 84, latency: 34, faults: 34, scrape: 48 } },
           log: 'Fault injection tripped the verification threshold and the run was rejected.',
         },
       ];
 
+      const telemetryQueries = {
+        rounds: 'consensus_rounds_total',
+        nodes: 'nodes_participating',
+        latency: 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))',
+        errors: 'update_verification_errors',
+      };
+
+      const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+      const formatNumber = (value, digits = 0) => {
+        if (!Number.isFinite(value)) {
+          return '--';
+        }
+
+        return value.toFixed(digits);
+      };
+
+      const getScalarValue = (payload) => {
+        const entry = payload?.data?.result?.[0];
+        const rawValue = entry?.value?.[1];
+        const numericValue = Number(rawValue);
+        return Number.isFinite(numericValue) ? numericValue : null;
+      };
+
+      const setStatus = (state, message) => {
+        prometheusStatus.className = `status-pill ${state || ''}`.trim();
+        prometheusStatus.textContent = message;
+      };
+
+      let activeState = states[0];
+      let telemetrySummary = 'Connecting to Prometheus to load live telemetry.';
+      let telemetryConnection = 'No live query has completed yet.';
+
+      const renderEventLog = () => {
+        eventLog.innerHTML = `
+          <div class="event-item"><time>${activeState.name.toUpperCase()}</time><p>${activeState.log}</p></div>
+          <div class="event-item"><time>METRICS</time><p>${telemetrySummary}</p></div>
+          <div class="event-item"><time>API</time><p>${telemetryConnection}</p></div>
+        `;
+      };
+
+      const renderTelemetry = (snapshot) => {
+        metricRounds.textContent = snapshot.rounds;
+        metricNodes.textContent = snapshot.nodes;
+        metricLatency.textContent = snapshot.latency;
+        metricErrors.textContent = snapshot.errors;
+
+        meterRounds.style.setProperty('--fill', `${snapshot.roundsFill}%`);
+        meterNodes.style.setProperty('--fill', `${snapshot.nodesFill}%`);
+        meterLatency.style.setProperty('--fill', `${snapshot.latencyFill}%`);
+        meterErrors.style.setProperty('--fill', `${snapshot.errorsFill}%`);
+
+        telemetrySummary = snapshot.summary;
+        telemetryConnection = snapshot.connection;
+        setStatus(snapshot.connected ? 'connected' : 'error', snapshot.connected ? 'Connected' : 'Error');
+        renderEventLog();
+      };
+
+      const queryPrometheus = async (baseUrl, query) => {
+        const url = new URL('/api/v1/query', baseUrl);
+        url.searchParams.set('query', query);
+
+        const response = await fetch(url.toString(), {
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const payload = await response.json();
+
+        if (payload.status !== 'success') {
+          throw new Error(payload.error || 'Prometheus query failed');
+        }
+
+        return getScalarValue(payload);
+      };
+
+      const computeFill = (value, kind) => {
+        if (!Number.isFinite(value)) {
+          return 0;
+        }
+
+        switch (kind) {
+          case 'rounds':
+            return clamp(Math.log10(value + 1) * 25, 6, 100);
+          case 'nodes':
+            return clamp(value * 10, 6, 100);
+          case 'latency':
+            return clamp(100 - value * 5, 10, 100);
+          case 'errors':
+            return clamp(100 - value * 12, 8, 100);
+          default:
+            return 0;
+        }
+      };
+
+      const refreshTelemetry = async () => {
+        const baseUrl = prometheusEndpointInput.value.trim();
+
+        if (!baseUrl) {
+          setStatus('error', 'No endpoint configured');
+          renderTelemetry({
+            connected: false,
+            rounds: '--',
+            nodes: '--',
+            latency: '--',
+            errors: '--',
+            roundsFill: 0,
+            nodesFill: 0,
+            latencyFill: 0,
+            errorsFill: 0,
+            summary: 'Prometheus endpoint is empty.',
+            connection: 'Configure a reachable Prometheus base URL to load metrics.',
+          });
+          return;
+        }
+
+        writeStoredEndpoint(baseUrl);
+        setStatus('', `Querying ${baseUrl}`);
+
+        try {
+          const [rounds, nodes, latency, errors] = await Promise.all([
+            queryPrometheus(baseUrl, telemetryQueries.rounds),
+            queryPrometheus(baseUrl, telemetryQueries.nodes),
+            queryPrometheus(baseUrl, telemetryQueries.latency),
+            queryPrometheus(baseUrl, telemetryQueries.errors),
+          ]);
+
+          const latencyText = Number.isFinite(latency) ? `${formatNumber(latency, 1)}ms` : '--';
+          renderTelemetry({
+            connected: true,
+            rounds: Number.isFinite(rounds) ? formatNumber(rounds, 0) : '--',
+            nodes: Number.isFinite(nodes) ? formatNumber(nodes, 0) : '--',
+            latency: latencyText,
+            errors: Number.isFinite(errors) ? formatNumber(errors, 0) : '--',
+            roundsFill: computeFill(rounds, 'rounds'),
+            nodesFill: computeFill(nodes, 'nodes'),
+            latencyFill: computeFill(latency, 'latency'),
+            errorsFill: computeFill(errors, 'errors'),
+            summary: `Prometheus reports ${Number.isFinite(rounds) ? formatNumber(rounds, 0) : 'no'} consensus rounds, ${Number.isFinite(nodes) ? formatNumber(nodes, 0) : 'no'} participating nodes, ${latencyText} P95 latency, and ${Number.isFinite(errors) ? formatNumber(errors, 0) : 'no'} verification errors.`,
+            connection: `Live query path: ${baseUrl.replace(/\/$/, '')}/api/v1/query`,
+          });
+        } catch (error) {
+          renderTelemetry({
+            connected: false,
+            rounds: '--',
+            nodes: '--',
+            latency: '--',
+            errors: '--',
+            roundsFill: 0,
+            nodesFill: 0,
+            latencyFill: 0,
+            errorsFill: 0,
+            summary: 'Prometheus query failed. The page needs a reachable endpoint with CORS or same-origin access.',
+            connection: error instanceof Error ? error.message : 'Unknown Prometheus query failure.',
+          });
+        }
+      };
+
       const chipClass = (name) => `status-chip status-${name}`;
 
       const renderState = (state) => {
+        activeState = state;
         stateLabel.innerHTML = `<span class="${chipClass(state.name)}">${state.name}</span>`;
         taskLabel.textContent = state.task;
         proofLabel.textContent = state.proof;
@@ -957,26 +1216,13 @@
         timeLabel.textContent = state.name === 'verified'
           ? new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
           : '--';
-
-        metricNodes.textContent = state.metrics.nodes;
-        metricLatency.textContent = state.metrics.latency;
-        metricFaults.textContent = state.metrics.faults;
-        metricScrape.textContent = state.metrics.scrape;
-        meterNodes.style.setProperty('--fill', `${state.metrics.fill.nodes}%`);
-        meterLatency.style.setProperty('--fill', `${state.metrics.fill.latency}%`);
-        meterFaults.style.setProperty('--fill', `${state.metrics.fill.faults}%`);
-        meterScrape.style.setProperty('--fill', `${state.metrics.fill.scrape}%`);
-
-        eventLog.innerHTML = `
-          <div class="event-item"><time>${state.name.toUpperCase()}</time><p>${state.log}</p></div>
-          <div class="event-item"><time>TRACE</time><p>AG-UI drives the state, A2UI renders it, and Prometheus on port 9090 mirrors the proof.</p></div>
-          <div class="event-item"><time>MODE</time><p>${state.name === 'failed' ? 'Failure path enabled for fault injection.' : 'Fallback static page remains usable.'}</p></div>
-        `;
+        renderEventLog();
       };
 
       let runCount = 0;
       let currentMode = 'normal';
       renderState(states[0]);
+      void refreshTelemetry();
 
       const runSequence = () => {
         renderState(states[1]);
@@ -998,6 +1244,7 @@
               };
 
             renderState(nextState);
+            void refreshTelemetry();
             runButton.disabled = false;
             runButton.textContent = 'Run agent check';
             faultButton.disabled = false;
@@ -1028,6 +1275,7 @@
 
           window.setTimeout(() => {
             renderState(states[4]);
+            void refreshTelemetry();
             runButton.disabled = false;
             faultButton.disabled = false;
             resetButton.disabled = false;
@@ -1043,7 +1291,23 @@
         resetButton.disabled = false;
         runButton.textContent = 'Run agent check';
         renderState(states[0]);
+        void refreshTelemetry();
       });
+
+      connectButton.addEventListener('click', () => {
+        void refreshTelemetry();
+      });
+
+      prometheusEndpointInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          void refreshTelemetry();
+        }
+      });
+
+      window.setInterval(() => {
+        void refreshTelemetry();
+      }, 15000);
     })();
   </script>
 </body>
