@@ -1,327 +1,86 @@
-# Documentation Index
+# Proto + Venmo Demo
 
-Welcome to Mohawk Nexus documentation. This directory contains comprehensive guides organized by topic.
+Mohawk Nexus is now presented as a single narrated demo that combines a protocol console with a Venmo-style payment flow.
+The goal is to show a clean, judge-friendly product story: one side proves protocol state, the other side shows a familiar consumer payment action, and both are tied together by live telemetry.
 
-## Live Ecosystem Demo (GitHub Pages)
+## What this demo shows
 
-This repository now includes a high-impact narrated demo page designed to showcase the combined Mohawk Nexus + Sovereign-Mohawk-Proto ecosystem.
+The demo is built around two connected experiences:
 
-- Demo source: `site/index.html`
-- Deployment workflow: `.github/workflows/deploy-pages.yml`
-- Upstream capability source: <https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto>
+1. **Proto** - a protocol control surface that runs step-based sequences, shows live trace output, and records secure command attestations.
+2. **Venmo-style transfer flow** - a fast payment narrative that demonstrates sending, confirming, and tracking a transfer in a way that feels instantly recognizable.
 
-### Publish Steps
+The important idea is not just that the UI looks polished. It is that the demo makes a technical workflow feel understandable in seconds.
 
-1. Push this repository to `main`.
-2. Open repository settings -> Pages.
-3. Set source to `GitHub Actions`.
-4. Wait for `Deploy GitHub Pages` workflow to complete.
+## Why this matters
 
-After deployment, the site will be available at:
-`https://rwilliamspbg-ops.github.io/Mohawk-Nexus/`
+Most demos show separate panels with no story.
+This one is designed to feel like a product walkthrough:
 
-## 📚 Documentation Roadmap
+- Proto explains what the system is doing.
+- The payment flow shows why the action matters to a user.
+- Prometheus keeps the telemetry visible.
+- The pages stay usable even if the data source is slow or unavailable.
 
-### 🟢 START HERE (5 minutes)
-**For first-time users and overview**
+## Demo pages
 
-- [`00-GETTING-STARTED.md`](00-GETTING-STARTED.md)
-  - What is Mohawk Nexus?
-  - Quick start guide
-  - Prerequisites
-  - Local development setup
-  - First test run
+The repo includes three main surfaces:
 
-### 🔵 CORE CONCEPTS (20 minutes)
-**For understanding how it works**
+- [site/index.html](site/index.html) - the main unified dashboard with fleet, protocol, commands, map, and metrics views.
+- [site/minimal-ui.html](site/minimal-ui.html) - the full Proto-focused action UI with live metrics, attestation, and audit logging.
+- [site/prometheus-headless.html](site/prometheus-headless.html) - the headless telemetry dashboard for Prometheus-only monitoring.
 
-- [`01-ARCHITECTURE.md`](01-ARCHITECTURE.md)
-  - System architecture overview
-  - Trust boundaries and guarantees
-  - Data flow (never centralized)
-  - Failure modes & resilience
-  - Cryptographic stack
-  - Byzantine consensus explained
-  - Scaling to 100M nodes
+## Recommended demo flow
 
-### 🟠 DEPLOYMENT (30 minutes)
-**For running in production**
+Use this sequence when presenting the repo:
 
-- [`02-DEPLOYMENT.md`](02-DEPLOYMENT.md)
-  - Docker setup
-  - Docker Compose for production
-  - Kubernetes deployment
-  - AWS/GCP/Azure guides
-  - Configuration management
-  - Monitoring & observability
-  - Security hardening
+1. Open the main dashboard in [site/index.html](site/index.html).
+2. Switch to the Proto tab and run a short sequence.
+3. Show the command attestation and audit trail.
+4. Open the Prometheus view and point out the live telemetry.
+5. Use the payment-style story to explain how the demo maps protocol output to a real user action.
 
-### 🟡 DEVELOPMENT (45 minutes)
-**For contributors and developers**
+## What to say in the room
 
-- [`03-CONTRIBUTING.md`](03-CONTRIBUTING.md)
-  - Development workflow
-  - Code standards
-  - Testing requirements
-  - Pull request process
-  - Security review process
-  - Release procedure
-  - Module ownership
+A short version of the story is:
 
-### 🟣 API REFERENCE (20 minutes)
-**For developers using the SDK**
+> This demo combines a protocol console and a Venmo-style transfer experience so the user can see both the system state and the user-visible effect. Proto explains the logic, Prometheus proves the telemetry, and the interface stays simple enough to understand immediately.
 
-- [`04-API-REFERENCE.md`](04-API-REFERENCE.md)
-  - SDK overview
-  - Python API
-  - Go API
-  - TypeScript API
-  - REST endpoints
-  - Example code snippets
-  - Integration patterns
+## Local usage
 
-### 🔴 TROUBLESHOOTING (varies)
-**For debugging issues**
+If you want to inspect the pages locally, serve the repository root and open the `site/` pages in a browser.
 
-- [`05-TROUBLESHOOTING.md`](05-TROUBLESHOOTING.md)
-  - Common errors & solutions
-  - Docker issues
-  - Kubernetes issues
-  - Network problems
-  - Performance tuning
-  - FAQ
+Example:
 
-### 🔒 SECURITY (15 minutes)
-**For security and compliance**
+```bash
+python3 -m http.server 8000
+```
 
-- [`06-SECURITY.md`](06-SECURITY.md)
-  - Security policies
-  - HIPAA/GDPR compliance
-  - Cryptographic standards
-  - Vulnerability reporting
-  - Security audit checklist
-  - Hardware attestation
-  - Key management
+Then open:
 
-### 🗺️ ROADMAP (10 minutes)
-**For feature planning**
+- `http://localhost:8000/site/index.html`
+- `http://localhost:8000/site/minimal-ui.html`
+- `http://localhost:8000/site/prometheus-headless.html`
 
-- [`07-ROADMAP.md`](07-ROADMAP.md)
-  - 2026 H1/H2 milestones
-  - Post-quantum cryptography plan
-  - Scaling roadmap
-  - Agentic experience layer
-  - 100M+ node scaling target
-  - Research initiatives
+## Repository notes
 
-## 🧭 Documentation by Use Case
+- The unified dashboard in [site/index.html](site/index.html) is the main entry point.
+- The Proto UI in [site/minimal-ui.html](site/minimal-ui.html) is the best place to review the step runner, trace log, and command attestation.
+- The headless telemetry page in [site/prometheus-headless.html](site/prometheus-headless.html) is the cleanest Prometheus-only surface.
+- The hackathon docs under the root still explain the broader protocol and demo plan.
 
-### "I just want to try it"
-1. Read: 00-GETTING-STARTED.md (5 min)
-2. Run: `docker-compose -f docker/docker-compose.yml up`
-3. Done!
+## Positioning
 
-### "I need to understand the system"
-1. Read: 00-GETTING-STARTED.md (5 min)
-2. Read: 01-ARCHITECTURE.md (20 min)
-3. Explore: modules/ directory
-4. Run: examples/
+This repository is now easiest to understand as a product demo rather than a raw documentation bundle.
 
-### "I want to deploy to production"
-1. Read: 01-ARCHITECTURE.md (20 min)
-2. Read: 02-DEPLOYMENT.md (30 min)
-3. Follow: Kubernetes section
-4. Configure: config/ directory
+The core message is:
 
-### "I want to contribute code"
-1. Read: 00-GETTING-STARTED.md (5 min)
-2. Read: 03-CONTRIBUTING.md (45 min)
-3. Follow: Development workflow section
-4. Submit: Pull request
+- Proto gives the system a readable, inspectable workflow.
+- The Venmo-style flow makes that workflow feel like a real user action.
+- Prometheus gives you a proof surface outside the UI.
+- The whole demo stays lightweight enough to present without a long setup.
 
-### "I'm debugging an issue"
-1. Read: 05-TROUBLESHOOTING.md
-2. Find: Your specific error
-3. Apply: Suggested fix
-4. Test: Run affected tests
+## If you need the deeper docs
 
-### "I need compliance/security info"
-1. Read: 06-SECURITY.md (15 min)
-2. Follow: Applicable standards
-3. Generate: Compliance evidence
-4. Audit: Security checklist
-
-## 📊 Documentation Statistics
-
-| Document | Size | Topics | Read Time |
-|----------|------|--------|-----------|
-| 00-GETTING-STARTED | 5 KB | Quick start, prereqs, setup | 5 min |
-| 01-ARCHITECTURE | 15 KB | System design, trust, crypto | 20 min |
-| 02-DEPLOYMENT | 12 KB | Docker, K8s, production | 30 min |
-| 03-CONTRIBUTING | 10 KB | Workflow, standards | 45 min |
-| 04-API-REFERENCE | 8 KB | SDK, APIs, examples | 20 min |
-| 05-TROUBLESHOOTING | 7 KB | Common issues, solutions | Varies |
-| 06-SECURITY | 6 KB | Policies, compliance | 15 min |
-| 07-ROADMAP | 4 KB | 2026+ planning | 10 min |
-
-**Total: 67+ KB of documentation**
-
-## 🎯 Quick Links
-
-### By Role
-
-**Product Managers**
-- Start: 00-GETTING-STARTED.md
-- Then: 01-ARCHITECTURE.md
-- Also: 07-ROADMAP.md
-
-**Developers**
-- Start: 00-GETTING-STARTED.md
-- Then: 03-CONTRIBUTING.md
-- Also: 04-API-REFERENCE.md
-
-**DevOps/SRE**
-- Start: 02-DEPLOYMENT.md
-- Also: 06-SECURITY.md
-- Reference: 05-TROUBLESHOOTING.md
-
-**Data Scientists**
-- Start: 00-GETTING-STARTED.md
-- Then: modules/verticals/
-- Reference: 04-API-REFERENCE.md
-
-**Security Engineers**
-- Start: 06-SECURITY.md
-- Then: 01-ARCHITECTURE.md
-- Also: 03-CONTRIBUTING.md (security review)
-
-## 📖 Detailed Section Breakdown
-
-### 00-GETTING-STARTED.md
-- What is Mohawk Nexus?
-- Key features overview
-- Prerequisites (Git, Docker, languages)
-- Installation methods
-- Local development (Docker & manual)
-- Running first test
-- Quick start examples
-- Next steps
-
-### 01-ARCHITECTURE.md
-- System overview
-- Layered architecture
-- Trust model & boundaries
-- Data flow (privacy preserved)
-- Failure modes & guarantees
-- Consensus algorithm
-- Cryptographic stack
-- Post-quantum readiness
-- Performance characteristics
-- Module dependencies
-- Deployment topologies
-
-### 02-DEPLOYMENT.md
-- Docker setup & images
-- Docker Compose (dev & prod)
-- Kubernetes manifests
-- Cloud platforms (AWS/GCP/Azure)
-- Configuration management
-- Environment variables
-- Monitoring setup
-- Logging aggregation
-- Security hardening
-- Performance tuning
-- Scaling guidelines
-
-### 03-CONTRIBUTING.md
-- Development workflow
-- Fork & branch strategy
-- Code standards (Go, Python, TS, JS)
-- Testing requirements
-- Pull request process
-- Security review checklist
-- Performance benchmarks
-- Formal verification (Lean4)
-- Release process
-- Module ownership
-- Communication guidelines
-
-### 04-API-REFERENCE.md
-- SDK overview
-- Python API (mohawk package)
-- Go API (aggregate consensus)
-- TypeScript API (orchestration)
-- REST API endpoints
-- WebSocket streams
-- Event subscriptions
-- Example code (all languages)
-- Error handling
-- Rate limiting
-- Authentication
-
-### 05-TROUBLESHOOTING.md
-- Docker issues (build, run, network)
-- Kubernetes issues (pods, services, persistent volumes)
-- Network problems (connectivity, firewall)
-- Performance issues (latency, memory)
-- Security issues (attestation, crypto)
-- Common errors with solutions
-- Debug logging
-- Performance profiling
-- FAQ
-
-### 06-SECURITY.md
-- Security policies
-- HIPAA compliance (healthcare)
-- GDPR compliance (data protection)
-- Cryptographic standards
-- Vulnerability reporting
-- Responsible disclosure
-- Security audit checklist
-- Hardware attestation guide
-- Key management procedures
-- Rate limiting strategy
-
-### 07-ROADMAP.md
-- 2026 H1/H2 milestones
-- Post-quantum migration (x25519-mlkem768)
-- Formal verification completion
-- Agentic experience layer
-- 100M node scaling target
-- New vertical applications
-- Multi-chain integration
-- 2027+ vision
-
-## 🔗 Cross-References
-
-All documents link to related sections. For example:
-- GETTING-STARTED links to ARCHITECTURE for deeper dives
-- ARCHITECTURE links to DEPLOYMENT for implementation
-- DEPLOYMENT links to SECURITY for hardening
-- SECURITY links to TROUBLESHOOTING for debugging
-
-## 📞 Support
-
-- **Questions?** Read the relevant section above
-- **Found a bug?** See 05-TROUBLESHOOTING.md
-- **Security issue?** See 06-SECURITY.md (Responsible Disclosure)
-- **Want to contribute?** See 03-CONTRIBUTING.md
-- **Need to deploy?** See 02-DEPLOYMENT.md
-
-## ✅ Documentation Checklist
-
-Before shipping:
-- [ ] Read GETTING-STARTED.md (overview)
-- [ ] Test examples/ locally
-- [ ] Review ARCHITECTURE.md
-- [ ] Follow 03-CONTRIBUTING.md standards
-- [ ] Check 06-SECURITY.md compliance
-- [ ] Use 02-DEPLOYMENT.md for production
-- [ ] Consult 05-TROUBLESHOOTING.md if issues
-- [ ] Reference 07-ROADMAP.md for planning
-
----
-
-**All documentation is maintained alongside code. Links are always current.**
-
-**Last updated**: 2026-05-04
+Use the other markdown files in the repository for architecture, deployment, troubleshooting, security, and roadmap details.
+Those documents remain the technical reference layer underneath this demo README.
