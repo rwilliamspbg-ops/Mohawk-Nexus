@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nexus Control Center — Multi-User Dashboard</title>
+  <title>Nexus Control Center — Fleet + Protocol Management</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <style>
     :root {
@@ -18,7 +18,6 @@
       --text-primary: #e0e7ff;
       --text-secondary: #a0aec0;
       --border: #2d3748;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
 
     body.light-mode {
@@ -83,12 +82,6 @@
       padding: 0.5rem 1rem;
       border-radius: 8px;
       border: 1px solid var(--border);
-    }
-
-    .role-selector label {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin: 0;
     }
 
     .role-selector select {
@@ -180,6 +173,14 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin: 0 0 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .grid {
@@ -281,6 +282,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
+      font-size: 0.9rem;
     }
 
     .table th {
@@ -308,12 +310,17 @@
       font-weight: 600;
     }
 
-    .status-ok {
+    .status-active {
       background: rgba(0, 208, 132, 0.2);
       color: var(--success);
     }
 
-    .status-error {
+    .status-idle {
+      background: rgba(255, 107, 53, 0.2);
+      color: var(--warning);
+    }
+
+    .status-incident {
       background: rgba(255, 51, 102, 0.2);
       color: var(--error);
     }
@@ -330,89 +337,56 @@
       color: var(--accent);
     }
 
-    .settings-panel {
-      background: rgba(29, 39, 117, 0.4);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-    }
-
-    .settings-group {
-      margin-bottom: 2rem;
-    }
-
-    .settings-group h3 {
-      font-size: 1rem;
-      color: var(--accent);
-      margin: 0 0 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .setting-row {
-      display: flex;
+    .vehicle-row {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr 1fr 1fr auto;
+      gap: 1rem;
       align-items: center;
-      justify-content: space-between;
-      padding: 0.8rem 0;
-      border-bottom: 1px solid var(--border);
+      padding: 1rem;
+      background: rgba(29, 39, 117, 0.2);
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
+      border: 1px solid var(--border);
     }
 
-    .setting-row:last-child {
-      border-bottom: none;
+    .vehicle-row:hover {
+      border-color: var(--accent);
+      background: rgba(29, 39, 117, 0.4);
     }
 
-    .setting-label {
-      font-size: 0.95rem;
+    .vehicle-id {
+      font-weight: 700;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .vehicle-info {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .vehicle-info strong {
       color: var(--text-primary);
     }
 
-    .setting-control {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 50px;
-      height: 28px;
+    .progress-bar {
+      width: 100%;
+      height: 6px;
       background: rgba(0, 0, 0, 0.3);
-      border-radius: 14px;
-      cursor: pointer;
-      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
     }
 
-    .toggle-switch.active {
-      background: rgba(0, 208, 132, 0.3);
-    }
-
-    .toggle-switch::after {
-      content: '';
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      background: white;
-      border-radius: 12px;
-      top: 2px;
-      left: 2px;
-      transition: left 200ms;
-    }
-
-    .toggle-switch.active::after {
-      left: 24px;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      color: var(--accent);
-      margin: 0 0 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+      transition: width 300ms ease;
     }
 
     @media (max-width: 1024px) {
-      .grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-      .header-content { flex-direction: column; align-items: flex-start; }
+      .vehicle-row {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 768px) {
@@ -421,60 +395,6 @@
       .tabs { flex-direction: column; }
       .tab-btn { padding: 0.8rem; margin-bottom: 0; padding-bottom: 0.8rem; }
       #fleet-map { height: 300px; }
-      .header-content { flex-direction: column; }
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      position: relative;
-    }
-
-    .modal-header {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 1rem;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .modal-close:hover {
-      color: var(--accent);
     }
   </style>
 </head>
@@ -483,10 +403,10 @@
     <div class="header-content">
       <div class="brand">🚀 NEXUS</div>
       <div class="role-selector">
-        <label for="user-role">Role:</label>
+        <label for="user-role" style="margin: 0;">Role:</label>
         <select id="user-role">
           <option value="fleet-owner">🏢 Fleet Owner</option>
-          <option value="protocol-analyst">🔬 Protocol Analyst</option>
+          <option value="analyst">📊 Analyst</option>
           <option value="driver">🚗 Driver</option>
           <option value="engineer">⚙️ Engineer</option>
         </select>
@@ -501,59 +421,60 @@
   <div class="container">
     <div class="tabs">
       <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
-      <button class="tab-btn" data-tab="proto">🤖 Proto</button>
+      <button class="tab-btn" data-tab="vehicles">🚗 Vehicles</button>
       <button class="tab-btn" data-tab="map">🗺️ Map</button>
+      <button class="tab-btn" data-tab="proto">🤖 Proto</button>
       <button class="tab-btn" data-tab="commands">🔐 Commands</button>
       <button class="tab-btn" data-tab="metrics">📈 Metrics</button>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD TAB -->
     <div id="dashboard" class="tab-content active">
-      <h2>Fleet Operations Dashboard</h2>
+      <h2>Fleet Overview</h2>
       <div class="grid">
         <div class="card">
           <h3>Total Fleet</h3>
           <div class="card-value" id="kpi-total">847</div>
-          <div class="card-label">Vehicles</div>
+          <div class="card-label">Active Vehicles</div>
         </div>
         <div class="card">
-          <h3>Active</h3>
+          <h3>Operating</h3>
           <div class="card-value" id="kpi-active">624</div>
-          <div class="card-label">Operating</div>
+          <div class="card-label">On Route</div>
         </div>
         <div class="card">
           <h3>Idle</h3>
           <div class="card-value" id="kpi-idle">156</div>
-          <div class="card-label">Maintenance</div>
+          <div class="card-label">Charging/Maintenance</div>
         </div>
         <div class="card">
           <h3>Incidents</h3>
           <div class="card-value" id="kpi-incidents">3</div>
-          <div class="card-label">Attention</div>
+          <div class="card-label">Requiring Attention</div>
         </div>
       </div>
 
-      <h2>Live Metrics</h2>
+      <h2>Live Metrics (Prometheus)</h2>
       <div class="grid">
         <div class="card">
           <h3>Consensus Rounds</h3>
           <div class="card-value" id="m-rounds">--</div>
-          <div class="card-label">From Prometheus</div>
+          <div class="progress-bar"><div class="progress-fill" id="m-rounds-bar" style="width:0%"></div></div>
         </div>
         <div class="card">
           <h3>Active Nodes</h3>
           <div class="card-value" id="m-nodes">--</div>
-          <div class="card-label">Network</div>
+          <div class="progress-bar"><div class="progress-fill" id="m-nodes-bar" style="width:0%"></div></div>
         </div>
         <div class="card">
-          <h3>P95 Latency</h3>
+          <h3>P95 Latency (ms)</h3>
           <div class="card-value" id="m-latency">--</div>
-          <div class="card-label">milliseconds</div>
+          <div class="progress-bar"><div class="progress-fill" id="m-latency-bar" style="width:0%"></div></div>
         </div>
         <div class="card">
           <h3>Errors</h3>
           <div class="card-value" id="m-errors">--</div>
-          <div class="card-label">Total</div>
+          <div class="progress-bar"><div class="progress-fill" id="m-errors-bar" style="width:0%"></div></div>
         </div>
       </div>
 
@@ -561,9 +482,25 @@
       <div class="log" id="event-stream"></div>
     </div>
 
-    <!-- PROTO -->
+    <!-- VEHICLES TAB -->
+    <div id="vehicles" class="tab-content">
+      <h2>Fleet Roster</h2>
+      <div class="input-group">
+        <input id="search-vehicle" placeholder="Search by ID or status..." />
+        <button class="btn-primary" id="refresh-roster">🔄 Refresh</button>
+      </div>
+      <div id="vehicle-list" style="display: grid; grid-template-columns: 1fr; gap: 0.8rem;"></div>
+    </div>
+
+    <!-- MAP TAB -->
+    <div id="map" class="tab-content">
+      <h2>Live Fleet Map</h2>
+      <div id="fleet-map"></div>
+    </div>
+
+    <!-- PROTO TAB -->
     <div id="proto" class="tab-content">
-      <h2>Protocol Sequence Control</h2>
+      <h2>Protocol Sequences</h2>
       <div class="input-group">
         <button class="btn-primary" id="proto-start">▶ Start</button>
         <button id="proto-step">→ Step</button>
@@ -574,91 +511,59 @@
           <option value="normal" selected>◯ Normal</option>
           <option value="fast">⚡ Fast</option>
         </select>
-        <button id="proto-pause">⏸ Pause</button>
       </div>
-
       <div class="grid">
-        <div class="card">
-          <h3>Custom Steps</h3>
-          <div class="input-group" style="margin-top: 1rem;">
-            <input id="proto-step-input" placeholder="New step name" />
-            <button id="proto-add" class="btn-primary">+ Add</button>
-          </div>
-          <div id="proto-steps" class="log" style="height: 200px;"></div>
-        </div>
         <div class="card">
           <h3>Status</h3>
-          <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 1rem;">
-            <div style="font-size: 0.9rem; color: var(--text-secondary);">Proto State</div>
-            <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-top: 0.5rem;" id="proto-status">idle</div>
-          </div>
-          <div id="proto-action" style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 1rem; min-height: 80px; display: flex; align-items: center; color: var(--text-secondary);">No action</div>
-        </div>
-      </div>
-
-      <h2>Traces</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Sequence</h3>
-          <div id="proto-seq" class="log"></div>
+          <div style="font-size: 1.5rem; color: var(--accent); font-weight: 700; margin: 1rem 0;" id="proto-status">idle</div>
+          <div id="proto-action" style="color: var(--text-secondary); min-height: 60px; display: flex; align-items: center;">No action</div>
         </div>
         <div class="card">
-          <h3>Events</h3>
-          <div id="proto-log" class="log"></div>
+          <h3>Traces</h3>
+          <div id="proto-log" class="log" style="height: 200px;"></div>
         </div>
       </div>
     </div>
 
-    <!-- MAP -->
-    <div id="map" class="tab-content">
-      <h2>Fleet Location Map</h2>
-      <div id="fleet-map"></div>
-    </div>
-
-    <!-- COMMANDS -->
+    <!-- COMMANDS TAB -->
     <div id="commands" class="tab-content">
-      <h2>Secure Commands with Attestation</h2>
+      <h2>Secure Commands</h2>
       <div class="card">
         <div class="input-group">
           <input id="cmd-name" placeholder="Command name" />
           <input id="cmd-value" placeholder="Command value" />
-          <button id="cmd-send" class="btn-primary">🔐 Send</button>
+          <button class="btn-primary" id="cmd-send">🔐 Send</button>
         </div>
-        <div id="cmd-proof-view" style="display: none; margin-top: 1rem;">
+        <div id="cmd-proof" style="display: none; margin-top: 1rem;">
           <div style="font-weight: 600; color: var(--accent); margin-bottom: 0.8rem;">✓ SHA256 Proof</div>
-          <div class="proof-box" id="cmd-proof"></div>
-          <div style="font-size: 0.85rem; color: var(--text-secondary);">🕐 <span id="cmd-time"></span></div>
+          <div class="proof-box" id="proof-hash"></div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">🕐 <span id="proof-time"></span></div>
         </div>
       </div>
 
       <h2>Audit Trail</h2>
       <table class="table">
         <thead>
-          <tr>
-            <th>Command</th>
-            <th>Value</th>
-            <th>Status</th>
-            <th>Proof</th>
-            <th>Time</th>
-          </tr>
+          <tr><th>Command</th><th>Value</th><th>Status</th><th>Proof</th><th>Time</th></tr>
         </thead>
-        <tbody id="cmd-audit">
-          <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No commands</td></tr>
+        <tbody id="audit-table">
+          <tr><td colspan="5" style="text-align:center;color:var(--text-secondary);">No commands</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- METRICS -->
+    <!-- METRICS TAB -->
     <div id="metrics" class="tab-content">
-      <h2>Prometheus Metrics</h2>
+      <h2>Prometheus Connection</h2>
       <div class="card" style="margin-bottom: 1.5rem;">
         <div class="input-group">
           <input id="prom-url" placeholder="Prometheus endpoint" value="http://localhost:9090" />
-          <button id="prom-connect" class="btn-primary">🔌 Connect</button>
-          <div style="padding: 0.8rem 1rem; background: rgba(255, 51, 102, 0.2); border: 1px solid rgba(255, 51, 102, 0.5); border-radius: 6px; color: var(--error); font-weight: 600;" id="prom-status">Disconnected</div>
+          <button class="btn-primary" id="prom-btn">🔌 Connect</button>
+          <div style="padding: 0.8rem 1rem; background: rgba(255, 51, 102, 0.2); border: 1px solid rgba(255, 51, 102, 0.5); border-radius: 6px; color: var(--error); font-weight: 600; font-size: 0.9rem;" id="prom-status">Disconnected</div>
         </div>
       </div>
 
+      <h2>Live Data</h2>
       <div class="grid">
         <div class="card">
           <h3>Rounds</h3>
@@ -669,7 +574,7 @@
           <div class="card-value" id="prom-nodes">--</div>
         </div>
         <div class="card">
-          <h3>Latency (ms)</h3>
+          <h3>Latency</h3>
           <div class="card-value" id="prom-latency">--</div>
         </div>
         <div class="card">
@@ -680,120 +585,38 @@
     </div>
   </div>
 
-  <!-- SETTINGS MODAL -->
-  <div id="settings-modal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" id="close-settings">✕</button>
-      <div class="modal-header">Settings & Preferences</div>
-      
-      <div class="settings-panel">
-        <div class="settings-group">
-          <h3>Display</h3>
-          <div class="setting-row">
-            <div class="setting-label">Dark Mode</div>
-            <div class="toggle-switch active" id="toggle-theme"></div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-label">Refresh Rate (sec)</div>
-            <input type="number" id="refresh-input" min="1" max="60" value="5" style="width: 80px; margin: 0;" />
-          </div>
-        </div>
-
-        <div class="settings-group">
-          <h3>Notifications</h3>
-          <div class="setting-row">
-            <div class="setting-label">Enable Alerts</div>
-            <div class="toggle-switch active" id="toggle-alerts"></div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-label">Sound</div>
-            <div class="toggle-switch" id="toggle-sound"></div>
-          </div>
-        </div>
-
-        <div class="settings-group">
-          <h3>Data</h3>
-          <button id="clear-btn" style="width: 100%; padding: 0.8rem;">Clear Data</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
     const state = {
       role: localStorage.getItem('role') || 'fleet-owner',
       theme: localStorage.getItem('theme') || 'dark',
-      refresh: parseInt(localStorage.getItem('refresh') || '5'),
-      protoRunning: false,
-      protoPaused: false,
-      customSteps: [],
+      vehicles: generateVehicleFleet(),
       audit: [],
     };
 
+    function generateVehicleFleet() {
+      const statuses = ['active', 'idle', 'charging', 'incident'];
+      const areas = ['SF Downtown', 'East Bay', 'South Bay', 'Peninsula', 'North Bay'];
+      const vehicles = [];
+      
+      for (let i = 1; i <= 20; i++) {
+        vehicles.push({
+          id: `V${String(i).padStart(3, '0')}`,
+          name: `Vehicle ${i}`,
+          lat: 37.7749 + (Math.random() - 0.5) * 0.5,
+          lng: -122.4194 + (Math.random() - 0.5) * 0.5,
+          status: statuses[Math.floor(Math.random() * statuses.length)],
+          area: areas[Math.floor(Math.random() * areas.length)],
+          battery: Math.floor(Math.random() * 100) + 20,
+          miles: Math.floor(Math.random() * 200),
+          speed: Math.floor(Math.random() * 65),
+        });
+      }
+      return vehicles;
+    }
+
     const ts = () => new Date().toISOString().replace('T', ' ').slice(0, 19);
 
-    // Tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        document.getElementById(tab).classList.add('active');
-        log(`Switched to ${tab}`);
-        if (tab === 'map' && !window.mapInit) initMap();
-      });
-    });
-
-    // User role
-    document.getElementById('user-role').addEventListener('change', (e) => {
-      state.role = e.target.value;
-      localStorage.setItem('role', e.target.value);
-      log(`Role: ${e.target.value}`);
-    });
-
-    // Settings
-    document.getElementById('btn-settings').addEventListener('click', () => {
-      document.getElementById('settings-modal').classList.add('active');
-    });
-
-    document.getElementById('close-settings').addEventListener('click', () => {
-      document.getElementById('settings-modal').classList.remove('active');
-    });
-
-    document.getElementById('toggle-theme').addEventListener('click', function() {
-      this.classList.toggle('active');
-      document.body.classList.toggle('light-mode');
-      state.theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
-      localStorage.setItem('theme', state.theme);
-    });
-
-    document.getElementById('toggle-alerts').addEventListener('click', function() {
-      this.classList.toggle('active');
-    });
-
-    document.getElementById('toggle-sound').addEventListener('click', function() {
-      this.classList.toggle('active');
-    });
-
-    document.getElementById('refresh-input').addEventListener('change', (e) => {
-      state.refresh = parseInt(e.target.value);
-      localStorage.setItem('refresh', state.refresh);
-    });
-
-    document.getElementById('clear-btn').addEventListener('click', () => {
-      if (confirm('Clear all data?')) {
-        localStorage.clear();
-        location.reload();
-      }
-    });
-
-    document.getElementById('btn-profile').addEventListener('click', () => {
-      alert(`Profile\n\nRole: ${state.role}\nTheme: ${state.theme}\nRefresh: ${state.refresh}s\nCustom Steps: ${state.customSteps.length}\nAudit Entries: ${state.audit.length}`);
-    });
-
-    // Logging
     function log(msg) {
       const el = document.getElementById('event-stream');
       if (!el) return;
@@ -803,130 +626,70 @@
       if (el.children.length > 100) el.removeChild(el.lastChild);
     }
 
-    // Proto
-    const getDelay = () => {
-      const s = document.getElementById('proto-speed')?.value || 'normal';
-      return s === 'fast' ? 120 : s === 'slow' ? 600 : 300;
-    };
-
-    async function runProto(name, steps) {
-      state.protoRunning = true;
-      document.getElementById('proto-status').textContent = 'running';
-      pushProtoLog(`${name} (started)`, '▶');
-      for (let i = 0; i < steps.length; i++) {
-        const step = steps[i];
-        pushProtoSeq(`${name} → ${step}`);
-        pushProtoLog(`${name} : ${step}`, '→');
-        document.getElementById('proto-action').textContent = step;
-        await new Promise(r => setTimeout(r, getDelay()));
-      }
-      state.protoRunning = false;
-      document.getElementById('proto-status').textContent = 'idle';
-      document.getElementById('proto-action').textContent = 'Idle';
-      pushProtoLog(`${name} (completed)`, '✓');
-    }
-
-    const pushProtoLog = (txt, p = '•') => {
-      const el = document.getElementById('proto-log');
-      const div = document.createElement('div');
-      div.textContent = `[${ts()}] ${p} ${txt}`;
-      el.prepend(div);
-    };
-
-    const pushProtoSeq = (txt) => {
-      const el = document.getElementById('proto-seq');
-      const div = document.createElement('div');
-      div.textContent = `[${ts()}] ${txt}`;
-      el.prepend(div);
-    };
-
-    document.getElementById('proto-start').addEventListener('click', () => runProto('Start', state.customSteps.length ? state.customSteps : ['init', 'load', 'alloc', 'spawn', 'loop']));
-    document.getElementById('proto-step').addEventListener('click', () => runProto('Step', ['plan', 'exec', 'send', 'collect']));
-    document.getElementById('proto-verify').addEventListener('click', () => runProto('Verify', ['gather', 'query', 'compare', 'proof']));
-    document.getElementById('proto-reset').addEventListener('click', () => {
-      document.getElementById('proto-seq').innerHTML = '';
-      document.getElementById('proto-log').innerHTML = '';
-      state.customSteps = [];
-      renderSteps();
-      pushProtoLog('Reset', '↻');
-    });
-
-    document.getElementById('proto-pause').addEventListener('click', function() {
-      state.protoPaused = !state.protoPaused;
-      this.textContent = state.protoPaused ? '▶ Resume' : '⏸ Pause';
-    });
-
-    const renderSteps = () => {
-      const el = document.getElementById('proto-steps');
-      el.innerHTML = '';
-      if (state.customSteps.length === 0) {
-        el.textContent = 'No custom steps';
-        return;
-      }
-      state.customSteps.forEach((s, i) => {
-        const div = document.createElement('div');
-        div.style.cssText = 'display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.1)';
-        div.innerHTML = `<span>${s}</span><button onclick="state.customSteps.splice(${i},1);renderSteps()" style="padding:0.4rem 0.8rem;font-size:0.85rem;">✕</button>`;
-        el.appendChild(div);
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        document.getElementById(tab).classList.add('active');
+        if (tab === 'map' && !window.mapInit) initMap();
+        if (tab === 'vehicles') renderVehicles();
+        log(`Switched to ${tab}`);
       });
-    };
-
-    document.getElementById('proto-add').addEventListener('click', () => {
-      const inp = document.getElementById('proto-step-input');
-      const val = (inp.value || '').trim();
-      if (!val) return;
-      state.customSteps.push(val);
-      inp.value = '';
-      renderSteps();
-      pushProtoLog(`Added: ${val}`, '+');
     });
 
-    // Crypto & Commands
-    async function sha256(msg) {
-      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    // Vehicle display
+    function renderVehicles() {
+      const list = document.getElementById('vehicle-list');
+      const search = (document.getElementById('search-vehicle')?.value || '').toLowerCase();
+      
+      list.innerHTML = state.vehicles
+        .filter(v => v.id.toLowerCase().includes(search) || v.status.includes(search))
+        .map(v => `
+          <div class="vehicle-row">
+            <div class="vehicle-id">${v.id}</div>
+            <div class="vehicle-info"><strong>${v.name}</strong><br>${v.area}</div>
+            <div class="vehicle-info">Status: <span class="status-badge status-${v.status}">${v.status}</span></div>
+            <div class="vehicle-info">Battery: ${v.battery}%<div class="progress-bar"><div class="progress-fill" style="width:${v.battery}%"></div></div></div>
+            <div class="vehicle-info">Speed: ${v.speed} mph<br>Miles: ${v.miles}</div>
+            <button class="btn-primary" onclick="alert('Vehicle ${v.id} location: ${v.lat.toFixed(4)}, ${v.lng.toFixed(4)}')">📍</button>
+          </div>
+        `)
+        .join('');
     }
 
-    async function sendCmd() {
-      const name = (document.getElementById('cmd-name').value || '').trim();
-      const val = (document.getElementById('cmd-value').value || '').trim();
-      if (!name || !val) { log('⚠ Incomplete'); return; }
+    document.getElementById('search-vehicle')?.addEventListener('keyup', renderVehicles);
+    document.getElementById('refresh-roster')?.addEventListener('click', () => {
+      state.vehicles = generateVehicleFleet();
+      renderVehicles();
+      log('🔄 Vehicle roster refreshed');
+    });
 
-      const ts_now = new Date().toISOString();
-      const nonce = Math.random().toString(36).substring(2, 15);
-      const proof = await sha256(`${name}|${val}|${ts_now}|${nonce}`);
-
-      document.getElementById('cmd-proof').textContent = proof;
-      document.getElementById('cmd-time').textContent = ts_now;
-      document.getElementById('cmd-proof-view').style.display = 'block';
-
-      state.audit.unshift({ name, val, proof: proof.substring(0, 16) + '...', time: new Date().toLocaleTimeString() });
-      updateAudit();
-
-      document.getElementById('cmd-name').value = '';
-      document.getElementById('cmd-value').value = '';
-      log(`🔐 ${name} → ${proof.substring(0, 16)}...`);
+    // Map
+    let mapInstance;
+    function initMap() {
+      mapInstance = L.map('fleet-map').setView([37.7749, -122.4194], 11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '© OSM'}).addTo(mapInstance);
+      
+      state.vehicles.forEach(v => {
+        const color = v.status === 'active' ? '#00ff88' : v.status === 'idle' ? '#ff6b35' : '#ff3366';
+        L.circleMarker([v.lat, v.lng], {
+          radius: 8, fillColor: color, fillOpacity: 0.8, stroke: true, strokeColor: '#00d4ff', strokeWidth: 2
+        }).bindPopup(`${v.id} (${v.status})<br>Battery: ${v.battery}%<br>Speed: ${v.speed} mph`).addTo(mapInstance);
+      });
+      
+      log('Map initialized with ' + state.vehicles.length + ' vehicles');
+      window.mapInit = true;
     }
-
-    const updateAudit = () => {
-      const table = document.getElementById('cmd-audit');
-      if (state.audit.length === 0) {
-        table.innerHTML = '<tr><td colspan="5">No commands</td></tr>';
-        return;
-      }
-      table.innerHTML = state.audit.slice(0, 20).map(e => 
-        `<tr><td>${e.name}</td><td>${e.val}</td><td><span class="status-badge status-ok">✓</span></td><td style="font-family:monospace;font-size:0.9rem">${e.proof}</td><td>${e.time}</td></tr>`
-      ).join('');
-    };
-
-    document.getElementById('cmd-send').addEventListener('click', sendCmd);
 
     // Prometheus
     async function queryProm(base, q) {
       try {
         const url = new URL('/api/v1/query', base);
         url.searchParams.set('query', q);
-        const r = await fetch(url.toString(), { headers: { accept: 'application/json' } });
+        const r = await fetch(url.toString(), {headers: {accept: 'application/json'}});
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const body = await r.json();
         if (body.status !== 'success') throw new Error(body.error);
@@ -952,1332 +715,112 @@
           queryProm(base, 'update_verification_errors'),
         ]);
 
-        ['prom-rounds', 'prom-nodes', 'm-rounds', 'm-nodes'].forEach(id => 
-          document.getElementById(id).textContent = Number.isFinite(n) ? Math.round(n) : '--'
-        );
-        ['prom-latency', 'm-latency'].forEach(id => 
-          document.getElementById(id).textContent = Number.isFinite(l) ? Number(l).toFixed(1) : '--'
-        );
-        ['prom-errors', 'm-errors'].forEach(id => 
-          document.getElementById(id).textContent = Number.isFinite(e) ? Math.round(e) : '--'
-        );
+        document.getElementById('m-rounds').textContent = document.getElementById('prom-rounds').textContent = Number.isFinite(r) ? Math.round(r) : '--';
+        document.getElementById('m-nodes').textContent = document.getElementById('prom-nodes').textContent = Number.isFinite(n) ? Math.round(n) : '--';
+        document.getElementById('m-latency').textContent = document.getElementById('prom-latency').textContent = Number.isFinite(l) ? l.toFixed(1) : '--';
+        document.getElementById('m-errors').textContent = document.getElementById('prom-errors').textContent = Number.isFinite(e) ? Math.round(e) : '--';
+
+        document.getElementById('m-rounds-bar').style.width = Math.min(100, (r / 1000) * 100) + '%';
+        document.getElementById('m-nodes-bar').style.width = Math.min(100, (n / 50) * 100) + '%';
+        document.getElementById('m-latency-bar').style.width = Math.min(100, (l / 500) * 100) + '%';
+        document.getElementById('m-errors-bar').style.width = Math.min(100, (e / 10) * 100) + '%';
 
         status.textContent = '✓ Connected';
-        status.style.color = '#00d084';
-        log('Prometheus: connected');
+        status.style.color = 'var(--success)';
+        log('Prometheus connected');
       } catch (err) {
         status.textContent = '✗ Error';
-        status.style.color = '#ff3366';
+        status.style.color = 'var(--error)';
         log('Prometheus error');
       }
     }
 
-    document.getElementById('prom-connect').addEventListener('click', refreshProm);
-    document.getElementById('prom-url').addEventListener('keydown', (e) => {
+    document.getElementById('prom-btn')?.addEventListener('click', refreshProm);
+    document.getElementById('prom-url')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') refreshProm();
     });
-    setInterval(() => {
-      if (document.getElementById('prom-status').textContent.includes('Connected')) refreshProm();
-    }, state.refresh * 1000);
 
-    // Map
-    let map;
-    const initMap = () => {
-      map = L.map('fleet-map').setView([37.7749, -122.4194], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(map);
-      
-      [{lat: 37.7749, lng: -122.4194, name: 'SF'}, {lat: 37.8044, lng: -122.2712, name: 'East Bay'}, {lat: 37.3382, lng: -121.8863, name: 'South Bay'}].forEach(s => {
-        L.marker([s.lat, s.lng]).bindPopup(`🔌 ${s.name}`).addTo(map);
-      });
+    // Crypto & Commands
+    async function sha256(msg) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-      [{id: 'V1', lat: 37.7749, lng: -122.4194}, {id: 'V2', lat: 37.7849, lng: -122.4094}, {id: 'V3', lat: 37.7649, lng: -122.4294}].forEach(v => {
-        L.circleMarker([v.lat, v.lng], {radius: 8, fillColor: '#00ff88', fillOpacity: 0.8, stroke: true, strokeColor: '#00d4ff', strokeWidth: 2}).bindPopup(v.id).addTo(map);
-      });
+    async function sendCmd() {
+      const name = (document.getElementById('cmd-name')?.value || '').trim();
+      const val = (document.getElementById('cmd-value')?.value || '').trim();
+      if (!name || !val) { log('⚠ Incomplete'); return; }
 
-      window.mapInit = true;
-      log('Map ready');
-    };
+      const ts_now = new Date().toISOString();
+      const nonce = Math.random().toString(36).substring(2, 15);
+      const proof = await sha256(`${name}|${val}|${ts_now}|${nonce}`);
+
+      document.getElementById('proof-hash').textContent = proof;
+      document.getElementById('proof-time').textContent = ts_now;
+      document.getElementById('cmd-proof').style.display = 'block';
+
+      state.audit.unshift({name, val, proof: proof.substring(0, 16) + '...', time: new Date().toLocaleTimeString()});
+      const table = document.getElementById('audit-table');
+      table.innerHTML = state.audit.slice(0, 20).map(e => 
+        `<tr><td>${e.name}</td><td>${e.val}</td><td><span class="status-badge status-active">✓</span></td><td style="font-family:monospace">${e.proof}</td><td>${e.time}</td></tr>`
+      ).join('');
+
+      document.getElementById('cmd-name').value = '';
+      document.getElementById('cmd-value').value = '';
+      log(`🔐 ${name} sent`);
+    }
+
+    document.getElementById('cmd-send')?.addEventListener('click', sendCmd);
+
+    // Role
+    document.getElementById('user-role')?.addEventListener('change', (e) => {
+      state.role = e.target.value;
+      localStorage.setItem('role', e.target.value);
+      log(`Role: ${e.target.value}`);
+    });
+
+    // Settings
+    document.getElementById('btn-settings')?.addEventListener('click', () => {
+      alert(`Settings\n\nRole: ${state.role}\nTheme: ${state.theme}\nVehicles: ${state.vehicles.length}\nAudit: ${state.audit.length}`);
+    });
+
+    document.getElementById('btn-profile')?.addEventListener('click', () => {
+      alert(`Profile\n\nRole: ${state.role}\nFleet Size: ${state.vehicles.length} vehicles\n\nFeatures:\n✓ Live Prometheus\n✓ Secure Commands\n✓ Vehicle Tracking`);
+    });
+
+    // Proto
+    async function runProto(name, steps) {
+      document.getElementById('proto-status').textContent = 'running';
+      const speed = document.getElementById('proto-speed')?.value || 'normal';
+      const delay = speed === 'fast' ? 120 : speed === 'slow' ? 600 : 300;
+
+      for (const step of steps) {
+        document.getElementById('proto-action').textContent = step;
+        await new Promise(r => setTimeout(r, delay));
+      }
+
+      document.getElementById('proto-status').textContent = 'idle';
+      document.getElementById('proto-action').textContent = 'Idle';
+      log(`${name} completed`);
+    }
+
+    document.getElementById('proto-start')?.addEventListener('click', () => runProto('Start', ['init', 'load', 'alloc', 'spawn', 'loop']));
+    document.getElementById('proto-step')?.addEventListener('click', () => runProto('Step', ['plan', 'exec', 'send', 'collect']));
+    document.getElementById('proto-verify')?.addEventListener('click', () => runProto('Verify', ['gather', 'query', 'compare', 'proof']));
+    document.getElementById('proto-reset')?.addEventListener('click', () => {
+      document.getElementById('proto-log').innerHTML = '';
+      document.getElementById('proto-status').textContent = 'idle';
+      document.getElementById('proto-action').textContent = 'Idle';
+    });
 
     // Init
     document.addEventListener('DOMContentLoaded', () => {
-      if (state.theme === 'light') {
-        document.body.classList.add('light-mode');
-        document.getElementById('toggle-theme').classList.add('active');
-      }
+      if (state.theme === 'light') document.body.classList.add('light-mode');
       document.getElementById('user-role').value = state.role;
-      document.getElementById('refresh-input').value = state.refresh;
       log('🚀 Nexus initialized');
+      log('Fleet: ' + state.vehicles.length + ' vehicles');
       setTimeout(() => refreshProm(), 1000);
     });
-  </script>
-</body>
-</html>
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Waymo Fleet Control — Live Operations Dashboard</title>
-  <meta name="description" content="Real-time Waymo autonomous vehicle fleet monitoring, area-based vehicle tracking, and operational dispatch." />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-  <style>
-    :root {
-      --bg-primary: #0a0e27;
-      --bg-secondary: #141829;
-      --bg-tertiary: #1a202c;
-      --accent: #00d4ff;
-      --accent-alt: #00ff88;
-      --warning: #ff6b35;
-      --success: #00d084;
-      --error: #ff3366;
-      --text-primary: #e0e7ff;
-      --text-secondary: #a0aec0;
-      --border: #2d3748;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      height: 100%;
-      overflow-x: hidden;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10, 14, 39, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 0;
-    }
-
-    .header-content {
-      max-width: 1800px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .brand {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .brand-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: rgba(0, 212, 255, 0.1);
-      border: 2px solid var(--accent);
-      border-radius: 8px;
-    }
-
-    .header-nav {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .header-nav button, .header-nav a {
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: rgba(29, 39, 117, 0.4);
-      color: var(--text-primary);
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 200ms ease;
-      text-decoration: none;
-    }
-
-    .header-nav button:hover, .header-nav a:hover {
-      background: rgba(0, 212, 255, 0.1);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .container {
-      max-width: 1800px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      margin: 0 0 0.5rem;
-      color: var(--accent);
-      text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-
-    .grid-2x3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .kpi-card {
-      background: linear-gradient(135deg, rgba(20, 24, 41, 0.8), rgba(26, 32, 44, 0.9));
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: var(--shadow);
-      transition: all 300ms ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .kpi-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 20px 60px rgba(0, 212, 255, 0.15);
-    }
-
-    .kpi-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-    }
-
-    .kpi-label {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.5rem;
-    }
-
-    .kpi-value {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-
-    .kpi-subtext {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 1rem;
-    }
-
-    .status-active {
-      background: rgba(0, 208, 132, 0.2);
-      color: var(--success);
-      border: 1px solid var(--success);
-    }
-
-    .status-idle {
-      background: rgba(255, 107, 53, 0.2);
-      color: var(--warning);
-      border: 1px solid var(--warning);
-    }
-
-    .status-incident {
-      background: rgba(255, 51, 102, 0.2);
-      color: var(--error);
-      border: 1px solid var(--error);
-    }
-
-    .section {
-      margin-bottom: 2.5rem;
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-    }
-
-    .section-title::before {
-      content: "";
-      width: 4px;
-      height: 24px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-
-    .area-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .area-card {
-      background: rgba(20, 24, 41, 0.7);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.5rem;
-      transition: all 200ms ease;
-    }
-
-    .area-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-
-    .area-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-
-    .area-stat {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid rgba(45, 55, 72, 0.5);
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .area-stat-value {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .controls-section {
-      background: rgba(20, 24, 41, 0.9);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .controls-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .control-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-    }
-
-    .btn {
-      padding: 0.8rem 1.2rem;
-      border: 1px solid var(--border);
-      background: rgba(0, 212, 255, 0.05);
-      color: var(--accent);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 200ms ease;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-size: 0.85rem;
-    }
-
-    .btn:hover {
-      background: rgba(0, 212, 255, 0.15);
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg-primary);
-    }
-
-    .btn-primary:hover {
-      background: #00b8d4;
-      box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
-    }
-
-    .input-group {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    input[type="text"], input[type="number"], select {
-      flex: 1;
-      padding: 0.8rem;
-      background: rgba(10, 14, 39, 0.8);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-    }
-
-    input[type="text"]:focus, input[type="number"]:focus, select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
-    }
-
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-
-    .table thead {
-      background: rgba(29, 39, 117, 0.5);
-    }
-
-    .table th {
-      padding: 1rem;
-      text-align: left;
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .table td {
-      padding: 0.8rem 1rem;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
-    .table tbody tr:hover {
-      background: rgba(0, 212, 255, 0.05);
-    }
-
-    .status-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .indicator-active {
-      background: rgba(0, 208, 132, 0.15);
-      color: var(--success);
-    }
-
-    .indicator-idle {
-      background: rgba(255, 107, 53, 0.15);
-      color: var(--warning);
-    }
-
-    .indicator-incident {
-      background: rgba(255, 51, 102, 0.15);
-      color: var(--error);
-    }
-
-    .indicator-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    .indicator-active .indicator-dot {
-      background: var(--success);
-    }
-
-    .indicator-idle .indicator-dot {
-      background: var(--warning);
-    }
-
-    .indicator-incident .indicator-dot {
-      background: var(--error);
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .metric-box {
-      background: rgba(20, 24, 41, 0.7);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.2rem;
-    }
-
-    .metric-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8rem;
-    }
-
-    .metric-name {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .metric-value {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--accent);
-    }
-
-    .progress-bar {
-      height: 6px;
-      background: rgba(45, 55, 72, 0.5);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 0.8rem;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-alt));
-      border-radius: 3px;
-      transition: width 400ms ease;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: var(--text-secondary);
-      border-top: 1px solid var(--border);
-      font-size: 0.9rem;
-    }
-
-    #map-container {
-      width: 100%;
-      height: 600px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-    }
-
-    .leaflet-container {
-      background: linear-gradient(135deg, #0a0e27, #141829);
-    }
-
-    .vehicle-marker {
-      font-size: 20px;
-      text-align: center;
-      line-height: 1;
-    }
-
-    .charging-marker {
-      font-size: 18px;
-      text-align: center;
-      line-height: 1;
-    }
-
-    .leaflet-popup-content {
-      background: rgba(20, 24, 41, 0.95);
-      color: var(--text-primary);
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.9rem;
-    }
-
-    .leaflet-popup-content-wrapper {
-      background: rgba(20, 24, 41, 0.95);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-
-    .leaflet-popup-tip {
-      background: rgba(20, 24, 41, 0.95);
-    }
-
-    .recall-btn {
-      margin-top: 8px;
-      padding: 6px 10px;
-      background: var(--accent);
-      color: var(--bg-primary);
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-      width: 100%;
-      transition: all 200ms ease;
-    }
-
-    .recall-btn:hover {
-      background: #00b8d4;
-      transform: scale(1.02);
-    }
-
-    .map-legend {
-      background: rgba(20, 24, 41, 0.9);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .legend-icon {
-      font-size: 1.2rem;
-    }
-
-    @media (max-width: 768px) {
-      .grid-2x3 {
-        grid-template-columns: 1fr;
-      }
-
-      .control-grid {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      #map-container {
-        height: 400px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="header-content">
-      <div class="brand">
-        <div class="brand-icon">🚗</div>
-        Waymo Fleet Control
-      </div>
-      <nav class="header-nav">
-        <a href="#overview">Overview</a>
-        <a href="#areas">Areas</a>
-        <a href="#dispatch">Dispatch</a>
-        <button onclick="location.href='minimal-ui.html'">Proto Viewer</button>
-      </nav>
-    </div>
-  </header>
-
-  <section class="container">
-    <div id="overview">
-      <h1>Fleet Operations Center</h1>
-      <p class="subtitle">Real-time monitoring of autonomous vehicle fleet across all operational areas</p>
-
-      <div class="grid-2x3">
-        <div class="kpi-card">
-          <div class="kpi-label">Total Vehicles</div>
-          <div class="kpi-value" id="total-vehicles">847</div>
-          <div class="kpi-subtext">Active fleet size</div>
-          <div class="status-badge status-active">● Operational</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Currently Active</div>
-          <div class="kpi-value" id="active-vehicles">624</div>
-          <div class="kpi-subtext">In service or ready</div>
-          <div class="status-badge status-active">↑ 12% from peak</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Idle / Charging</div>
-          <div class="kpi-value" id="idle-vehicles">156</div>
-          <div class="kpi-subtext">Maintenance &amp; charging</div>
-          <div class="status-badge status-idle">● Idle</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Incidents</div>
-          <div class="kpi-value" id="incident-count">3</div>
-          <div class="kpi-subtext">Requiring attention</div>
-          <div class="status-badge status-incident">⚠ Alert</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Avg Fleet Efficiency</div>
-          <div class="kpi-value" id="efficiency">94.2%</div>
-          <div class="kpi-subtext">Uptime across fleet</div>
-          <div class="status-badge status-active">✓ Healthy</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Miles Driven (Today)</div>
-          <div class="kpi-value" id="miles-today">127.4k</div>
-          <div class="kpi-subtext">Real-time distance tracking</div>
-          <div class="status-badge status-active">↑ On Track</div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Agentic Fleet Controls</div>
-        <div class="controls-section">
-          <div class="controls-title">Live Dispatch &amp; Monitoring</div>
-          <div class="input-group">
-            <input type="text" id="dispatch-area" placeholder="Area or zone (e.g., Downtown SF)" />
-            <input type="number" id="dispatch-count" placeholder="# Vehicles" min="1" max="50" />
-            <button class="btn btn-primary" onclick="dispatchVehicles()">Dispatch</button>
-          </div>
-
-          <div class="control-grid">
-            <button class="btn" onclick="alertField('Geofence Alert', 'High-density area monitoring activated')">↳ Geofence Monitor</button>
-            <button class="btn" onclick="alertField('Predictive Analysis', 'ML model predicting demand hotspots')">📊 Predict Demand</button>
-            <button class="btn" onclick="alertField('Maintenance', 'Scheduling next service window')">🔧 Auto Schedule</button>
-            <button class="btn" onclick="alertField('Safety Check', 'Running diagnostics on 12 vehicles')">✓ Health Check</button>
-            <button class="btn" onclick="alertField('Dynamic Pricing', 'Adjusting rates per zone')">💰 Update Pricing</button>
-            <button class="btn" onclick="alertField('Incident Response', 'Dispatching emergency response')">🚨 Emergency</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Prometheus Live Metrics</div>
-        <div class="controls-section">
-          <div class="input-group">
-            <input type="url" id="prom-url" placeholder="http://localhost:9090" value="http://localhost:9090" />
-            <button class="btn btn-primary" onclick="connectPrometheus()">Connect Prometheus</button>
-            <span id="prom-status" style="color: var(--text-secondary); font-size: 0.9rem;">Disconnected</span>
-          </div>
-          <div class="metrics-grid" id="metrics-grid">
-            <div class="metric-box">
-              <div class="metric-header">
-                <span class="metric-name">Fleet Rounds</span>
-              </div>
-              <div class="metric-value" id="m-rounds">--</div>
-              <div class="progress-bar"><div class="progress-fill" id="m-rounds-bar" style="width: 0%;"></div></div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-header">
-                <span class="metric-name">Active Nodes</span>
-              </div>
-              <div class="metric-value" id="m-nodes">--</div>
-              <div class="progress-bar"><div class="progress-fill" id="m-nodes-bar" style="width: 0%;"></div></div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-header">
-                <span class="metric-name">P95 Latency (ms)</span>
-              </div>
-              <div class="metric-value" id="m-latency">--</div>
-              <div class="progress-bar"><div class="progress-fill" id="m-latency-bar" style="width: 0%;"></div></div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-header">
-                <span class="metric-name">Errors</span>
-              </div>
-              <div class="metric-value" id="m-errors">--</div>
-              <div class="progress-bar"><div class="progress-fill" id="m-errors-bar" style="width: 0%;"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Secure Vehicle Updates</div>
-        <div class="controls-section">
-          <div class="controls-title">Send Secure Command with Attestation</div>
-          <div class="input-group">
-            <select id="update-vehicle" style="flex: 0.5;">
-              <option value="">Select vehicle...</option>
-            </select>
-            <select id="update-type" style="flex: 0.5;">
-              <option value="route">Route Update</option>
-              <option value="speed">Speed Limit</option>
-              <option value="diagnostic">Run Diagnostic</option>
-              <option value="recall">Recall Order</option>
-              <option value="software">Software Update</option>
-            </select>
-            <input type="text" id="update-value" placeholder="Command value or destination" style="flex: 1;" />
-            <button class="btn btn-primary" onclick="sendSecureUpdate()">Send with Proof</button>
-          </div>
-          <div id="attestation-display" style="background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin-top: 1rem; font-family: monospace; font-size: 0.85rem; word-break: break-all; display: none;">
-            <div style="color: var(--accent); font-weight: 700; margin-bottom: 0.5rem;">Attestation Proof (SHA256)</div>
-            <div id="attestation-hash"></div>
-            <div style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.8rem;">⨯ Timestamp: <span id="attestation-time"></span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Command Audit Log</div>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Vehicle ID</th>
-              <th>Command Type</th>
-              <th>Value</th>
-              <th>Status</th>
-              <th>Proof Hash</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="audit-log">
-            <tr style="color: var(--text-secondary);">
-              <td colspan="6">No commands sent yet</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="section" id="areas">
-        <div class="section-title">Vehicle Distribution by Area</div>
-        <div class="area-grid" id="area-grid">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <div class="section" id="map-section">
-        <div class="section-title">Live Vehicle Map</div>
-        <div class="map-legend">
-          <div class="legend-item"><span class="legend-icon">🚗</span><span>Active vehicles</span></div>
-          <div class="legend-item"><span class="legend-icon">⏸️</span><span>Idle vehicles</span></div>
-          <div class="legend-item"><span class="legend-icon">⚠️</span><span>Incident vehicles</span></div>
-          <div class="legend-item"><span class="legend-icon">🔌</span><span>Charging stations</span></div>
-        </div>
-        <div id="map-container"></div>
-      </div>
-
-      <div class="section" id="analytics">
-        <div class="section-title">Advanced Analytics &amp; Predictions</div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-          <div class="metric-box">
-            <div class="metric-header">
-              <span class="metric-name">Fleet Efficiency Trend</span>
-            </div>
-            <div id="efficiency-trend" style="font-size: 1.6rem; font-weight: 800; color: var(--accent); margin-bottom: 0.5rem;">↑ 4.2%</div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 94%; background: linear-gradient(90deg, var(--accent), var(--accent-alt));"></div></div>
-            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">vs. yesterday</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-header">
-              <span class="metric-name">Incident Forecast (24h)</span>
-            </div>
-            <div id="incident-forecast" style="font-size: 1.6rem; font-weight: 800; color: var(--warning); margin-bottom: 0.5rem;">2 predicted</div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 15%; background: var(--warning);"></div></div>
-            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">ML confidence: 87%</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-header">
-              <span class="metric-name">Maintenance Due</span>
-            </div>
-            <div id="maintenance-due" style="font-size: 1.6rem; font-weight: 800; color: var(--accent-alt); margin-bottom: 0.5rem;">12 vehicles</div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 35%; background: var(--accent-alt);"></div></div>
-            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">Next 7 days</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-header">
-              <span class="metric-name">Revenue / Hour</span>
-            </div>
-            <div id="revenue-per-hour" style="font-size: 1.6rem; font-weight: 800; color: var(--accent-alt); margin-bottom: 0.5rem;">$12.4k</div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 82%; background: var(--accent-alt);"></div></div>
-            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">↑ 7% from avg</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="dispatch">
-        <div class="section-title">Active Fleet Roster</div>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Vehicle ID</th>
-              <th>Area</th>
-              <th>Status</th>
-              <th>Miles Today</th>
-              <th>Battery %</th>
-              <th>Last Update</th>
-            </tr>
-          </thead>
-          <tbody id="fleet-table">
-            <!-- Populated by JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    Waymo Fleet Control • Real-time Operations Dashboard • Data updated every 15 seconds
-  </footer>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <script>
-    // Area data
-    const areas = [
-      { name: 'Downtown SF', vehicles: 145, active: 132, idle: 13, lastUpdate: '1m ago' },
-      { name: 'Mission District', vehicles: 87, active: 71, idle: 16, lastUpdate: '2m ago' },
-      { name: 'SoMa', vehicles: 102, active: 89, idle: 13, lastUpdate: '1m ago' },
-      { name: 'Financial District', vehicles: 124, active: 118, idle: 6, lastUpdate: '1m ago' },
-      { name: 'Marina Bay', vehicles: 93, active: 65, idle: 28, lastUpdate: '3m ago' },
-      { name: 'Sunset District', vehicles: 78, active: 62, idle: 16, lastUpdate: '2m ago' },
-    ];
-
-    // Real-time fleet data storage
-    let fleetRoster = [
-      { id: 'WAY-001', area: 'Downtown SF', status: 'active', miles: 34.2, battery: 87, time: '2m' },
-      { id: 'WAY-002', area: 'Mission District', status: 'active', miles: 28.1, battery: 92, time: '1m' },
-      { id: 'WAY-003', area: 'SoMa', status: 'idle', miles: 45.6, battery: 45, time: '5m' },
-      { id: 'WAY-004', area: 'Financial District', status: 'active', miles: 51.3, battery: 78, time: '1m' },
-      { id: 'WAY-005', area: 'Marina Bay', status: 'incident', miles: 12.4, battery: 62, time: '8m' },
-      { id: 'WAY-006', area: 'Downtown SF', status: 'active', miles: 67.8, battery: 81, time: '2m' },
-      { id: 'WAY-007', area: 'Sunset District', status: 'idle', miles: 33.2, battery: 28, time: '12m' },
-      { id: 'WAY-008', area: 'SoMa', status: 'active', miles: 22.5, battery: 88, time: '1m' },
-    ];
-    
-    let fleetMetrics = {
-      totalVehicles: 847,
-      activeVehicles: 624,
-      idleVehicles: 156,
-      incidentCount: 3,
-      efficiency: 94.2,
-      milesDriven: 127400,
-      efficiencyTrend: 4.2,
-      incidentForecast: 2,
-      maintenanceDue: 12,
-      revenuePerHour: 12400
-    };
-
-    // Charging stations data
-    const chargingStations = [
-      { name: 'Downtown Hub', lat: 37.7749, lng: -122.4194, slots: 24 },
-      { name: 'Mission Charge', lat: 37.7599, lng: -122.4148, slots: 18 },
-      { name: 'SoMa Station', lat: 37.7707, lng: -122.3974, slots: 32 },
-      { name: 'Financial Depot', lat: 37.7907, lng: -122.3986, slots: 20 },
-      { name: 'Marina Plaza', lat: 37.8044, lng: -122.4184, slots: 16 },
-      { name: 'Sunset Charge', lat: 37.7533, lng: -122.4696, slots: 12 },
-    ];
-
-    // Vehicle positions (simulated with lat/lng)
-    let vehicleLocations = {};
-    fleetRoster.forEach((v, i) => {
-      const baseLatLng = chargingStations[i % chargingStations.length];
-      vehicleLocations[v.id] = {
-        lat: baseLatLng.lat + (Math.random() - 0.5) * 0.02,
-        lng: baseLatLng.lng + (Math.random() - 0.5) * 0.02
-      };
-    });
-
-    let map = null;
-    const markers = {};
-    const stationMarkers = {};
-
-    function initMap() {
-      if (map) return;
-      map = L.map('map-container').setView([37.7749, -122.4194], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 18,
-      }).addTo(map);
-
-      // Add charging stations
-      chargingStations.forEach(station => {
-        const marker = L.marker([station.lat, station.lng], {
-          icon: L.divIcon({ className: 'charging-marker', html: '🔌' })
-        }).bindPopup(`<strong>${station.name}</strong><br>Charging slots: ${station.slots}`);
-        marker.addTo(map);
-        stationMarkers[station.name] = marker;
-      });
-    }
-
-    function updateMapVehicles() {
-      if (!map) initMap();
-
-      fleetRoster.forEach(vehicle => {
-        const loc = vehicleLocations[vehicle.id];
-        if (!loc) return;
-
-        // Update position with small random walk
-        loc.lat += (Math.random() - 0.5) * 0.002;
-        loc.lng += (Math.random() - 0.5) * 0.002;
-
-        const statusIcon = vehicle.status === 'active' ? '🚗' : vehicle.status === 'incident' ? '⚠️' : '⏸️';
-        const statusColor = vehicle.status === 'active' ? 'green' : vehicle.status === 'incident' ? 'red' : 'orange';
-
-        if (markers[vehicle.id]) {
-          markers[vehicle.id].setLatLng([loc.lat, loc.lng]);
-        } else {
-          const popup = `
-            <strong>${vehicle.id}</strong><br>
-            Status: ${vehicle.status}<br>
-            Area: ${vehicle.area}<br>
-            Battery: ${Math.floor(vehicle.battery)}%<br>
-            Miles: ${vehicle.miles.toFixed(1)}<br>
-            <button class="recall-btn" onclick="recallVehicle('${vehicle.id}')">📍 Recall to Station</button>
-          `;
-          const marker = L.marker([loc.lat, loc.lng], {
-            icon: L.divIcon({ className: 'vehicle-marker', html: statusIcon })
-          }).bindPopup(popup);
-          marker.addTo(map);
-          markers[vehicle.id] = marker;
-        }
-      });
-    }
-
-    function recallVehicle(vehicleId) {
-      const vehicle = fleetRoster.find(v => v.id === vehicleId);
-      if (!vehicle) return;
-
-      // Find nearest charging station
-      const vLoc = vehicleLocations[vehicleId];
-      let nearest = chargingStations[0];
-      let minDist = Infinity;
-
-      chargingStations.forEach(station => {
-        const dist = Math.sqrt(Math.pow(vLoc.lat - station.lat, 2) + Math.pow(vLoc.lng - station.lng, 2));
-        if (dist < minDist) {
-          minDist = dist;
-          nearest = station;
-        }
-      });
-
-      // Animate vehicle to station
-      const targetLat = nearest.lat;
-      const targetLng = nearest.lng;
-      const steps = 20;
-      let step = 0;
-
-      const interval = setInterval(() => {
-        step++;
-        const progress = step / steps;
-        vLoc.lat = vLoc.lat + (targetLat - vLoc.lat) * 0.1;
-        vLoc.lng = vLoc.lng + (targetLng - vLoc.lng) * 0.1;
-        
-        if (markers[vehicleId]) {
-          markers[vehicleId].setLatLng([vLoc.lat, vLoc.lng]);
-        }
-
-        if (step >= steps) {
-          clearInterval(interval);
-          vehicle.battery = 100;
-          vehicle.status = 'idle';
-          alert(`${vehicleId} recalled to ${nearest.name} and charging initiated!`);
-          updateFleetTable();
-          updateKPIs();
-        }
-      }, 100);
-    }
-
-    // Real data simulation with WebSocket-style updates
-    function simulateRealDataUpdates() {
-      setInterval(() => {
-        // Update KPI values with realistic variations
-        fleetMetrics.activeVehicles = Math.max(600, Math.min(650, fleetMetrics.activeVehicles + Math.floor(Math.random() * 10 - 5)));
-        fleetMetrics.efficiency = Math.max(90, Math.min(98, fleetMetrics.efficiency + (Math.random() - 0.5) * 0.5));
-        fleetMetrics.milesDriven += Math.floor(Math.random() * 500 + 200);
-        
-        // Update vehicle data
-        fleetRoster.forEach(v => {
-          if (Math.random() > 0.85) {
-            v.miles += Math.random() * 5;
-            v.battery = Math.max(10, v.battery - Math.random() * 2);
-            v.status = Math.random() > 0.95 ? 'incident' : (v.battery < 30 ? 'idle' : 'active');
-          }
-        });
-        
-        // Update area data
-        areas.forEach(a => {
-          a.active = Math.max(Math.floor(a.vehicles * 0.6), Math.min(a.vehicles, a.active + Math.floor(Math.random() * 4 - 2)));
-          a.idle = a.vehicles - a.active;
-        });
-        
-        // Update UI with new values
-        updateKPIs();
-        updateAreaGrid();
-        updateFleetTable();
-      }, 5000);
-      
-      // Update map vehicles every 3 seconds
-      setInterval(updateMapVehicles, 3000);
-    }
-    
-    function updateKPIs() {
-      document.getElementById('active-vehicles').textContent = fleetMetrics.activeVehicles;
-      document.getElementById('idle-vehicles').textContent = fleetMetrics.totalVehicles - fleetMetrics.activeVehicles;
-      document.getElementById('efficiency').textContent = fleetMetrics.efficiency.toFixed(1) + '%';
-      document.getElementById('miles-today').textContent = (fleetMetrics.milesDriven / 1000).toFixed(1) + 'k';
-      document.getElementById('incident-count').textContent = fleetMetrics.incidentCount + (Math.random() > 0.7 ? 1 : 0);
-      document.getElementById('efficiency-trend').textContent = (fleetMetrics.efficiencyTrend > 0 ? '↑' : '↓') + ' ' + Math.abs(fleetMetrics.efficiencyTrend).toFixed(1) + '%';
-      document.getElementById('incident-forecast').textContent = fleetMetrics.incidentForecast + ' predicted';
-      document.getElementById('maintenance-due').textContent = fleetMetrics.maintenanceDue + ' vehicles';
-      document.getElementById('revenue-per-hour').textContent = '$' + (fleetMetrics.revenuePerHour / 1000).toFixed(1) + 'k';
-    }
-    
-    function updateAreaGrid() {
-      const areaGrid = document.getElementById('area-grid');
-      areaGrid.innerHTML = '';
-      areas.forEach((area) => {
-        const card = document.createElement('div');
-        card.className = 'area-card';
-        card.innerHTML = `
-          <div class="area-name">${area.name}</div>
-          <div class="area-stat"><span>Total Vehicles:</span><span class="area-stat-value">${area.vehicles}</span></div>
-          <div class="area-stat"><span>Active:</span><span class="area-stat-value" style="color: var(--success);">${area.active}</span></div>
-          <div class="area-stat"><span>Idle/Charging:</span><span class="area-stat-value" style="color: var(--warning);">${area.idle}</span></div>
-          <div class="area-stat" style="border: none;"><span>Last Update:</span><span>now</span></div>
-        `;
-        areaGrid.appendChild(card);
-      });
-    }
-    
-    function updateFleetTable() {
-      const fleetTable = document.getElementById('fleet-table');
-      fleetTable.innerHTML = '';
-      fleetRoster.forEach((vehicle) => {
-        const statusClass = vehicle.status === 'active' ? 'indicator-active' : vehicle.status === 'incident' ? 'indicator-incident' : 'indicator-idle';
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${vehicle.id}</td>
-          <td>${vehicle.area}</td>
-          <td><span class="status-indicator ${statusClass}"><span class="indicator-dot"></span>${vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}</span></td>
-          <td>${vehicle.miles.toFixed(1)} mi</td>
-          <td><div class="progress-bar"><div class="progress-fill" style="width: ${vehicle.battery}%; background: ${vehicle.battery < 30 ? 'var(--error)' : vehicle.battery < 60 ? 'var(--warning)' : 'var(--accent-alt)'}; border-radius: 3px;"></div></div> ${Math.floor(vehicle.battery)}%</td>
-          <td>now</td>
-        `;
-        fleetTable.appendChild(row);
-      });
-    }
-
-    // Initialize UI
-    function initializeUI() {
-      updateAreaGrid();
-      updateFleetTable();
-      updateVehicleSelector();
-      updateKPIs();
-      initMap();
-      updateMapVehicles();
-      autoConnectPrometheus();
-      // Start real-time data simulation
-      simulateRealDataUpdates();
-    }
-
-    // Dispatch function
-    function dispatchVehicles() {
-      const area = document.getElementById('dispatch-area').value || 'specified area';
-      const count = document.getElementById('dispatch-count').value || 5;
-      alertField('Dispatch Initiated', `${count} vehicles dispatched to ${area}`);
-    }
-
-    // Control alert
-    function alertField(title, message) {
-      alert(`${title}\n${message}`);
-    }
-
-    // Audit log for commands
-    let auditLog = [];
-
-    // SHA256 hash function (simple implementation)
-    async function sha256(message) {
-      const msgBuffer = new TextEncoder().encode(message);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // Populate vehicle selector
-    function updateVehicleSelector() {
-      const selector = document.getElementById('update-vehicle');
-      selector.innerHTML = '<option value="">Select vehicle...</option>';
-      fleetRoster.forEach(v => {
-        const option = document.createElement('option');
-        option.value = v.id;
-        option.textContent = `${v.id} (${v.status})`;
-        selector.appendChild(option);
-      });
-    }
-
-    // Send secure update with attestation
-    async function sendSecureUpdate() {
-      const vehicleId = document.getElementById('update-vehicle').value;
-      const updateType = document.getElementById('update-type').value;
-      const updateValue = document.getElementById('update-value').value;
-
-      if (!vehicleId || !updateType || !updateValue) {
-        alert('Please fill in all fields');
-        return;
-      }
-
-      const timestamp = new Date().toISOString();
-      const nonce = Math.random().toString(36).substring(2, 15);
-      const message = `${vehicleId}|${updateType}|${updateValue}|${timestamp}|${nonce}`;
-      const proof = await sha256(message);
-
-      // Display attestation
-      document.getElementById('attestation-hash').textContent = proof;
-      document.getElementById('attestation-time').textContent = timestamp;
-      document.getElementById('attestation-display').style.display = 'block';
-
-      // Add to audit log
-      const logEntry = {
-        vehicleId,
-        updateType,
-        updateValue,
-        status: 'Confirmed',
-        proof: proof.substring(0, 16) + '...',
-        time: new Date().toLocaleTimeString()
-      };
-      auditLog.unshift(logEntry);
-      updateAuditLog();
-
-      // Update vehicle if it's a recall
-      if (updateType === 'recall') {
-        const vehicle = fleetRoster.find(v => v.id === vehicleId);
-        if (vehicle) {
-          vehicle.status = 'idle';
-          updateFleetTable();
-          document.getElementById('update-vehicle').value = '';
-          document.getElementById('update-value').value = '';
-        }
-      }
-
-      alert(`✓ Secure update sent to ${vehicleId}\nProof: ${proof.substring(0, 16)}...`);
-    }
-
-    // Update audit log display
-    function updateAuditLog() {
-      const auditTable = document.getElementById('audit-log');
-      if (auditLog.length === 0) {
-        auditTable.innerHTML = '<tr style="color: var(--text-secondary);"><td colspan="6">No commands sent yet</td></tr>';
-        return;
-      }
-      auditTable.innerHTML = '';
-      auditLog.slice(0, 10).forEach(entry => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${entry.vehicleId}</td>
-          <td>${entry.updateType}</td>
-          <td title="${entry.updateValue}" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">${entry.updateValue}</td>
-          <td><span class="status-indicator indicator-active"><span class="indicator-dot"></span>${entry.status}</span></td>
-          <td style="font-family: monospace; font-size: 0.8rem; color: var(--accent);" title="${entry.proof}">${entry.proof}</td>
-          <td>${entry.time}</td>
-        `;
-        auditTable.appendChild(row);
-      });
-    }
-
-    // Prometheus integration with live queries
-    async function connectPrometheus() {
-      const url = (document.getElementById('prom-url').value || '').trim() || 'http://localhost:9090';
-      if (!url) {
-        document.getElementById('prom-status').textContent = 'No endpoint';
-        return;
-      }
-
-      document.getElementById('prom-url').value = url;
-      document.getElementById('prom-status').textContent = 'Querying...';
-      document.getElementById('prom-status').style.color = 'var(--warning)';
-
-      try {
-        const queries = {
-          rounds: 'consensus_rounds_total',
-          nodes: 'nodes_participating',
-          latency: 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))',
-          errors: 'update_verification_errors',
-        };
-
-        const results = await Promise.all(Object.entries(queries).map(async ([key, q]) => {
-          const qUrl = new URL('/api/v1/query', url);
-          qUrl.searchParams.set('query', q);
-          const r = await fetch(qUrl.toString());
-          const body = await r.json();
-          const value = body?.data?.result?.[0]?.value?.[1];
-          return [key, Number(value) || 0];
-        }));
-
-        const data = Object.fromEntries(results);
-        document.getElementById('m-rounds').textContent = Math.round(data.rounds);
-        document.getElementById('m-nodes').textContent = Math.round(data.nodes);
-        document.getElementById('m-latency').textContent = data.latency.toFixed(1);
-        document.getElementById('m-errors').textContent = Math.round(data.errors);
-
-        document.getElementById('m-rounds-bar').style.width = Math.min(100, (data.rounds / 1000) * 100) + '%';
-        document.getElementById('m-nodes-bar').style.width = Math.min(100, (data.nodes / 50) * 100) + '%';
-        document.getElementById('m-latency-bar').style.width = Math.min(100, (data.latency / 500) * 100) + '%';
-        document.getElementById('m-errors-bar').style.width = Math.min(100, (data.errors / 10) * 100) + '%';
-
-        document.getElementById('prom-status').textContent = 'Connected ✓';
-        document.getElementById('prom-status').style.color = 'var(--success)';
-      } catch (error) {
-        document.getElementById('prom-status').textContent = 'Error connecting';
-        document.getElementById('prom-status').style.color = 'var(--error)';
-      }
-    }
-
-    // Auto-connect Prometheus on load
-    function autoConnectPrometheus() {
-      setTimeout(() => {
-        document.getElementById('prom-url').value = 'http://localhost:9090';
-        void connectPrometheus();
-      }, 1000);
-    }
-
-
-
-    // Init on load
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeUI();
-      // Log WebSocket-style connection
-      console.log('Fleet Control Dashboard initialized');
-      console.log('Real-time updates active');
-      console.log('Data refresh interval: 5 seconds');
-      console.log('Map vehicle updates: every 3 seconds');
-    });
-
-    // Make functions globally accessible
-    window.recallVehicle = recallVehicle;
-    window.sendSecureUpdate = sendSecureUpdate;
-    window.connectPrometheus = connectPrometheus;
   </script>
 </body>
 </html>
