@@ -27,11 +27,28 @@
     <button id="btn-step">Do Step</button>
     <button id="btn-verify">Verify</button>
     <button id="btn-reset">Reset</button>
+    <label style="margin-left:6px;display:flex;align-items:center;gap:6px">
+      <select id="speed-select" title="Playback speed">
+        <option value="fast">Fast</option>
+        <option value="normal" selected>Normal</option>
+        <option value="slow">Slow</option>
+      </select>
+    </label>
+    <button id="btn-pause">Pause</button>
+    <button id="btn-copy">Copy Log</button>
+    <button id="btn-export">Export</button>
   </div>
 
   <div class="panel">
     <div class="col">
       <div class="box">
+        <div style="margin-bottom:8px;display:flex;gap:8px;align-items:center">
+          <input id="new-step-input" placeholder="Custom step name" style="flex:1;padding:6px;border-radius:6px;border:1px solid #e1e4e8" />
+          <button id="add-step" style="padding:6px 8px">Add</button>
+        </div>
+        <div style="margin-bottom:8px;color:#6b7280;font-size:13px">Custom Steps (editable per-run)</div>
+        <div id="custom-steps" class="log" style="height:120px;overflow:auto"></div>
+        <hr style="margin:8px 0">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <strong>Under-the-hood Actions</strong>
           <span class="small muted" id="status-pill">idle</span>
@@ -56,6 +73,13 @@
     const btnStep = document.getElementById('btn-step');
     const btnVerify = document.getElementById('btn-verify');
     const btnReset = document.getElementById('btn-reset');
+    const btnPause = document.getElementById('btn-pause');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnExport = document.getElementById('btn-export');
+    const speedSelect = document.getElementById('speed-select');
+    const newStepInput = document.getElementById('new-step-input');
+    const addStepBtn = document.getElementById('add-step');
+    const customStepsEl = document.getElementById('custom-steps');
     const eventLog = document.getElementById('event-log');
     const seq = document.getElementById('sequence');
     const current = document.getElementById('current-action');
@@ -77,61 +101,126 @@
     function setCurrent(text){ current.textContent = text; }
     function setStatus(s){ status.textContent = s; }
 
-    function runSequence(name, steps, delay=350){
+    let sequenceTimer = null;
+    let paused = false;
+    let pauseResolve = null;
+
+    function getDelayFromSpeed(){
+      const v = speedSelect?.value || 'normal';
+      if(v === 'fast') return 120;
+      if(v === 'slow') return 600;
+      return 300;
+    }
+
+    async function runSequence(name, steps, baseDelay){
+      baseDelay = baseDelay ?? getDelayFromSpeed();
       setStatus('running');
       pushEvent(name + ' (started)');
       setCurrent(name + ' — running');
-      let i = 0;
-      (function next(){
-        if(i>=steps.length){
-          setCurrent('idle');
-          setStatus('idle');
-          pushEvent(name + ' (completed)');
-          return;
+      for(let i=0;i<steps.length;i++){
+        if(paused){
+          await new Promise(r => pauseResolve = r);
+          pauseResolve = null;
         }
-        const step = steps[i++];
+        const step = steps[i];
         pushSeq(`${name} → ${step}`);
         pushEvent(`${name} : ${step}`);
         setCurrent(step);
-        setTimeout(next, delay);
-      })();
+        // await delay
+        await new Promise(r => sequenceTimer = setTimeout(r, baseDelay));
+        sequenceTimer = null;
+      }
+      setCurrent('idle');
+      setStatus('idle');
+      pushEvent(name + ' (completed)');
     }
 
     btnStart.addEventListener('click', ()=>{
-      runSequence('Start Proto', [
-        'initialize',
-        'load-plan',
-        'allocate-resources',
-        'spawn-routines',
-        'start-loop'
-      ], 250);
+      const steps = collectCustomOrDefault(['initialize','load-plan','allocate-resources','spawn-routines','start-loop']);
+      void runSequence('Start Proto', steps);
     });
 
     btnStep.addEventListener('click', ()=>{
-      runSequence('Do Step', [
-        'plan-step',
-        'execute-op',
-        'send-effects',
-        'collect-observations'
-      ], 300);
+      const steps = collectCustomOrDefault(['plan-step','execute-op','send-effects','collect-observations']);
+      void runSequence('Do Step', steps);
     });
 
     btnVerify.addEventListener('click', ()=>{
-      runSequence('Verify', [
-        'gather-evidence',
-        'query-verifier',
-        'compare-expected',
-        'write-proof'
-      ], 400);
+      const steps = collectCustomOrDefault(['gather-evidence','query-verifier','compare-expected','write-proof']);
+      void runSequence('Verify', steps);
     });
 
     btnReset.addEventListener('click', ()=>{
       pushEvent('Reset pressed — clearing state');
       seq.innerHTML = '';
       eventLog.innerHTML = '';
+      customSteps = [];
+      renderCustomSteps();
       setCurrent('idle');
       setStatus('idle');
     });
+
+    btnPause.addEventListener('click', ()=>{
+      if(!paused){
+        paused = true;
+        btnPause.textContent = 'Resume';
+        pushEvent('Paused');
+      } else {
+        paused = false;
+        btnPause.textContent = 'Pause';
+        pushEvent('Resumed');
+        if(pauseResolve) pauseResolve();
+      }
+    });
+
+    btnCopy.addEventListener('click', async ()=>{
+      try{
+        const text = Array.from(eventLog.children).map(n => n.textContent).join('\n');
+        await navigator.clipboard.writeText(text);
+        pushEvent('Event log copied to clipboard');
+      } catch (e){
+        pushEvent('Copy failed');
+      }
+    });
+
+    btnExport.addEventListener('click', ()=>{
+      const text = Array.from(eventLog.children).map(n => n.textContent).join('\n');
+      const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'proto-event-log.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      pushEvent('Event log exported');
+    });
+
+    // Custom steps management
+    let customSteps = [];
+    function renderCustomSteps(){
+      customStepsEl.innerHTML = '';
+      if(customSteps.length === 0){
+        const e = document.createElement('div'); e.textContent = 'No custom steps'; e.style.color='#6b7280'; customStepsEl.appendChild(e); return;
+      }
+      customSteps.slice().reverse().forEach((s, idx)=>{
+        const row = document.createElement('div');
+        row.style.display='flex'; row.style.justifyContent='space-between'; row.style.padding='6px 0';
+        const t = document.createElement('div'); t.textContent = s; row.appendChild(t);
+        const btn = document.createElement('button'); btn.textContent='Remove'; btn.style.marginLeft='8px';
+        btn.addEventListener('click', ()=>{ customSteps.splice(customSteps.length-1-idx,1); renderCustomSteps(); });
+        row.appendChild(btn);
+        customStepsEl.appendChild(row);
+      });
+    }
+
+    addStepBtn.addEventListener('click', ()=>{
+      const v = (newStepInput.value||'').trim();
+      if(!v) return; customSteps.push(v); newStepInput.value=''; renderCustomSteps(); pushEvent(`Added custom step: ${v}`);
+    });
+
+    function collectCustomOrDefault(def){
+      return customSteps.length>0 ? customSteps.slice() : def.slice();
+    }
 
     // small demo startup entry
     pushEvent('UI loaded');
