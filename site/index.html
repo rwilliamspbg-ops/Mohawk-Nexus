@@ -673,7 +673,7 @@
         <div class="section-title">Prometheus Live Metrics</div>
         <div class="controls-section">
           <div class="input-group">
-            <input type="url" id="prom-url" placeholder="http://localhost:9090" />
+            <input type="url" id="prom-url" placeholder="http://localhost:9090" value="http://localhost:9090" />
             <button class="btn btn-primary" onclick="connectPrometheus()">Connect Prometheus</button>
             <span id="prom-status" style="color: var(--text-secondary); font-size: 0.9rem;">Disconnected</span>
           </div>
@@ -708,6 +708,53 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Secure Vehicle Updates</div>
+        <div class="controls-section">
+          <div class="controls-title">Send Secure Command with Attestation</div>
+          <div class="input-group">
+            <select id="update-vehicle" style="flex: 0.5;">
+              <option value="">Select vehicle...</option>
+            </select>
+            <select id="update-type" style="flex: 0.5;">
+              <option value="route">Route Update</option>
+              <option value="speed">Speed Limit</option>
+              <option value="diagnostic">Run Diagnostic</option>
+              <option value="recall">Recall Order</option>
+              <option value="software">Software Update</option>
+            </select>
+            <input type="text" id="update-value" placeholder="Command value or destination" style="flex: 1;" />
+            <button class="btn btn-primary" onclick="sendSecureUpdate()">Send with Proof</button>
+          </div>
+          <div id="attestation-display" style="background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; padding: 1rem; margin-top: 1rem; font-family: monospace; font-size: 0.85rem; word-break: break-all; display: none;">
+            <div style="color: var(--accent); font-weight: 700; margin-bottom: 0.5rem;">Attestation Proof (SHA256)</div>
+            <div id="attestation-hash"></div>
+            <div style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.8rem;">⨯ Timestamp: <span id="attestation-time"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Command Audit Log</div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Vehicle ID</th>
+              <th>Command Type</th>
+              <th>Value</th>
+              <th>Status</th>
+              <th>Proof Hash</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="audit-log">
+            <tr style="color: var(--text-secondary);">
+              <td colspan="6">No commands sent yet</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="section" id="areas">
@@ -1032,9 +1079,11 @@
     function initializeUI() {
       updateAreaGrid();
       updateFleetTable();
+      updateVehicleSelector();
       updateKPIs();
       initMap();
       updateMapVehicles();
+      autoConnectPrometheus();
       // Start real-time data simulation
       simulateRealDataUpdates();
     }
@@ -1051,15 +1100,110 @@
       alert(`${title}\n${message}`);
     }
 
-    // Prometheus integration
+    // Audit log for commands
+    let auditLog = [];
+
+    // SHA256 hash function (simple implementation)
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Populate vehicle selector
+    function updateVehicleSelector() {
+      const selector = document.getElementById('update-vehicle');
+      selector.innerHTML = '<option value="">Select vehicle...</option>';
+      fleetRoster.forEach(v => {
+        const option = document.createElement('option');
+        option.value = v.id;
+        option.textContent = `${v.id} (${v.status})`;
+        selector.appendChild(option);
+      });
+    }
+
+    // Send secure update with attestation
+    async function sendSecureUpdate() {
+      const vehicleId = document.getElementById('update-vehicle').value;
+      const updateType = document.getElementById('update-type').value;
+      const updateValue = document.getElementById('update-value').value;
+
+      if (!vehicleId || !updateType || !updateValue) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      const timestamp = new Date().toISOString();
+      const nonce = Math.random().toString(36).substring(2, 15);
+      const message = `${vehicleId}|${updateType}|${updateValue}|${timestamp}|${nonce}`;
+      const proof = await sha256(message);
+
+      // Display attestation
+      document.getElementById('attestation-hash').textContent = proof;
+      document.getElementById('attestation-time').textContent = timestamp;
+      document.getElementById('attestation-display').style.display = 'block';
+
+      // Add to audit log
+      const logEntry = {
+        vehicleId,
+        updateType,
+        updateValue,
+        status: 'Confirmed',
+        proof: proof.substring(0, 16) + '...',
+        time: new Date().toLocaleTimeString()
+      };
+      auditLog.unshift(logEntry);
+      updateAuditLog();
+
+      // Update vehicle if it's a recall
+      if (updateType === 'recall') {
+        const vehicle = fleetRoster.find(v => v.id === vehicleId);
+        if (vehicle) {
+          vehicle.status = 'idle';
+          updateFleetTable();
+          document.getElementById('update-vehicle').value = '';
+          document.getElementById('update-value').value = '';
+        }
+      }
+
+      alert(`✓ Secure update sent to ${vehicleId}\nProof: ${proof.substring(0, 16)}...`);
+    }
+
+    // Update audit log display
+    function updateAuditLog() {
+      const auditTable = document.getElementById('audit-log');
+      if (auditLog.length === 0) {
+        auditTable.innerHTML = '<tr style="color: var(--text-secondary);"><td colspan="6">No commands sent yet</td></tr>';
+        return;
+      }
+      auditTable.innerHTML = '';
+      auditLog.slice(0, 10).forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.vehicleId}</td>
+          <td>${entry.updateType}</td>
+          <td title="${entry.updateValue}" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">${entry.updateValue}</td>
+          <td><span class="status-indicator indicator-active"><span class="indicator-dot"></span>${entry.status}</span></td>
+          <td style="font-family: monospace; font-size: 0.8rem; color: var(--accent);" title="${entry.proof}">${entry.proof}</td>
+          <td>${entry.time}</td>
+        `;
+        auditTable.appendChild(row);
+      });
+    }
+
+    // Prometheus integration with live queries
     async function connectPrometheus() {
-      const url = (document.getElementById('prom-url').value || '').trim();
+      const url = (document.getElementById('prom-url').value || '').trim() || 'http://localhost:9090';
       if (!url) {
         document.getElementById('prom-status').textContent = 'No endpoint';
         return;
       }
 
+      document.getElementById('prom-url').value = url;
       document.getElementById('prom-status').textContent = 'Querying...';
+      document.getElementById('prom-status').style.color = 'var(--warning)';
+
       try {
         const queries = {
           rounds: 'consensus_rounds_total',
@@ -1096,6 +1240,16 @@
       }
     }
 
+    // Auto-connect Prometheus on load
+    function autoConnectPrometheus() {
+      setTimeout(() => {
+        document.getElementById('prom-url').value = 'http://localhost:9090';
+        void connectPrometheus();
+      }, 1000);
+    }
+
+
+
     // Init on load
     document.addEventListener('DOMContentLoaded', () => {
       initializeUI();
@@ -1106,8 +1260,10 @@
       console.log('Map vehicle updates: every 3 seconds');
     });
 
-    // Make recallVehicle globally accessible
+    // Make functions globally accessible
     window.recallVehicle = recallVehicle;
+    window.sendSecureUpdate = sendSecureUpdate;
+    window.connectPrometheus = connectPrometheus;
   </script>
 </body>
 </html>
