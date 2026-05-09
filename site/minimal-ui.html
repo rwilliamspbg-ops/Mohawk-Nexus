@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Proto — Minimal Actions UI</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:24px;color:#0b1220}
+    h1{font-size:20px;margin:0 0 12px}
+    .controls{display:flex;gap:8px;margin-bottom:12px}
+    button{padding:8px 12px;border:1px solid #d0d7de;background:#f6f8fa;border-radius:6px;cursor:pointer}
+    button:active{transform:translateY(1px)}
+    .panel{display:flex;gap:16px}
+    .col{flex:1;min-width:220px}
+    .box{border:1px solid #e1e4e8;padding:12px;border-radius:8px;background:#fff}
+    .log{height:300px;overflow:auto;font-family:monospace;font-size:13px;padding:8px;background:#fbfdff;border-radius:6px}
+    .muted{color:#6b7280;font-size:13px}
+    .small{font-size:13px}
+  </style>
+</head>
+<body>
+  <h1>Proto — Minimal Actions UI</h1>
+  <p class="muted">A tiny surface that shows the actions running "under the hood" of the proto. Use the buttons to trigger sequences; the event log shows internal steps.</p>
+
+  <div class="controls">
+    <button id="btn-start">Start Proto</button>
+    <button id="btn-step">Do Step</button>
+    <button id="btn-verify">Verify</button>
+    <button id="btn-reset">Reset</button>
+  </div>
+
+  <div class="panel">
+    <div class="col">
+      <div class="box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong>Under-the-hood Actions</strong>
+          <span class="small muted" id="status-pill">idle</span>
+        </div>
+        <div id="current-action" class="muted small">No action running</div>
+        <hr style="margin:8px 0">
+        <div class="muted small">Last sequence:</div>
+        <div id="sequence" class="log" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="box">
+        <strong>Event Log</strong>
+        <div id="event-log" class="log" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btnStart = document.getElementById('btn-start');
+    const btnStep = document.getElementById('btn-step');
+    const btnVerify = document.getElementById('btn-verify');
+    const btnReset = document.getElementById('btn-reset');
+    const eventLog = document.getElementById('event-log');
+    const seq = document.getElementById('sequence');
+    const current = document.getElementById('current-action');
+    const status = document.getElementById('status-pill');
+
+    function ts(){return new Date().toISOString().replace('T',' ').slice(0,19)}
+    function pushEvent(text){
+      const li = document.createElement('div');
+      li.textContent = `[${ts()}] ${text}`;
+      eventLog.prepend(li);
+    }
+
+    function pushSeq(text){
+      const li = document.createElement('div');
+      li.textContent = `[${ts()}] ${text}`;
+      seq.prepend(li);
+    }
+
+    function setCurrent(text){ current.textContent = text; }
+    function setStatus(s){ status.textContent = s; }
+
+    function runSequence(name, steps, delay=350){
+      setStatus('running');
+      pushEvent(name + ' (started)');
+      setCurrent(name + ' — running');
+      let i = 0;
+      (function next(){
+        if(i>=steps.length){
+          setCurrent('idle');
+          setStatus('idle');
+          pushEvent(name + ' (completed)');
+          return;
+        }
+        const step = steps[i++];
+        pushSeq(`${name} → ${step}`);
+        pushEvent(`${name} : ${step}`);
+        setCurrent(step);
+        setTimeout(next, delay);
+      })();
+    }
+
+    btnStart.addEventListener('click', ()=>{
+      runSequence('Start Proto', [
+        'initialize',
+        'load-plan',
+        'allocate-resources',
+        'spawn-routines',
+        'start-loop'
+      ], 250);
+    });
+
+    btnStep.addEventListener('click', ()=>{
+      runSequence('Do Step', [
+        'plan-step',
+        'execute-op',
+        'send-effects',
+        'collect-observations'
+      ], 300);
+    });
+
+    btnVerify.addEventListener('click', ()=>{
+      runSequence('Verify', [
+        'gather-evidence',
+        'query-verifier',
+        'compare-expected',
+        'write-proof'
+      ], 400);
+    });
+
+    btnReset.addEventListener('click', ()=>{
+      pushEvent('Reset pressed — clearing state');
+      seq.innerHTML = '';
+      eventLog.innerHTML = '';
+      setCurrent('idle');
+      setStatus('idle');
+    });
+
+    // small demo startup entry
+    pushEvent('UI loaded');
+    pushSeq('Initial idle state');
+  </script>
+</body>
+</html>
