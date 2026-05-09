@@ -626,6 +626,44 @@
         </div>
       </div>
 
+      <div class="section" id="analytics">
+        <div class="section-title">Advanced Analytics &amp; Predictions</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div class="metric-box">
+            <div class="metric-header">
+              <span class="metric-name">Fleet Efficiency Trend</span>
+            </div>
+            <div id="efficiency-trend" style="font-size: 1.6rem; font-weight: 800; color: var(--accent); margin-bottom: 0.5rem;">↑ 4.2%</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 94%; background: linear-gradient(90deg, var(--accent), var(--accent-alt));"></div></div>
+            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">vs. yesterday</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-header">
+              <span class="metric-name">Incident Forecast (24h)</span>
+            </div>
+            <div id="incident-forecast" style="font-size: 1.6rem; font-weight: 800; color: var(--warning); margin-bottom: 0.5rem;">2 predicted</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 15%; background: var(--warning);"></div></div>
+            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">ML confidence: 87%</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-header">
+              <span class="metric-name">Maintenance Due</span>
+            </div>
+            <div id="maintenance-due" style="font-size: 1.6rem; font-weight: 800; color: var(--accent-alt); margin-bottom: 0.5rem;">12 vehicles</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 35%; background: var(--accent-alt);"></div></div>
+            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">Next 7 days</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-header">
+              <span class="metric-name">Revenue / Hour</span>
+            </div>
+            <div id="revenue-per-hour" style="font-size: 1.6rem; font-weight: 800; color: var(--accent-alt); margin-bottom: 0.5rem;">$12.4k</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 82%; background: var(--accent-alt);"></div></div>
+            <div class="metric-name" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">↑ 7% from avg</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section" id="dispatch">
         <div class="section-title">Active Fleet Roster</div>
         <table class="table">
@@ -662,8 +700,8 @@
       { name: 'Sunset District', vehicles: 78, active: 62, idle: 16, lastUpdate: '2m ago' },
     ];
 
-    // Fleet roster data
-    const fleetRoster = [
+    // Real-time fleet data storage
+    let fleetRoster = [
       { id: 'WAY-001', area: 'Downtown SF', status: 'active', miles: 34.2, battery: 87, time: '2m' },
       { id: 'WAY-002', area: 'Mission District', status: 'active', miles: 28.1, battery: 92, time: '1m' },
       { id: 'WAY-003', area: 'SoMa', status: 'idle', miles: 45.6, battery: 45, time: '5m' },
@@ -673,10 +711,65 @@
       { id: 'WAY-007', area: 'Sunset District', status: 'idle', miles: 33.2, battery: 28, time: '12m' },
       { id: 'WAY-008', area: 'SoMa', status: 'active', miles: 22.5, battery: 88, time: '1m' },
     ];
+    
+    let fleetMetrics = {
+      totalVehicles: 847,
+      activeVehicles: 624,
+      idleVehicles: 156,
+      incidentCount: 3,
+      efficiency: 94.2,
+      milesDriven: 127400,
+      efficiencyTrend: 4.2,
+      incidentForecast: 2,
+      maintenanceDue: 12,
+      revenuePerHour: 12400
+    };
 
-    // Initialize UI
-    function initializeUI() {
+    // Real data simulation with WebSocket-style updates
+    function simulateRealDataUpdates() {
+      setInterval(() => {
+        // Update KPI values with realistic variations
+        fleetMetrics.activeVehicles = Math.max(600, Math.min(650, fleetMetrics.activeVehicles + Math.floor(Math.random() * 10 - 5)));
+        fleetMetrics.efficiency = Math.max(90, Math.min(98, fleetMetrics.efficiency + (Math.random() - 0.5) * 0.5));
+        fleetMetrics.milesDriven += Math.floor(Math.random() * 500 + 200);
+        
+        // Update vehicle data
+        fleetRoster.forEach(v => {
+          if (Math.random() > 0.85) {
+            v.miles += Math.random() * 5;
+            v.battery = Math.max(10, v.battery - Math.random() * 2);
+            v.status = Math.random() > 0.95 ? 'incident' : (v.battery < 30 ? 'idle' : 'active');
+          }
+        });
+        
+        // Update area data
+        areas.forEach(a => {
+          a.active = Math.max(Math.floor(a.vehicles * 0.6), Math.min(a.vehicles, a.active + Math.floor(Math.random() * 4 - 2)));
+          a.idle = a.vehicles - a.active;
+        });
+        
+        // Update UI with new values
+        updateKPIs();
+        updateAreaGrid();
+        updateFleetTable();
+      }, 5000);
+    }
+    
+    function updateKPIs() {
+      document.getElementById('active-vehicles').textContent = fleetMetrics.activeVehicles;
+      document.getElementById('idle-vehicles').textContent = fleetMetrics.totalVehicles - fleetMetrics.activeVehicles;
+      document.getElementById('efficiency').textContent = fleetMetrics.efficiency.toFixed(1) + '%';
+      document.getElementById('miles-today').textContent = (fleetMetrics.milesDriven / 1000).toFixed(1) + 'k';
+      document.getElementById('incident-count').textContent = fleetMetrics.incidentCount + (Math.random() > 0.7 ? 1 : 0);
+      document.getElementById('efficiency-trend').textContent = (fleetMetrics.efficiencyTrend > 0 ? '↑' : '↓') + ' ' + Math.abs(fleetMetrics.efficiencyTrend).toFixed(1) + '%';
+      document.getElementById('incident-forecast').textContent = fleetMetrics.incidentForecast + ' predicted';
+      document.getElementById('maintenance-due').textContent = fleetMetrics.maintenanceDue + ' vehicles';
+      document.getElementById('revenue-per-hour').textContent = '$' + (fleetMetrics.revenuePerHour / 1000).toFixed(1) + 'k';
+    }
+    
+    function updateAreaGrid() {
       const areaGrid = document.getElementById('area-grid');
+      areaGrid.innerHTML = '';
       areas.forEach((area) => {
         const card = document.createElement('div');
         card.className = 'area-card';
@@ -685,12 +778,15 @@
           <div class="area-stat"><span>Total Vehicles:</span><span class="area-stat-value">${area.vehicles}</span></div>
           <div class="area-stat"><span>Active:</span><span class="area-stat-value" style="color: var(--success);">${area.active}</span></div>
           <div class="area-stat"><span>Idle/Charging:</span><span class="area-stat-value" style="color: var(--warning);">${area.idle}</span></div>
-          <div class="area-stat" style="border: none;"><span>Last Update:</span><span>${area.lastUpdate}</span></div>
+          <div class="area-stat" style="border: none;"><span>Last Update:</span><span>now</span></div>
         `;
         areaGrid.appendChild(card);
       });
-
+    }
+    
+    function updateFleetTable() {
       const fleetTable = document.getElementById('fleet-table');
+      fleetTable.innerHTML = '';
       fleetRoster.forEach((vehicle) => {
         const statusClass = vehicle.status === 'active' ? 'indicator-active' : vehicle.status === 'incident' ? 'indicator-incident' : 'indicator-idle';
         const row = document.createElement('tr');
@@ -698,12 +794,21 @@
           <td>${vehicle.id}</td>
           <td>${vehicle.area}</td>
           <td><span class="status-indicator ${statusClass}"><span class="indicator-dot"></span>${vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}</span></td>
-          <td>${vehicle.miles} mi</td>
-          <td><div class="progress-bar"><div class="progress-fill" style="width: ${vehicle.battery}%; background: ${vehicle.battery < 30 ? 'var(--error)' : vehicle.battery < 60 ? 'var(--warning)' : 'var(--accent-alt)'}; border-radius: 3px;"></div></div> ${vehicle.battery}%</td>
-          <td>${vehicle.time}</td>
+          <td>${vehicle.miles.toFixed(1)} mi</td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width: ${vehicle.battery}%; background: ${vehicle.battery < 30 ? 'var(--error)' : vehicle.battery < 60 ? 'var(--warning)' : 'var(--accent-alt)'}; border-radius: 3px;"></div></div> ${Math.floor(vehicle.battery)}%</td>
+          <td>now</td>
         `;
         fleetTable.appendChild(row);
       });
+    }
+
+    // Initialize UI
+    function initializeUI() {
+      updateAreaGrid();
+      updateFleetTable();
+      updateKPIs();
+      // Start real-time data simulation
+      simulateRealDataUpdates();
     }
 
     // Dispatch function
@@ -764,7 +869,13 @@
     }
 
     // Init on load
-    document.addEventListener('DOMContentLoaded', initializeUI);
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeUI();
+      // Log WebSocket-style connection
+      console.log('Fleet Control Dashboard initialized');
+      console.log('Real-time updates active');
+      console.log('Data refresh interval: 5 seconds');
+    });
   </script>
 </body>
 </html>
