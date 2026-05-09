@@ -1,6 +1,6 @@
 # 30-Second Pitch Reference: Mohawk Nexus
 
-> Current demo: Agentic Sovereignty Console. The pitch now centers on AG-UI interaction, A2UI rendering, and optional MCP Apps.
+> Current demo: Agentic Sovereignty Console. The pitch now centers on AG-UI interaction, A2UI rendering, Prometheus scrape verification on port 9090, and optional MCP Apps.
 
 ## Context for Judges
 
@@ -17,6 +17,8 @@
 
 **[Show the solution]**
 "We route aggregation across sovereign nodes. No central honeypot. Byzantine-tolerant consensus with zk-SNARK proofs guarantees the answer wasn't tampered with."
+
+"We also mirror that proof signal through Prometheus on port 9090 so the run is inspectable outside the UI."
 
 **[The wow]**
 "Our Mohawk Protocol scales with O(d log n) memory instead of O(n). That means less RAM, lower electricity demand, and less water use while keeping real sovereignty. Watch."
@@ -75,6 +77,9 @@ A: "Speed isn't the bottleneck. Trust is. And cost. A centralized aggregator own
 
 **Q: "Will this actually get deployed?"**
 A: "Absolutely. Healthcare (HIPAA compliance without data centralization), agriculture (farmer sovereignty), supply chains, and any domain where 1000s of organizations need to share intelligence without trusting one central party."
+
+**Q: "How do I check the proof outside the demo page?"**
+A: "Open Prometheus on port 9090 and inspect the target or metrics view. The same verification state is surfaced there, not just in the page."
 
 ---
 

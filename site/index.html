@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mohawk Nexus | Agentic Sovereignty Console</title>
-  <meta name="description" content="A hackathon-ready demo for Mohawk Nexus showing AG-UI interaction, A2UI rendering, and MCP Apps as an optional bonus surface." />
+  <meta name="description" content="A hackathon-ready demo for Mohawk Nexus showing AG-UI interaction, A2UI rendering, and Prometheus-scraped verification on port 9090." />
   <style>
     :root {
       --bg: #081019;
@@ -282,6 +282,12 @@
       background: rgba(251, 191, 36, 0.12);
       color: #ffe7ac;
       border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .status-scraping {
+      background: rgba(45, 212, 191, 0.12);
+      color: #bafcec;
+      border: 1px solid rgba(45, 212, 191, 0.22);
     }
 
     .status-verified {
@@ -571,13 +577,13 @@
 
     <section class="hero" id="top">
       <div>
-        <span class="pill reveal" style="--delay: 80ms;">Hackathon entry: AG-UI + A2UI</span>
-        <h1 class="reveal" style="--delay: 140ms;">An agentic console that renders live UI, proves state changes, and keeps MCP Apps optional.</h1>
+        <span class="pill reveal" style="--delay: 80ms;">Hackathon entry: AG-UI + A2UI + Prometheus 9090</span>
+        <h1 class="reveal" style="--delay: 140ms;">An agentic console that renders live UI, proves state changes, and verifies the run through Prometheus scrape data.</h1>
         <p class="lede reveal" style="--delay: 210ms;">
           The hackathon plan is now concrete: use AG-UI for the runtime interaction loop,
-          use A2UI for the live rendered surface, and keep MCP Apps as a secondary flourish
-          only if the main flow is stable. The result is a judge-friendly console, not just a
-          static architecture page.
+          use A2UI for the live rendered surface, and use Prometheus on port 9090 as the proof
+          and metrics layer. MCP Apps stays a secondary flourish only if the main flow is stable.
+          The result is a judge-friendly console, not just a static architecture page.
         </p>
         <div class="cta-row reveal" style="--delay: 280ms;">
           <a class="btn btn-primary" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/HACKATHON-GENUI-PLAN.md" target="_blank" rel="noreferrer">Open Hackathon Plan</a>
@@ -589,7 +595,7 @@
         <div class="kpi-grid">
           <div class="kpi"><strong>AG-UI</strong><span>Runtime interaction layer and state handoff</span></div>
           <div class="kpi"><strong>A2UI</strong><span>Declarative live surface for rendered updates</span></div>
-          <div class="kpi"><strong>MCP Apps</strong><span>Optional bonus surface, not the main demo path</span></div>
+          <div class="kpi"><strong>Prometheus 9090</strong><span>Scrape-backed proof layer for the same run</span></div>
           <div class="kpi"><strong>Fallback</strong><span>Static version if the agent loop misbehaves</span></div>
         </div>
       </aside>
@@ -599,7 +605,7 @@
       <div class="console-shell reveal" style="--delay: 120ms;">
         <div class="console-header">
           <div>
-            <span class="console-badge">Live AG-UI to A2UI handoff</span>
+            <span class="console-badge">Live AG-UI to A2UI handoff + Prometheus scrape</span>
             <h2 class="console-title" id="console-title">Agentic Sovereignty Console</h2>
           </div>
           <button class="btn btn-primary" id="run-demo" type="button">Run agent check</button>
@@ -611,6 +617,7 @@
             <div class="console-line"><span>Interaction state</span><strong id="state-label"><span class="status-chip status-idle">idle</span></strong></div>
             <div class="console-line"><span>Agent task</span><strong id="task-label">Waiting for request</strong></div>
             <div class="console-line"><span>Proof status</span><strong id="proof-label">No proof yet</strong></div>
+            <div class="console-line"><span>Prometheus scrape</span><strong id="scrape-label">localhost:9090/targets</strong></div>
             <div class="console-line"><span>Proof hash</span><strong id="hash-label">--</strong></div>
             <div class="console-line"><span>Verification time</span><strong id="time-label">--</strong></div>
           </div>
@@ -620,13 +627,14 @@
             <div class="steps-list" id="step-list">
               <div class="step-item"><strong>AG-UI</strong>Defines the interaction and tells the console what to do next.</div>
               <div class="step-item"><strong>A2UI</strong>Renders the live surface from structured state updates.</div>
+              <div class="step-item"><strong>Prometheus 9090</strong>Scrapes the same run so the proof can be checked outside the UI.</div>
               <div class="step-item"><strong>MCP Apps</strong>Optional only if the core demo is already stable.</div>
             </div>
           </div>
         </div>
 
         <div class="console-actions">
-          <p class="console-note">This is the first executable slice of the implementation checklist: a visible state transition from idle to analyzing to verified, with a fallback path if the agent loop is not ready.</p>
+          <p class="console-note">This is the first executable slice of the implementation checklist: a visible state transition from idle to analyzing to verified, with the same proof signal mirrored through Prometheus on port 9090 and a fallback path if the agent loop is not ready.</p>
           <span class="console-badge">Fallback: static page remains usable</span>
         </div>
       </div>
@@ -642,7 +650,7 @@
         <article class="card reveal" style="--delay: 80ms;"><h3>AG-UI Controls the Loop</h3><p>The agent decides when the interface changes and which interaction state should be shown next.</p></article>
         <article class="card reveal" style="--delay: 120ms;"><h3>A2UI Renders the State</h3><p>The frontend receives structured updates and turns them into a live panel with visible state transitions.</p></article>
         <article class="card reveal" style="--delay: 160ms;"><h3>MCP Apps Stay Optional</h3><p>Only add a small open-ended surface if the core demo is already reliable and visually clear.</p></article>
-        <article class="card reveal" style="--delay: 200ms;"><h3>Verification Badge</h3><p>Show an explicit verified or failed state so the judge sees proof, not just text output.</p></article>
+        <article class="card reveal" style="--delay: 200ms;"><h3>Prometheus Proof Surface</h3><p>Mirror the verification state through Prometheus on port 9090 so the judge can inspect the same run outside the UI.</p></article>
         <article class="card reveal" style="--delay: 240ms;"><h3>Fallback Static View</h3><p>Keep a non-agentic version of the same story in case the live protocol layer stalls during the demo.</p></article>
         <article class="card reveal" style="--delay: 280ms;"><h3>Judge-Friendly Story</h3><p>Every visible element should help answer one question: what did the agent do, and why should I trust it?</p></article>
       </div>
@@ -658,7 +666,7 @@
         <article class="vertical reveal" style="--delay: 100ms;"><h3>Phase 1: Story</h3><p>Update the pitch and hero copy so the demo clearly says AG-UI drives the interaction and A2UI renders the result.</p></article>
         <article class="vertical reveal" style="--delay: 160ms;"><h3>Phase 2: Surface</h3><p>Replace static summary panels with one live state panel that changes from idle to analyzing to verified.</p></article>
         <article class="vertical reveal" style="--delay: 220ms;"><h3>Phase 3: Runtime</h3><p>Wire the single interaction loop, keep the payload tiny, and make every change visible on screen.</p></article>
-        <article class="vertical reveal" style="--delay: 280ms;"><h3>Phase 4: Proof</h3><p>Add one explicit proof or verification indicator so the judge sees the evidence trail instead of inferring it.</p></article>
+        <article class="vertical reveal" style="--delay: 280ms;"><h3>Phase 4: Proof</h3><p>Add one explicit proof or verification indicator, then mirror that same signal through Prometheus on port 9090 so the judge can inspect it directly.</p></article>
       </div>
     </section>
 
@@ -672,7 +680,7 @@
         <article class="event reveal" style="--delay: 90ms;"><h4>Step 1: Request</h4><p>Start with a simple task, such as checking node health or verifying an aggregate.</p></article>
         <article class="event reveal" style="--delay: 140ms;"><h4>Step 2: Agent Decision</h4><p>AG-UI handles the interaction and decides what the next surface state should be.</p></article>
         <article class="event reveal" style="--delay: 190ms;"><h4>Step 3: A2UI Render</h4><p>The frontend receives declarative updates and turns them into a visible live panel.</p></article>
-        <article class="event reveal" style="--delay: 240ms;"><h4>Step 4: Verification</h4><p>The proof badge flips to verified, showing the result is backed by more than just a chat response.</p></article>
+        <article class="event reveal" style="--delay: 240ms;"><h4>Step 4: Verification</h4><p>The proof badge flips to verified, and Prometheus scrape data on port 9090 shows the same run outside the UI.</p></article>
         <article class="event reveal" style="--delay: 290ms;"><h4>Step 5: Optional Flourish</h4><p>If time remains, show one MCP Apps surface for an editable diagram or secondary visualization.</p></article>
       </div>
     </section>
@@ -692,6 +700,10 @@
           <strong>Pages Settings</strong>
           <span>Set source to GitHub Actions, then publish automatically.</span>
         </a>
+        <a class="resource reveal" style="--delay: 200ms;" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/02-DEPLOYMENT.md" target="_blank" rel="noreferrer">
+          <strong>Prometheus Port 9090</strong>
+          <span>Use the deployment guide to forward Prometheus and inspect the same verification flow.</span>
+        </a>
       </div>
     </section>
 
@@ -699,7 +711,7 @@
       <h2 class="section-title">Source Evidence Links</h2>
       <p class="section-copy">Use these links during demos to validate the protocol choice, the plan, and the architecture references.</p>
       <div class="links">
-        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/HACKATHON-GENUI-PLAN.md" target="_blank" rel="noreferrer"><strong>Hackathon GenUI Plan</strong><span>The concrete execution checklist for AG-UI, A2UI, and optional MCP Apps.</span></a>
+        <a class="resource" href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/HACKATHON-GENUI-PLAN.md" target="_blank" rel="noreferrer"><strong>Hackathon GenUI Plan</strong><span>The concrete execution checklist for AG-UI, A2UI, Prometheus 9090, and optional MCP Apps.</span></a>
         <a class="resource" href="https://github.com/copilotkit/generative-ui" target="_blank" rel="noreferrer"><strong>CopilotKit Generative UI Repo</strong><span>Source reference for the protocol trade-offs and implementation patterns.</span></a>
         <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/blob/main/README.md" target="_blank" rel="noreferrer"><strong>Sovereign-Mohawk-Proto README</strong><span>Primary capability overview, quickstarts, and platform context.</span></a>
         <a class="resource" href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/tree/main/proofs" target="_blank" rel="noreferrer"><strong>Formal Proofs Directory</strong><span>Lean modules, verification logs, and formal traceability assets.</span></a>
@@ -720,10 +732,11 @@
       const stateLabel = document.getElementById('state-label');
       const taskLabel = document.getElementById('task-label');
       const proofLabel = document.getElementById('proof-label');
+      const scrapeLabel = document.getElementById('scrape-label');
       const hashLabel = document.getElementById('hash-label');
       const timeLabel = document.getElementById('time-label');
 
-      if (!runButton || !stateLabel || !taskLabel || !proofLabel || !hashLabel || !timeLabel) {
+      if (!runButton || !stateLabel || !taskLabel || !proofLabel || !scrapeLabel || !hashLabel || !timeLabel) {
         return;
       }
 
@@ -732,18 +745,28 @@
           name: 'idle',
           task: 'Waiting for request',
           proof: 'No proof yet',
+          scrape: 'localhost:9090/targets',
           hash: '--',
         },
         {
           name: 'analyzing',
           task: 'AG-UI requested a node-health check',
           proof: 'Generating response',
+          scrape: 'Preparing Prometheus scrape',
+          hash: 'pending',
+        },
+        {
+          name: 'scraping',
+          task: 'Prometheus is checking the same run on port 9090',
+          proof: 'Scrape in progress',
+          scrape: 'Checking /targets on localhost:9090',
           hash: 'pending',
         },
         {
           name: 'verified',
           task: 'A2UI rendered the verified result',
-          proof: 'Proof verified',
+          proof: 'Proof verified and scraped',
+          scrape: 'Prometheus target healthy on localhost:9090',
           hash: '0x8f42a7c1e3b9d6a4',
         },
       ];
@@ -754,6 +777,7 @@
         stateLabel.innerHTML = `<span class="${chipClass(state.name)}">${state.name}</span>`;
         taskLabel.textContent = state.task;
         proofLabel.textContent = state.proof;
+        scrapeLabel.textContent = state.scrape;
         hashLabel.textContent = state.hash;
         timeLabel.textContent = state.name === 'verified'
           ? new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
@@ -770,15 +794,19 @@
         renderState(states[1]);
 
         window.setTimeout(() => {
-          runCount += 1;
-          const proofSuffix = String(runCount).padStart(2, '0');
-          renderState({
-            ...states[2],
-            hash: `0x8f42a7c1e3b9d6a4${proofSuffix}`,
-          });
-          runButton.disabled = false;
-          runButton.textContent = 'Run agent check';
-        }, 900);
+          renderState(states[2]);
+
+          window.setTimeout(() => {
+            runCount += 1;
+            const proofSuffix = String(runCount).padStart(2, '0');
+            renderState({
+              ...states[3],
+              hash: `0x8f42a7c1e3b9d6a4${proofSuffix}`,
+            });
+            runButton.disabled = false;
+            runButton.textContent = 'Run agent check';
+          }, 520);
+        }, 520);
       });
     })();
   </script>

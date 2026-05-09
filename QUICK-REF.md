@@ -1,6 +1,6 @@
 # Hackathon Quick Reference Card 🚀
 
-> Current narrative: Agentic Sovereignty Console. Use AG-UI for interaction, A2UI for rendering, and keep MCP Apps optional.
+> Current narrative: Agentic Sovereignty Console. Use AG-UI for interaction, A2UI for rendering, Prometheus on port 9090 for proof, and keep MCP Apps optional.
 
 **Print this. Bring it. Win.**
 
@@ -11,6 +11,8 @@
 "Standard agentic systems depend on centralized servers. That creates trust, privacy, and cost problems, and it burns electricity and water at scale.
 
 We route aggregation across sovereign nodes. No central honeypot. Byzantine-tolerant consensus with zk-SNARK proofs mathematically prove nothing was tampered with.
+
+The same verification state is mirrored through Prometheus on port 9090, so the judge can inspect it outside the page.
 
 Our Mohawk Protocol scales with **O(d log n) memory**—not O(n). That means less RAM, lower electricity demand, less water use, and **real sovereignty**.
 
@@ -60,6 +62,9 @@ OUTPUT: Verified intelligence, no central authority
 "Each aggregation triggers a zk-SNARK proof."
 [Point to timeline: proof ✓ appearing 10/10 times]
 
+"And Prometheus on port 9090 shows the same proof state."
+[Open /targets or metrics view]
+
 "Try to tamper with one: watch the proof fail."
 [Inject fault → proof becomes ✗ = Byzantine rejects]
 
@@ -94,6 +99,8 @@ OUTPUT: Verified intelligence, no central authority
 **Forgot a stat?** → "The key insight is: we reduced aggregation from linear to logarithmic complexity. That's the algorithmic breakthrough."
 
 **No internet?** → "Let me run it locally." [Hit `npm run dev` - you prepped this offline]
+
+**Need proof?** → "Open Prometheus on 9090. The scrape view shows the same verification signal."
 
 **Ran out of time?** → "Here's the repo. [Point to GitHub] All open-source. We'd love your feedback."
 

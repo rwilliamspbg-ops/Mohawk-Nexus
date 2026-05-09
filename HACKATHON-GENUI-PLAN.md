@@ -48,7 +48,8 @@ The message is simple:
 2. One A2UI-rendered live panel for protocol state.
 3. One AG-UI interaction loop that drives the panel updates.
 4. One proof or verification badge that changes state as the interaction proceeds.
-5. A fallback static version of the same demo that still tells the story if the agent layer fails.
+5. One Prometheus-scraped proof surface on port 9090 that mirrors the same verification state outside the UI.
+6. A fallback static version of the same demo that still tells the story if the agent layer fails.
 
 ### Optional bonus deliverable
 
@@ -79,6 +80,7 @@ The message is simple:
 1. Show a proof badge, verification timestamp, or deterministic result hash.
 2. Make the verification visible, not implied.
 3. Tie the proof status to the current panel state.
+4. Mirror the same signal through Prometheus on port 9090 so the judge can inspect the run outside the page.
 
 ### Phase 5: Add the flourish only if stable
 
@@ -130,8 +132,9 @@ The plan is successful if all of the following are true:
 
 1. A judge can see the agent driving the interface.
 2. A2UI is visibly doing real work in the UI.
-3. The demo feels credible even if the optional MCP piece is removed.
-4. The story remains aligned with Mohawk Nexus: sovereignty, verification, and efficiency.
+3. Prometheus on port 9090 exposes the same proof signal outside the UI.
+4. The demo feels credible even if the optional MCP piece is removed.
+5. The story remains aligned with Mohawk Nexus: sovereignty, verification, and efficiency.
 
 ## What not to do
 
@@ -142,4 +145,4 @@ The plan is successful if all of the following are true:
 
 ## Final recommendation
 
-Build AG-UI + A2UI first, treat MCP Apps as optional, and present the result as an Agentic Sovereignty Console.
+Build AG-UI + A2UI first, treat MCP Apps as optional, mirror proof through Prometheus on port 9090, and present the result as an Agentic Sovereignty Console.

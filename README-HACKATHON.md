@@ -8,6 +8,8 @@ If you want the shortest path to a strong demo, use the new [HACKATHON-GENUI-PLA
 
 It locks the hackathon entry to one main path: AG-UI for interaction, A2UI for the live UI, and one small MCP Apps bonus surface only if time remains.
 
+The proof path for the demo is Prometheus on port 9090, which mirrors the same verification signal outside the UI.
+
 ## Current Status
 
 Track work in [HACKATHON-PROGRESS.md](HACKATHON-PROGRESS.md). That file is the living checklist for what is done, what is pending, and what comes next.
@@ -15,6 +17,7 @@ Track work in [HACKATHON-PROGRESS.md](HACKATHON-PROGRESS.md). That file is the l
 Current direction:
 
 - Primary: AG-UI + A2UI
+- Proof: Prometheus scrape on port 9090
 - Secondary: MCP Apps only if the core flow is stable
 - Public demo: Agentic Sovereignty Console
 
