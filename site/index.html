@@ -335,11 +335,118 @@
       cursor: pointer;
     }
 
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+
+    .btn-ghost {
+      color: var(--ink);
+      border: 1px solid rgba(159, 179, 201, 0.28);
+      background: rgba(21, 38, 58, 0.82);
+    }
+
     .console-note {
       color: var(--muted);
       font-size: 0.9rem;
       line-height: 1.55;
       max-width: 62ch;
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 0.9rem;
+      margin-top: 0.9rem;
+    }
+
+    .telemetry-panel {
+      border-radius: 0.95rem;
+      border: 1px solid rgba(159, 179, 201, 0.18);
+      background: rgba(8, 16, 25, 0.72);
+      padding: 1rem;
+      min-height: 210px;
+    }
+
+    .telemetry-panel h3 {
+      margin: 0 0 0.85rem;
+      font-size: 0.98rem;
+      color: #d4f8ff;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .metric {
+      border-radius: 0.85rem;
+      border: 1px solid rgba(159, 179, 201, 0.14);
+      background: rgba(16, 28, 43, 0.76);
+      padding: 0.8rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #d0f8ff;
+      margin-bottom: 0.2rem;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .meter {
+      margin-top: 0.55rem;
+      height: 0.45rem;
+      background: rgba(34, 57, 81, 0.75);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: var(--fill, 50%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2dd4bf, #22c55e);
+      transition: width 240ms ease;
+    }
+
+    .event-log {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .event-item {
+      display: grid;
+      grid-template-columns: 4.6rem 1fr;
+      gap: 0.7rem;
+      align-items: start;
+      border-radius: 0.85rem;
+      border: 1px solid rgba(159, 179, 201, 0.12);
+      background: rgba(16, 28, 43, 0.64);
+      padding: 0.75rem 0.8rem;
+    }
+
+    .event-item time {
+      color: var(--cyan);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .event-item p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.93rem;
     }
 
     .kpi-grid {
@@ -608,7 +715,6 @@
             <span class="console-badge">Live AG-UI to A2UI handoff + Prometheus scrape</span>
             <h2 class="console-title" id="console-title">Agentic Sovereignty Console</h2>
           </div>
-          <button class="btn btn-primary" id="run-demo" type="button">Run agent check</button>
         </div>
 
         <div class="console-grid">
@@ -635,7 +741,48 @@
 
         <div class="console-actions">
           <p class="console-note">This is the first executable slice of the implementation checklist: a visible state transition from idle to analyzing to verified, with the same proof signal mirrored through Prometheus on port 9090 and a fallback path if the agent loop is not ready.</p>
-          <span class="console-badge">Fallback: static page remains usable</span>
+          <div class="control-row">
+            <button class="btn btn-primary" id="run-demo" type="button">Run agent check</button>
+            <button class="btn btn-ghost" id="fault-demo" type="button">Inject fault</button>
+            <button class="btn btn-ghost" id="reset-demo" type="button">Reset</button>
+          </div>
+        </div>
+
+        <div class="telemetry-grid">
+          <div class="telemetry-panel">
+            <h3>Node Telemetry</h3>
+            <div class="metric-grid">
+              <div class="metric">
+                <strong id="metric-nodes">10</strong>
+                <span>Active sovereign nodes contributing to the aggregate.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-nodes" style="--fill: 84%;"></div></div>
+              </div>
+              <div class="metric">
+                <strong id="metric-latency">12ms</strong>
+                <span>Proof latency surfaced to the judge in the live console.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-latency" style="--fill: 72%;"></div></div>
+              </div>
+              <div class="metric">
+                <strong id="metric-faults">1/3</strong>
+                <span>Byzantine fault budget still available before verification fails.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-faults" style="--fill: 66%;"></div></div>
+              </div>
+              <div class="metric">
+                <strong id="metric-scrape">Healthy</strong>
+                <span>Prometheus on port 9090 exposes the same proof state.</span>
+                <div class="meter" aria-hidden="true"><div class="meter-fill" id="meter-scrape" style="--fill: 88%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="telemetry-panel">
+            <h3>Agent Event Log</h3>
+            <div class="event-log" id="event-log" aria-live="polite">
+              <div class="event-item"><time>00:00</time><p>Agent console is idle and waiting for a request.</p></div>
+              <div class="event-item"><time>00:01</time><p>Prometheus target is available at localhost:9090/targets.</p></div>
+              <div class="event-item"><time>00:02</time><p>A2UI will render the next state change once the check runs.</p></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -729,14 +876,25 @@
   <script>
     (() => {
       const runButton = document.getElementById('run-demo');
+      const faultButton = document.getElementById('fault-demo');
+      const resetButton = document.getElementById('reset-demo');
       const stateLabel = document.getElementById('state-label');
       const taskLabel = document.getElementById('task-label');
       const proofLabel = document.getElementById('proof-label');
       const scrapeLabel = document.getElementById('scrape-label');
       const hashLabel = document.getElementById('hash-label');
       const timeLabel = document.getElementById('time-label');
+      const metricNodes = document.getElementById('metric-nodes');
+      const metricLatency = document.getElementById('metric-latency');
+      const metricFaults = document.getElementById('metric-faults');
+      const metricScrape = document.getElementById('metric-scrape');
+      const meterNodes = document.getElementById('meter-nodes');
+      const meterLatency = document.getElementById('meter-latency');
+      const meterFaults = document.getElementById('meter-faults');
+      const meterScrape = document.getElementById('meter-scrape');
+      const eventLog = document.getElementById('event-log');
 
-      if (!runButton || !stateLabel || !taskLabel || !proofLabel || !scrapeLabel || !hashLabel || !timeLabel) {
+      if (!runButton || !faultButton || !resetButton || !stateLabel || !taskLabel || !proofLabel || !scrapeLabel || !hashLabel || !timeLabel || !metricNodes || !metricLatency || !metricFaults || !metricScrape || !meterNodes || !meterLatency || !meterFaults || !meterScrape || !eventLog) {
         return;
       }
 
@@ -747,6 +905,8 @@
           proof: 'No proof yet',
           scrape: 'localhost:9090/targets',
           hash: '--',
+          metrics: { nodes: '10', latency: '12ms', faults: '1/3', scrape: 'Healthy', fill: { nodes: 84, latency: 72, faults: 66, scrape: 88 } },
+          log: 'Agent console is idle and waiting for a request.',
         },
         {
           name: 'analyzing',
@@ -754,6 +914,8 @@
           proof: 'Generating response',
           scrape: 'Preparing Prometheus scrape',
           hash: 'pending',
+          metrics: { nodes: '10', latency: '18ms', faults: '1/3', scrape: 'Polling', fill: { nodes: 84, latency: 60, faults: 66, scrape: 72 } },
+          log: 'AG-UI requested a node-health check and the console started preparing the scrape.',
         },
         {
           name: 'scraping',
@@ -761,6 +923,8 @@
           proof: 'Scrape in progress',
           scrape: 'Checking /targets on localhost:9090',
           hash: 'pending',
+          metrics: { nodes: '10', latency: '15ms', faults: '1/3', scrape: 'Scraping', fill: { nodes: 84, latency: 68, faults: 66, scrape: 80 } },
+          log: 'Prometheus is checking the same run on port 9090 while the UI waits for proof.',
         },
         {
           name: 'verified',
@@ -768,6 +932,17 @@
           proof: 'Proof verified and scraped',
           scrape: 'Prometheus target healthy on localhost:9090',
           hash: '0x8f42a7c1e3b9d6a4',
+          metrics: { nodes: '10', latency: '9ms', faults: '1/3', scrape: 'Healthy', fill: { nodes: 84, latency: 92, faults: 66, scrape: 94 } },
+          log: 'A2UI rendered the verified result and Prometheus marked the target healthy.',
+        },
+        {
+          name: 'failed',
+          task: 'A tampered node broke the proof threshold',
+          proof: 'Verification failed',
+          scrape: 'Prometheus still reachable, proof rejected',
+          hash: '0xdeadbeef',
+          metrics: { nodes: '10', latency: '44ms', faults: '2/3', scrape: 'Alerting', fill: { nodes: 84, latency: 34, faults: 34, scrape: 48 } },
+          log: 'Fault injection tripped the verification threshold and the run was rejected.',
         },
       ];
 
@@ -782,15 +957,28 @@
         timeLabel.textContent = state.name === 'verified'
           ? new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
           : '--';
+
+        metricNodes.textContent = state.metrics.nodes;
+        metricLatency.textContent = state.metrics.latency;
+        metricFaults.textContent = state.metrics.faults;
+        metricScrape.textContent = state.metrics.scrape;
+        meterNodes.style.setProperty('--fill', `${state.metrics.fill.nodes}%`);
+        meterLatency.style.setProperty('--fill', `${state.metrics.fill.latency}%`);
+        meterFaults.style.setProperty('--fill', `${state.metrics.fill.faults}%`);
+        meterScrape.style.setProperty('--fill', `${state.metrics.fill.scrape}%`);
+
+        eventLog.innerHTML = `
+          <div class="event-item"><time>${state.name.toUpperCase()}</time><p>${state.log}</p></div>
+          <div class="event-item"><time>TRACE</time><p>AG-UI drives the state, A2UI renders it, and Prometheus on port 9090 mirrors the proof.</p></div>
+          <div class="event-item"><time>MODE</time><p>${state.name === 'failed' ? 'Failure path enabled for fault injection.' : 'Fallback static page remains usable.'}</p></div>
+        `;
       };
 
       let runCount = 0;
+      let currentMode = 'normal';
       renderState(states[0]);
 
-      runButton.addEventListener('click', () => {
-        runButton.disabled = true;
-        runButton.textContent = 'Running...';
-
+      const runSequence = () => {
         renderState(states[1]);
 
         window.setTimeout(() => {
@@ -799,14 +987,62 @@
           window.setTimeout(() => {
             runCount += 1;
             const proofSuffix = String(runCount).padStart(2, '0');
-            renderState({
-              ...states[3],
-              hash: `0x8f42a7c1e3b9d6a4${proofSuffix}`,
-            });
+            const nextState = currentMode === 'fault'
+              ? {
+                ...states[4],
+                hash: `0xdeadbeef${proofSuffix}`,
+              }
+              : {
+                ...states[3],
+                hash: `0x8f42a7c1e3b9d6a4${proofSuffix}`,
+              };
+
+            renderState(nextState);
             runButton.disabled = false;
+            runButton.textContent = 'Run agent check';
+            faultButton.disabled = false;
+            resetButton.disabled = false;
+          }, 520);
+        }, 520);
+      };
+
+      runButton.addEventListener('click', () => {
+        runButton.disabled = true;
+        runButton.textContent = 'Running...';
+        faultButton.disabled = true;
+        resetButton.disabled = true;
+        currentMode = 'normal';
+        runSequence();
+      });
+
+      faultButton.addEventListener('click', () => {
+        currentMode = 'fault';
+        runButton.disabled = true;
+        faultButton.disabled = true;
+        resetButton.disabled = true;
+        runButton.textContent = 'Running...';
+        renderState(states[1]);
+
+        window.setTimeout(() => {
+          renderState(states[2]);
+
+          window.setTimeout(() => {
+            renderState(states[4]);
+            runButton.disabled = false;
+            faultButton.disabled = false;
+            resetButton.disabled = false;
             runButton.textContent = 'Run agent check';
           }, 520);
         }, 520);
+      });
+
+      resetButton.addEventListener('click', () => {
+        currentMode = 'normal';
+        runButton.disabled = false;
+        faultButton.disabled = false;
+        resetButton.disabled = false;
+        runButton.textContent = 'Run agent check';
+        renderState(states[0]);
       });
     })();
   </script>

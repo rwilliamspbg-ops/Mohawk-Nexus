@@ -16,6 +16,7 @@
 - [x] Added a small interactive console that simulates the AG-UI to A2UI flow
 - [x] Extended the console to show Prometheus-scraped verification on port 9090
 - [x] Updated the plan to include a Prometheus proof surface in the end-to-end flow
+- [x] Expanded the frontend into a fuller agentic console with mission controls, telemetry, and an event log
 
 ## In Progress
 
