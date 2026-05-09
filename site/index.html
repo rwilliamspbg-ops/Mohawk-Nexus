@@ -221,6 +221,105 @@
       color: var(--text-secondary);
     }
 
+    .agent-rail {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1rem;
+    }
+
+    .agent-stack {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .agent-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      width: fit-content;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(0, 212, 255, 0.12);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .agent-step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.75rem;
+      align-items: start;
+      padding: 0.75rem 0.85rem;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .agent-step strong {
+      color: var(--accent);
+      min-width: 92px;
+    }
+
+    .agent-step span {
+      color: var(--text-primary);
+      line-height: 1.45;
+    }
+
+    .agent-input {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.22);
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    .agent-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.16);
+    }
+
+    .agent-prompt {
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      background: rgba(0, 212, 255, 0.06);
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.86rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text-primary);
+    }
+
+    .agent-actions {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .agent-actions .input-group {
+      margin-bottom: 0;
+    }
+
+    .agent-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 980px) {
+      .agent-rail {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .log {
       height: 300px;
       overflow-y: auto;
@@ -459,6 +558,52 @@ OUTPUT: Verified intelligence, no central authority</pre>
             <button class="btn-primary" id="helper-efficiency">♻ Demo 2</button>
             <button id="helper-pitch">🗣 Pitch</button>
             <button id="helper-close">🏁 Close Strong</button>
+
+        <h2>Agentic Control</h2>
+        <div class="agent-rail">
+          <div class="card">
+            <div class="agent-chip">Agent Loop</div>
+            <h3 style="margin-top:0.8rem;">Observe, reason, act, verify</h3>
+            <div class="agent-stack" id="agent-steps">
+              <div class="agent-step"><strong>Observe</strong><span>Read the current fleet, proof, and telemetry state.</span></div>
+              <div class="agent-step"><strong>Reason</strong><span>Choose the next demo move based on the active story.</span></div>
+              <div class="agent-step"><strong>Act</strong><span>Open the right tab, run the sequence, or reveal the proof surface.</span></div>
+              <div class="agent-step"><strong>Verify</strong><span>Confirm the output with Prometheus or the trace log.</span></div>
+            </div>
+            <div class="input-group" style="margin-top:1rem;">
+              <select id="agent-mode">
+                <option value="brief">Narrate the brief</option>
+                <option value="sovereignty">Agentic sovereignty</option>
+                <option value="efficiency">Efficiency comparison</option>
+                <option value="fleet">Fleet operations</option>
+                <option value="verification">Verification and proof</option>
+              </select>
+              <button class="btn-primary" id="agent-refresh">↻ Replan</button>
+            </div>
+            <textarea id="agent-instruction" class="agent-input" placeholder="Give the agent a target outcome or audience. Example: 'Explain the proof path to a technical judge in 30 seconds.'"></textarea>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-top:0;">Recommended Next Move</h3>
+            <div id="agent-summary" class="agent-prompt" style="margin-bottom:1rem;"></div>
+            <div class="agent-actions">
+              <div class="input-group">
+                <button class="btn-primary" id="agent-plan">🧠 Plan</button>
+                <button id="agent-run">▶ Run</button>
+                <button id="agent-verify">✓ Verify</button>
+              </div>
+              <div class="input-group">
+                <button id="agent-open-brief">🧭 Open Brief</button>
+                <button id="agent-open-proto">🤖 Open Proto</button>
+                <button id="agent-open-metrics">📈 Open Metrics</button>
+              </div>
+              <div class="input-group">
+                <button id="agent-copy">📋 Copy Prompt</button>
+                <button id="agent-reset">↺ Reset Notes</button>
+              </div>
+            </div>
+          </div>
+        </div>
           </div>
           <div class="input-group">
             <button id="helper-fallback">🧰 Break/Fallback</button>
@@ -688,6 +833,34 @@ OUTPUT: Verified intelligence, no central authority</pre>
       ['“What’s the O(d log n) thing?”', 'd is model dimension and n is node count. Traditional aggregation needs O(n) memory; this stays logarithmic.'],
     ];
 
+    const agentPlans = {
+      brief: {
+        label: 'Narrate the brief',
+        nextTab: 'brief',
+        summary: 'Use the one-image architecture to explain the stack, then pivot to the two demo flows and the closing line.',
+      },
+      sovereignty: {
+        label: 'Agentic sovereignty',
+        nextTab: 'brief',
+        summary: 'Open with the sovereign-node aggregation story, then jump to Proto and verify the proof trail.',
+      },
+      efficiency: {
+        label: 'Efficiency comparison',
+        nextTab: 'metrics',
+        summary: 'Show the memory and sustainability numbers first, then compare live metrics and the fleet overhead.',
+      },
+      fleet: {
+        label: 'Fleet operations',
+        nextTab: 'dashboard',
+        summary: 'Lead with fleet state, show the map and telemetry, and use commands as the operator action layer.',
+      },
+      verification: {
+        label: 'Verification and proof',
+        nextTab: 'metrics',
+        summary: 'Use Prometheus and the trace log to prove the system is honest, consistent, and observable.',
+      },
+    };
+
     const prometheusQueries = {
       rounds: 'consensus_rounds_total',
       nodes: 'nodes_participating',
@@ -708,6 +881,7 @@ OUTPUT: Verified intelligence, no central authority</pre>
       vehicles: generateVehicleFleet(),
       audit: [],
       helperNotes: [],
+      agentMode: 'brief',
     };
 
     function generateVehicleFleet() {
@@ -799,6 +973,71 @@ OUTPUT: Verified intelligence, no central authority</pre>
         'Demo 2: Efficiency',
       ].join('\n');
       return navigator.clipboard.writeText(briefText);
+    }
+
+    function openTab(tabName) {
+      document.querySelector(`[data-tab="${tabName}"]`)?.click();
+    }
+
+    function buildAgentPrompt() {
+      const mode = document.getElementById('agent-mode')?.value || state.agentMode || 'brief';
+      const instruction = (document.getElementById('agent-instruction')?.value || '').trim();
+      const plan = agentPlans[mode] || agentPlans.brief;
+      const audience = state.role === 'engineer' ? 'technical judge' : state.role === 'analyst' ? 'sustainability judge' : 'mixed judge';
+      return [
+        `Mode: ${plan.label}`,
+        `Audience: ${audience}`,
+        `Current intent: ${instruction || plan.summary}`,
+        `Recommended move: ${plan.summary}`,
+        'Agent loop: observe -> reason -> act -> verify',
+      ].join('\n');
+    }
+
+    function renderAgentSummary() {
+      const mode = document.getElementById('agent-mode')?.value || state.agentMode || 'brief';
+      const plan = agentPlans[mode] || agentPlans.brief;
+      const summaryEl = document.getElementById('agent-summary');
+      const prompt = buildAgentPrompt();
+      if (summaryEl) {
+        summaryEl.textContent = prompt;
+      }
+      state.agentMode = mode;
+      return {plan, prompt};
+    }
+
+    async function runAgentPlaybook(action) {
+      const {plan, prompt} = renderAgentSummary();
+      pushHelper('Agent', `${plan.label}: ${plan.summary}`);
+      pushHelper('Prompt', prompt.replace(/\n/g, ' | '));
+
+      if (action === 'plan') {
+        openTab(plan.nextTab);
+        return;
+      }
+
+      if (action === 'run') {
+        if (plan.nextTab === 'brief') openTab('brief');
+        if (plan.nextTab === 'metrics') openTab('metrics');
+        if (plan.nextTab === 'dashboard') openTab('dashboard');
+        if (state.agentMode === 'sovereignty') {
+          openTab('proto');
+          document.getElementById('proto-verify')?.click();
+        } else if (state.agentMode === 'efficiency') {
+          await refreshProm();
+        } else if (state.agentMode === 'fleet') {
+          openTab('vehicles');
+          renderVehicles();
+        } else {
+          openTab('brief');
+        }
+      }
+
+      if (action === 'verify') {
+        openTab('metrics');
+        await refreshProm();
+        openTab('proto');
+        document.getElementById('proto-verify')?.click();
+      }
     }
 
     // Tabs
@@ -1162,11 +1401,41 @@ OUTPUT: Verified intelligence, no central authority</pre>
       }
     });
 
+    document.getElementById('agent-refresh')?.addEventListener('click', () => {
+      const {plan} = renderAgentSummary();
+      pushHelper('Plan', `${plan.label}: ${plan.summary}`);
+    });
+
+    document.getElementById('agent-plan')?.addEventListener('click', () => void runAgentPlaybook('plan'));
+    document.getElementById('agent-run')?.addEventListener('click', () => void runAgentPlaybook('run'));
+    document.getElementById('agent-verify')?.addEventListener('click', () => void runAgentPlaybook('verify'));
+    document.getElementById('agent-open-brief')?.addEventListener('click', () => openTab('brief'));
+    document.getElementById('agent-open-proto')?.addEventListener('click', () => openTab('proto'));
+    document.getElementById('agent-open-metrics')?.addEventListener('click', () => openTab('metrics'));
+    document.getElementById('agent-copy')?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(buildAgentPrompt());
+        pushHelper('Agent Prompt', 'Copied the current agent prompt to clipboard.');
+      } catch {
+        pushHelper('Agent Prompt', 'Clipboard copy failed; use the visible prompt instead.');
+      }
+    });
+    document.getElementById('agent-reset')?.addEventListener('click', () => {
+      state.helperNotes = [];
+      const logEl = document.getElementById('helper-notes');
+      if (logEl) logEl.innerHTML = '';
+      pushHelper('Reset', 'Cleared the helper notes and agent planning trail.');
+    });
+    document.getElementById('agent-mode')?.addEventListener('change', () => renderAgentSummary());
+    document.getElementById('agent-instruction')?.addEventListener('input', () => renderAgentSummary());
+
     // Init
     document.addEventListener('DOMContentLoaded', () => {
       if (state.theme === 'light') document.body.classList.add('light-mode');
       document.getElementById('user-role').value = state.role;
+      document.getElementById('agent-mode').value = state.agentMode;
       renderDemoBrief();
+      renderAgentSummary();
       renderProtoSteps();
       renderPromMetrics(promState.lastValues);
       log('🚀 Nexus initialized');
