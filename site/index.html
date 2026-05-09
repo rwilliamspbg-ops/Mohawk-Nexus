@@ -511,12 +511,23 @@
           <option value="normal" selected>◯ Normal</option>
           <option value="fast">⚡ Fast</option>
         </select>
+        <button id="proto-pause">⏸ Pause</button>
+        <button id="proto-copy">📋 Copy Trace</button>
+        <button id="proto-export">💾 Export Trace</button>
       </div>
       <div class="grid">
         <div class="card">
           <h3>Status</h3>
           <div style="font-size: 1.5rem; color: var(--accent); font-weight: 700; margin: 1rem 0;" id="proto-status">idle</div>
           <div id="proto-action" style="color: var(--text-secondary); min-height: 60px; display: flex; align-items: center;">No action</div>
+          <div style="margin-top: 1rem; display: grid; gap: 0.75rem;">
+            <div class="input-group" style="margin-bottom: 0;">
+              <input id="proto-step-input" placeholder="Add a custom step (e.g. validate route)" />
+              <button id="proto-add-step">+ Add Step</button>
+            </div>
+            <div class="muted small">Use custom steps to tailor the sequence before running Start, Step, or Verify.</div>
+            <div id="proto-custom-steps" class="log" style="height: 110px;"></div>
+          </div>
         </div>
         <div class="card">
           <h3>Traces</h3>
@@ -834,37 +845,148 @@
     });
 
     // Proto
+    const protoState = {
+      paused: false,
+      customSteps: [],
+      trace: [],
+      resumeResolver: null,
+    };
+
+    function pushProtoTrace(message) {
+      const entry = document.createElement('div');
+      entry.textContent = `[${ts()}] ${message}`;
+      const traceEl = document.getElementById('proto-log');
+      traceEl.prepend(entry);
+      protoState.trace.unshift(entry.textContent);
+      if (traceEl.children.length > 100) traceEl.removeChild(traceEl.lastChild);
+    }
+
+    function renderProtoSteps() {
+      const list = document.getElementById('proto-custom-steps');
+      if (!list) return;
+      if (protoState.customSteps.length === 0) {
+        list.innerHTML = '<div style="color:#6b7280">No custom steps yet. Add one above to tailor the run.</div>';
+        return;
+      }
+      list.innerHTML = protoState.customSteps.map((step, index) => `
+        <div style="display:flex;justify-content:space-between;gap:0.75rem;padding:0.45rem 0;border-bottom:1px solid rgba(0,0,0,0.05);align-items:center;">
+          <div><strong>${index + 1}.</strong> ${step}</div>
+          <button data-index="${index}" class="proto-remove-step">Remove</button>
+        </div>
+      `).join('');
+      list.querySelectorAll('.proto-remove-step').forEach(button => {
+        button.addEventListener('click', () => {
+          const idx = Number(button.dataset.index);
+          const removed = protoState.customSteps.splice(idx, 1)[0];
+          renderProtoSteps();
+          pushProtoTrace(`Removed step: ${removed}`);
+          log(`Proto step removed: ${removed}`);
+        });
+      });
+    }
+
+    function protoDelay() {
+      const speed = document.getElementById('proto-speed')?.value || 'normal';
+      if (speed === 'fast') return 120;
+      if (speed === 'slow') return 600;
+      return 300;
+    }
+
+    function protoBaseSteps(kind) {
+      const custom = protoState.customSteps.length > 0 ? protoState.customSteps.slice() : [];
+      if (kind === 'Start') return custom.length > 0 ? custom : ['init', 'load', 'alloc', 'spawn', 'loop'];
+      if (kind === 'Step') return custom.length > 0 ? custom : ['plan', 'exec', 'send', 'collect'];
+      if (kind === 'Verify') return custom.length > 0 ? custom : ['gather', 'query', 'compare', 'proof'];
+      return custom.length > 0 ? custom : ['prepare', 'run', 'settle'];
+    }
+
     async function runProto(name, steps) {
       document.getElementById('proto-status').textContent = 'running';
-      const speed = document.getElementById('proto-speed')?.value || 'normal';
-      const delay = speed === 'fast' ? 120 : speed === 'slow' ? 600 : 300;
+      pushProtoTrace(`${name} started`);
+      const delay = protoDelay();
 
       for (const step of steps) {
+        if (protoState.paused) {
+          pushProtoTrace('Paused');
+          await new Promise(resolve => { protoState.resumeResolver = resolve; });
+          protoState.resumeResolver = null;
+          pushProtoTrace('Resumed');
+        }
         document.getElementById('proto-action').textContent = step;
+        pushProtoTrace(step);
         await new Promise(r => setTimeout(r, delay));
       }
 
       document.getElementById('proto-status').textContent = 'idle';
       document.getElementById('proto-action').textContent = 'Idle';
+      pushProtoTrace(`${name} completed`);
       log(`${name} completed`);
     }
 
-    document.getElementById('proto-start')?.addEventListener('click', () => runProto('Start', ['init', 'load', 'alloc', 'spawn', 'loop']));
-    document.getElementById('proto-step')?.addEventListener('click', () => runProto('Step', ['plan', 'exec', 'send', 'collect']));
-    document.getElementById('proto-verify')?.addEventListener('click', () => runProto('Verify', ['gather', 'query', 'compare', 'proof']));
+    document.getElementById('proto-start')?.addEventListener('click', () => runProto('Start', protoBaseSteps('Start')));
+    document.getElementById('proto-step')?.addEventListener('click', () => runProto('Step', protoBaseSteps('Step')));
+    document.getElementById('proto-verify')?.addEventListener('click', () => runProto('Verify', protoBaseSteps('Verify')));
     document.getElementById('proto-reset')?.addEventListener('click', () => {
       document.getElementById('proto-log').innerHTML = '';
-      document.getElementById('proto-status').textContent = 'idle';
       document.getElementById('proto-action').textContent = 'Idle';
+      document.getElementById('proto-status').textContent = 'idle';
+      protoState.paused = false;
+      protoState.trace = [];
+      protoState.resumeResolver = null;
+      document.getElementById('proto-pause').textContent = '⏸ Pause';
+      pushProtoTrace('Reset');
+      renderProtoSteps();
+    });
+    document.getElementById('proto-pause')?.addEventListener('click', () => {
+      protoState.paused = !protoState.paused;
+      document.getElementById('proto-pause').textContent = protoState.paused ? '▶ Resume' : '⏸ Pause';
+      pushProtoTrace(protoState.paused ? 'Paused' : 'Resumed');
+      if (!protoState.paused && protoState.resumeResolver) {
+        protoState.resumeResolver();
+      }
+    });
+    document.getElementById('proto-copy')?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(protoState.trace.slice().reverse().join('\n'));
+        pushProtoTrace('Trace copied to clipboard');
+      } catch {
+        pushProtoTrace('Clipboard copy failed');
+      }
+    });
+    document.getElementById('proto-export')?.addEventListener('click', () => {
+      const text = protoState.trace.slice().reverse().join('\n');
+      const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'proto-trace.txt';
+      anchor.click();
+      URL.revokeObjectURL(url);
+      pushProtoTrace('Trace exported');
+    });
+    document.getElementById('proto-add-step')?.addEventListener('click', () => {
+      const input = document.getElementById('proto-step-input');
+      const value = (input?.value || '').trim();
+      if (!value) return;
+      protoState.customSteps.push(value);
+      if (input) input.value = '';
+      renderProtoSteps();
+      pushProtoTrace(`Added custom step: ${value}`);
+      log(`Proto step added: ${value}`);
+    });
+    document.getElementById('proto-step-input')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('proto-add-step')?.click();
     });
 
     // Init
     document.addEventListener('DOMContentLoaded', () => {
       if (state.theme === 'light') document.body.classList.add('light-mode');
       document.getElementById('user-role').value = state.role;
+      renderProtoSteps();
       renderPromMetrics(promState.lastValues);
       log('🚀 Nexus initialized');
       log('Fleet: ' + state.vehicles.length + ' vehicles');
+      pushProtoTrace('Proto UI ready');
       setTimeout(() => void refreshProm(), 1000);
       setInterval(() => {
         void refreshProm();
