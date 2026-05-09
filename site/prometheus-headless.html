@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>Prometheus Headless Dashboard</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0b1a30;
+      --card: rgba(10, 22, 40, 0.86);
+      --card-border: rgba(117, 181, 255, 0.18);
+      --card-border-active: rgba(0, 212, 255, 0.7);
+      --text: #e8f1ff;
+      --muted: #8ea3bf;
+      --accent: #00d4ff;
+      --accent-2: #7cffb2;
+      --warn: #ffb86b;
+      --error: #ff6b8b;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(0, 212, 255, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(124, 255, 178, 0.12), transparent 22%),
+        linear-gradient(135deg, var(--bg) 0%, var(--bg-soft) 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.45), transparent 80%);
+    }
+
+    .shell {
+      position: relative;
+      max-width: 1680px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3.8vw, 4rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .title-block p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      max-width: 820px;
+      font-size: 0.98rem;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 1px solid var(--card-border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      font-size: 0.92rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--warn);
+      box-shadow: 0 0 0 0 rgba(255, 184, 107, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.ok {
+      background: var(--accent-2);
+      box-shadow: 0 0 0 0 rgba(124, 255, 178, 0.5);
+    }
+
+    .status-dot.err {
+      background: var(--error);
+      box-shadow: 0 0 0 0 rgba(255, 107, 139, 0.5);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 184, 107, 0.5); }
+      70% { box-shadow: 0 0 0 16px rgba(255, 184, 107, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 184, 107, 0); }
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .metric-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: var(--card);
+      border-radius: 20px;
+      padding: 22px;
+      min-height: 150px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--card-border-active);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.44);
+    }
+
+    .metric-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.25), transparent 65%);
+      pointer-events: none;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      margin-bottom: 14px;
+    }
+
+    .metric-value {
+      font-size: clamp(2rem, 4.5vw, 4.2rem);
+      line-height: 0.95;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: var(--text);
+      margin-bottom: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .meter {
+      margin-top: 16px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .meter > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      width: 0%;
+      transition: width 240ms ease;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--card-border);
+      background: rgba(5, 12, 24, 0.72);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .query-row {
+      display: grid;
+      gap: 12px;
+    }
+
+    .endpoint-line {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .endpoint-line strong {
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+    }
+
+    .endpoint-line span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .mini-log {
+      height: 280px;
+      overflow: auto;
+      padding-right: 4px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .log-entry {
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .log-entry time {
+      color: var(--muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .log-entry strong {
+      font-size: 0.95rem;
+    }
+
+    .log-entry span {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .timeline-item {
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .timeline-item strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    .timeline-item span {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .footnote {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1100px) {
+      .metrics-grid, .timeline, .panel-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell { padding: 16px; }
+      .metrics-grid, .timeline {
+        grid-template-columns: 1fr;
+      }
+      .hero { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="title-block">
+        <h1>Prometheus Headless Dashboard</h1>
+        <p>Auto-refreshing, no-chrome telemetry surface for consensus rounds, participating nodes, latency, and verification errors. Designed to run in a kiosk, iframe, or hidden operator view with zero interaction required.</p>
+      </div>
+      <div class="status-pill" aria-live="polite">
+        <span id="status-dot" class="status-dot"></span>
+        <span id="status-text">Connecting to Prometheus...</span>
+      </div>
+    </section>
+
+    <section class="metrics-grid" aria-label="Prometheus metrics">
+      <article class="metric-card">
+        <div class="metric-label">Consensus Rounds</div>
+        <div class="metric-value" id="metric-rounds">--</div>
+        <div class="metric-meta"><span>consensus_rounds_total</span><span id="rounds-source">live</span></div>
+        <div class="meter"><span id="rounds-bar"></span></div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-label">Active Nodes</div>
+        <div class="metric-value" id="metric-nodes">--</div>
+        <div class="metric-meta"><span>nodes_participating</span><span id="nodes-source">live</span></div>
+        <div class="meter"><span id="nodes-bar"></span></div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-label">P95 Latency</div>
+        <div class="metric-value" id="metric-latency">--</div>
+        <div class="metric-meta"><span>aggregation_latency_ms</span><span>ms</span></div>
+        <div class="meter"><span id="latency-bar"></span></div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-label">Verification Errors</div>
+        <div class="metric-value" id="metric-errors">--</div>
+        <div class="metric-meta"><span>update_verification_errors</span><span id="errors-source">live</span></div>
+        <div class="meter"><span id="errors-bar"></span></div>
+      </article>
+    </section>
+
+    <section class="panel-grid">
+      <section class="panel">
+        <h2>Telemetry Feed</h2>
+        <div class="mini-log" id="telemetry-log" aria-live="polite"></div>
+      </section>
+      <section class="panel">
+        <h2>Connection State</h2>
+        <div class="query-row">
+          <div class="endpoint-line">
+            <div>
+              <strong>Prometheus endpoint</strong>
+              <span id="endpoint-text">http://localhost:9090</span>
+            </div>
+            <div style="color: var(--muted); font-size: 0.82rem;">/api/v1/query</div>
+          </div>
+          <div class="endpoint-line">
+            <div>
+              <strong>Refresh cadence</strong>
+              <span id="refresh-text">10 seconds</span>
+            </div>
+            <div style="color: var(--muted); font-size: 0.82rem;">auto</div>
+          </div>
+          <div class="endpoint-line">
+            <div>
+              <strong>Last update</strong>
+              <span id="updated-text">Waiting for first scrape</span>
+            </div>
+            <div style="color: var(--muted); font-size: 0.82rem;">status</div>
+          </div>
+          <div class="endpoint-line">
+            <div>
+              <strong>Fallback mode</strong>
+              <span id="fallback-text">Off</span>
+            </div>
+            <div style="color: var(--muted); font-size: 0.82rem;">recovery</div>
+          </div>
+        </div>
+        <div class="footnote">
+          <span>Endpoint can be overridden with <strong>?endpoint=https://host:9090</strong></span>
+          <span>Use <strong>?refresh=5000</strong> to change polling interval in milliseconds</span>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel">
+      <h2>What This Headless View Proves</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <strong>Direct API Querying</strong>
+          <span>Queries Prometheus over the HTTP API rather than relying on cached UI state.</span>
+        </div>
+        <div class="timeline-item">
+          <strong>Zero Interaction</strong>
+          <span>Loads automatically, refreshes on a timer, and exposes only the telemetry needed for operations.</span>
+        </div>
+        <div class="timeline-item">
+          <strong>Graceful Recovery</strong>
+          <span>Keeps the last successful values visible and marks fallback mode if the endpoint is unreachable.</span>
+        </div>
+        <div class="timeline-item">
+          <strong>Deployment Friendly</strong>
+          <span>Works as a kiosk page, dashboard embed, or hidden operator monitor in a larger app.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const defaultEndpoint = 'http://localhost:9090';
+    const queries = {
+      rounds: 'consensus_rounds_total',
+      nodes: 'nodes_participating',
+      latency: 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))',
+      errors: 'update_verification_errors',
+    };
+    const fallbackValues = {
+      rounds: 1234,
+      nodes: 8,
+      latency: 42.7,
+      errors: 0,
+    };
+
+    const state = {
+      endpoint: defaultEndpoint,
+      refreshMs: 10000,
+      lastValues: {...fallbackValues},
+      lastUpdated: null,
+      healthy: false,
+      timer: null,
+    };
+
+    const els = {
+      statusDot: document.getElementById('status-dot'),
+      statusText: document.getElementById('status-text'),
+      endpointText: document.getElementById('endpoint-text'),
+      refreshText: document.getElementById('refresh-text'),
+      updatedText: document.getElementById('updated-text'),
+      fallbackText: document.getElementById('fallback-text'),
+      telemetryLog: document.getElementById('telemetry-log'),
+      metricRounds: document.getElementById('metric-rounds'),
+      metricNodes: document.getElementById('metric-nodes'),
+      metricLatency: document.getElementById('metric-latency'),
+      metricErrors: document.getElementById('metric-errors'),
+      roundsBar: document.getElementById('rounds-bar'),
+      nodesBar: document.getElementById('nodes-bar'),
+      latencyBar: document.getElementById('latency-bar'),
+      errorsBar: document.getElementById('errors-bar'),
+      roundsSource: document.getElementById('rounds-source'),
+      nodesSource: document.getElementById('nodes-source'),
+      errorsSource: document.getElementById('errors-source'),
+    };
+
+    function timestamp() {
+      return new Date().toISOString().replace('T', ' ').slice(0, 19);
+    }
+
+    function parseSettings() {
+      const params = new URLSearchParams(window.location.search);
+      const endpoint = params.get('endpoint');
+      const refresh = Number(params.get('refresh'));
+      if (endpoint) state.endpoint = endpoint;
+      if (Number.isFinite(refresh) && refresh >= 1000) state.refreshMs = refresh;
+    }
+
+    function pushLog(level, title, detail) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <time>${timestamp()}</time>
+        <strong>${level} ${title}</strong>
+        <span>${detail}</span>
+      `;
+      els.telemetryLog.prepend(entry);
+      if (els.telemetryLog.children.length > 80) {
+        els.telemetryLog.removeChild(els.telemetryLog.lastChild);
+      }
+    }
+
+    function scalar(payload) {
+      const value = payload?.data?.result?.[0]?.value?.[1];
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? numeric : null;
+    }
+
+    function render(values, connected, sourceLabel) {
+      const rounds = Number.isFinite(values.rounds) ? values.rounds : fallbackValues.rounds;
+      const nodes = Number.isFinite(values.nodes) ? values.nodes : fallbackValues.nodes;
+      const latency = Number.isFinite(values.latency) ? values.latency : fallbackValues.latency;
+      const errors = Number.isFinite(values.errors) ? values.errors : fallbackValues.errors;
+
+      els.metricRounds.textContent = Math.round(rounds);
+      els.metricNodes.textContent = Math.round(nodes);
+      els.metricLatency.textContent = latency.toFixed(1);
+      els.metricErrors.textContent = Math.round(errors);
+
+      els.roundsBar.style.width = `${Math.min(100, (rounds / 2000) * 100)}%`;
+      els.nodesBar.style.width = `${Math.min(100, (nodes / 32) * 100)}%`;
+      els.latencyBar.style.width = `${Math.min(100, (latency / 500) * 100)}%`;
+      els.errorsBar.style.width = `${Math.min(100, (errors / 12) * 100)}%`;
+
+      els.roundsSource.textContent = sourceLabel;
+      els.nodesSource.textContent = sourceLabel;
+      els.errorsSource.textContent = sourceLabel;
+      els.updatedText.textContent = state.lastUpdated ? state.lastUpdated.toLocaleTimeString() : 'Waiting for first scrape';
+      els.fallbackText.textContent = connected ? 'Off' : 'On';
+      els.statusDot.className = `status-dot ${connected ? 'ok' : 'err'}`;
+      els.statusText.textContent = connected
+        ? `Connected to ${state.endpoint}`
+        : `Fallback active, last successful scrape: ${state.lastUpdated ? state.lastUpdated.toLocaleTimeString() : 'none'}`;
+    }
+
+    async function queryProm(base, query) {
+      const url = new URL('/api/v1/query', base);
+      url.searchParams.set('query', query);
+      const response = await fetch(url.toString(), {headers: {accept: 'application/json'}});
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const body = await response.json();
+      if (body.status !== 'success') throw new Error(body.error || 'Query failed');
+      return scalar(body);
+    }
+
+    async function refresh() {
+      const base = state.endpoint.trim() || defaultEndpoint;
+      try {
+        const [rounds, nodes, latency, errors] = await Promise.all([
+          queryProm(base, queries.rounds),
+          queryProm(base, queries.nodes),
+          queryProm(base, queries.latency),
+          queryProm(base, queries.errors),
+        ]);
+        state.lastValues = {
+          rounds: Number.isFinite(rounds) ? rounds : fallbackValues.rounds,
+          nodes: Number.isFinite(nodes) ? nodes : fallbackValues.nodes,
+          latency: Number.isFinite(latency) ? latency : fallbackValues.latency,
+          errors: Number.isFinite(errors) ? errors : fallbackValues.errors,
+        };
+        state.lastUpdated = new Date();
+        state.healthy = true;
+        render(state.lastValues, true, 'live');
+        pushLog('OK', 'Telemetry refreshed', `Fetched live Prometheus metrics from ${base}.`);
+      } catch (error) {
+        state.healthy = false;
+        render(state.lastValues, false, 'cached');
+        pushLog('WARN', 'Fallback active', `Using cached values because ${base} was not reachable or rejected the query. ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+
+    function schedule() {
+      clearInterval(state.timer);
+      state.timer = setInterval(() => void refresh(), state.refreshMs);
+    }
+
+    function start() {
+      parseSettings();
+      els.endpointText.textContent = state.endpoint;
+      els.refreshText.textContent = `${Math.round(state.refreshMs / 1000)} seconds`;
+      render(state.lastValues, false, 'cached');
+      pushLog('INFO', 'Dashboard initialized', 'Headless dashboard started and waiting for first scrape.');
+      void refresh();
+      schedule();
+    }
+
+    window.addEventListener('beforeunload', () => clearInterval(state.timer));
+    start();
+  </script>
+</body>
+</html>
