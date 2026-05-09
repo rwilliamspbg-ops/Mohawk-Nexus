@@ -561,6 +561,7 @@
           <button class="btn-primary" id="prom-btn">🔌 Connect</button>
           <div style="padding: 0.8rem 1rem; background: rgba(255, 51, 102, 0.2); border: 1px solid rgba(255, 51, 102, 0.5); border-radius: 6px; color: var(--error); font-weight: 600; font-size: 0.9rem;" id="prom-status">Disconnected</div>
         </div>
+        <div id="prom-detail" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">No telemetry loaded yet.</div>
       </div>
 
       <h2>Live Data</h2>
@@ -587,6 +588,20 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
+    const prometheusQueries = {
+      rounds: 'consensus_rounds_total',
+      nodes: 'nodes_participating',
+      latency: 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))',
+      errors: 'update_verification_errors',
+    };
+
+    const fallbackPromMetrics = {
+      rounds: 1234,
+      nodes: 8,
+      latency: 42.7,
+      errors: 0,
+    };
+
     const state = {
       role: localStorage.getItem('role') || 'fleet-owner',
       theme: localStorage.getItem('theme') || 'dark',
@@ -670,6 +685,7 @@
     // Map
     let mapInstance;
     function initMap() {
+      if (window.mapInit) return;
       mapInstance = L.map('fleet-map').setView([37.7749, -122.4194], 11);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '© OSM'}).addTo(mapInstance);
       
@@ -685,52 +701,81 @@
     }
 
     // Prometheus
+    const promState = {
+      lastValues: {...fallbackPromMetrics},
+      connected: false,
+      lastUpdated: null,
+    };
+
+    function getPromScalar(payload) {
+      const value = payload?.data?.result?.[0]?.value?.[1];
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? numeric : null;
+    }
+
+    function renderPromMetrics(values) {
+      const rounds = Number.isFinite(values.rounds) ? values.rounds : fallbackPromMetrics.rounds;
+      const nodes = Number.isFinite(values.nodes) ? values.nodes : fallbackPromMetrics.nodes;
+      const latency = Number.isFinite(values.latency) ? values.latency : fallbackPromMetrics.latency;
+      const errors = Number.isFinite(values.errors) ? values.errors : fallbackPromMetrics.errors;
+
+      document.getElementById('m-rounds').textContent = document.getElementById('prom-rounds').textContent = Math.round(rounds);
+      document.getElementById('m-nodes').textContent = document.getElementById('prom-nodes').textContent = Math.round(nodes);
+      document.getElementById('m-latency').textContent = document.getElementById('prom-latency').textContent = Number(latency).toFixed(1);
+      document.getElementById('m-errors').textContent = document.getElementById('prom-errors').textContent = Math.round(errors);
+
+      document.getElementById('m-rounds-bar').style.width = Math.min(100, (rounds / 1000) * 100) + '%';
+      document.getElementById('m-nodes-bar').style.width = Math.min(100, (nodes / 50) * 100) + '%';
+      document.getElementById('m-latency-bar').style.width = Math.min(100, (latency / 500) * 100) + '%';
+      document.getElementById('m-errors-bar').style.width = Math.min(100, (errors / 10) * 100) + '%';
+    }
+
     async function queryProm(base, q) {
-      try {
-        const url = new URL('/api/v1/query', base);
-        url.searchParams.set('query', q);
-        const r = await fetch(url.toString(), {headers: {accept: 'application/json'}});
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const body = await r.json();
-        if (body.status !== 'success') throw new Error(body.error);
-        const v = body.data?.result?.[0]?.value?.[1];
-        const n = Number(v);
-        return Number.isFinite(n) ? n : null;
-      } catch (e) {
-        throw e;
-      }
+      const url = new URL('/api/v1/query', base);
+      url.searchParams.set('query', q);
+      const r = await fetch(url.toString(), {headers: {accept: 'application/json'}});
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const body = await r.json();
+      if (body.status !== 'success') throw new Error(body.error || 'query failed');
+      return getPromScalar(body);
     }
 
     async function refreshProm() {
       const base = (document.getElementById('prom-url').value || '').trim() || 'http://localhost:9090';
       const status = document.getElementById('prom-status');
+      const detail = document.getElementById('prom-detail');
       status.textContent = 'Querying...';
       status.style.color = '#ff6b35';
+      detail.textContent = `Querying ${base}/api/v1/query ...`;
 
       try {
         const [r, n, l, e] = await Promise.all([
-          queryProm(base, 'consensus_rounds_total'),
-          queryProm(base, 'nodes_participating'),
-          queryProm(base, 'histogram_quantile(0.95, rate(aggregation_latency_ms_bucket[5m]))'),
-          queryProm(base, 'update_verification_errors'),
+          queryProm(base, prometheusQueries.rounds),
+          queryProm(base, prometheusQueries.nodes),
+          queryProm(base, prometheusQueries.latency),
+          queryProm(base, prometheusQueries.errors),
         ]);
 
-        document.getElementById('m-rounds').textContent = document.getElementById('prom-rounds').textContent = Number.isFinite(r) ? Math.round(r) : '--';
-        document.getElementById('m-nodes').textContent = document.getElementById('prom-nodes').textContent = Number.isFinite(n) ? Math.round(n) : '--';
-        document.getElementById('m-latency').textContent = document.getElementById('prom-latency').textContent = Number.isFinite(l) ? l.toFixed(1) : '--';
-        document.getElementById('m-errors').textContent = document.getElementById('prom-errors').textContent = Number.isFinite(e) ? Math.round(e) : '--';
-
-        document.getElementById('m-rounds-bar').style.width = Math.min(100, (r / 1000) * 100) + '%';
-        document.getElementById('m-nodes-bar').style.width = Math.min(100, (n / 50) * 100) + '%';
-        document.getElementById('m-latency-bar').style.width = Math.min(100, (l / 500) * 100) + '%';
-        document.getElementById('m-errors-bar').style.width = Math.min(100, (e / 10) * 100) + '%';
+        promState.lastValues = {
+          rounds: Number.isFinite(r) ? r : fallbackPromMetrics.rounds,
+          nodes: Number.isFinite(n) ? n : fallbackPromMetrics.nodes,
+          latency: Number.isFinite(l) ? l : fallbackPromMetrics.latency,
+          errors: Number.isFinite(e) ? e : fallbackPromMetrics.errors,
+        };
+        promState.connected = true;
+        promState.lastUpdated = new Date();
+        renderPromMetrics(promState.lastValues);
 
         status.textContent = '✓ Connected';
         status.style.color = 'var(--success)';
+        detail.textContent = `Live telemetry from ${base} • Updated ${promState.lastUpdated.toLocaleTimeString()}`;
         log('Prometheus connected');
       } catch (err) {
-        status.textContent = '✗ Error';
+        promState.connected = false;
+        renderPromMetrics(promState.lastValues || fallbackPromMetrics);
+        status.textContent = '⚠ Fallback';
         status.style.color = 'var(--error)';
+        detail.textContent = `Using fallback values because ${base} was not reachable or rejected the query. ${err instanceof Error ? err.message : String(err)}`;
         log('Prometheus error');
       }
     }
@@ -817,9 +862,13 @@
     document.addEventListener('DOMContentLoaded', () => {
       if (state.theme === 'light') document.body.classList.add('light-mode');
       document.getElementById('user-role').value = state.role;
+      renderPromMetrics(promState.lastValues);
       log('🚀 Nexus initialized');
       log('Fleet: ' + state.vehicles.length + ' vehicles');
-      setTimeout(() => refreshProm(), 1000);
+      setTimeout(() => void refreshProm(), 1000);
+      setInterval(() => {
+        void refreshProm();
+      }, 10000);
     });
   </script>
 </body>

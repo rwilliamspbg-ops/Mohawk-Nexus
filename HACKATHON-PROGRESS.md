@@ -18,12 +18,14 @@
 - [x] Updated the plan to include a Prometheus proof surface in the end-to-end flow
 - [x] Expanded the frontend into a fuller agentic console with mission controls, telemetry, and an event log
 - [x] Wired the telemetry cards to live Prometheus query results instead of static values
+- [x] Hardened the telemetry cards to retry Prometheus automatically and show fallback values instead of blank metrics
 
 ## In Progress
 
 - [ ] Convert the simulated console into a real AG-UI or agent-driven data flow
 - [ ] Update any remaining hackathon docs that still frame the old 3-demo strategy as primary
 - [ ] Decide whether to connect the proof surface to a real metrics exporter or leave it as a demo-time scrape story
+- [ ] Replace the fallback telemetry path with a real exporter-backed proof signal if the live endpoint is unavailable
 
 ## Not Done
 
@@ -39,6 +41,7 @@
 2. If runtime comes first, replace the local demo state machine with a server-backed endpoint or agent bridge.
 3. If docs come first, finish converting any remaining hackathon docs to the new single-path strategy.
 4. Keep this file updated after each completed slice so the current state stays obvious.
+5. If Prometheus remains unreachable in the target environment, connect the UI to a real exporter so the metrics can be live instead of fallback-only.
 
 ## Update Rule
 
