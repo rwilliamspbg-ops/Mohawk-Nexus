@@ -420,12 +420,60 @@
 
   <div class="container">
     <div class="tabs">
+      <button class="tab-btn" data-tab="brief">🧭 Demo Brief</button>
       <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
       <button class="tab-btn" data-tab="vehicles">🚗 Vehicles</button>
       <button class="tab-btn" data-tab="map">🗺️ Map</button>
       <button class="tab-btn" data-tab="proto">🤖 Proto</button>
       <button class="tab-btn" data-tab="commands">🔐 Commands</button>
       <button class="tab-btn" data-tab="metrics">📈 Metrics</button>
+    </div>
+
+    <!-- DEMO BRIEF TAB -->
+    <div id="brief" class="tab-content">
+      <h2>The Tech in One Image</h2>
+      <div class="card" style="margin-bottom: 1rem;">
+        <pre style="margin:0; white-space:pre-wrap; color:var(--text-primary); font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; line-height:1.6; background: rgba(0,0,0,0.18); padding: 1rem; border-radius: 10px; border: 1px solid var(--border);">Edge Nodes (100K-1M)
+    ↓ (local training)
+Byzantine Consensus Layer
+    ↓ (BFT agreement)
+Mohawk Aggregation Protocol  ← O(d log n) memory scaling
+    ↓ (lossless sketching)
+zk-SNARK Verification  ← &lt;10ms proof of correctness
+    ↓
+OUTPUT: Verified intelligence, no central authority</pre>
+      </div>
+
+      <h2>Key Stats</h2>
+      <div class="grid" id="stat-grid"></div>
+
+      <h2>Demo Flow</h2>
+      <div class="grid" id="flow-grid"></div>
+
+      <h2>Agentic Helpers</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Live Presentation</h3>
+          <div class="input-group">
+            <button class="btn-primary" id="helper-sovereignty">⚡ Demo 1</button>
+            <button class="btn-primary" id="helper-efficiency">♻ Demo 2</button>
+            <button id="helper-pitch">🗣 Pitch</button>
+            <button id="helper-close">🏁 Close Strong</button>
+          </div>
+          <div class="input-group">
+            <button id="helper-fallback">🧰 Break/Fallback</button>
+            <button id="helper-copy">📋 Copy Brief</button>
+          </div>
+          <div class="muted small">These helpers do not change the product state. They guide the presenter through the story the README describes.</div>
+        </div>
+        <div class="card">
+          <h3>Judge Notes</h3>
+          <div id="helper-notes" class="log" style="height: 220px;"></div>
+        </div>
+      </div>
+
+      <h2>Questions To Hope For</h2>
+      <div class="grid" id="qa-grid"></div>
     </div>
 
     <!-- DASHBOARD TAB -->
@@ -599,6 +647,47 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
+    const demoStats = [
+      ['O(d log n)', 'Algorithmic superiority versus O(n) bloat'],
+      ['224x RAM reduction', 'Concrete efficiency proof'],
+      ['1/3 Byzantine threshold', 'Tolerates malicious nodes'],
+      ['<10ms SNARK proof', 'Real-time verification'],
+      ['100M nodes', 'Planetary scale'],
+      ['31x memory savings', 'Per aggregator, 100k nodes'],
+      ['Electricity + water savings', 'Sustainability angle'],
+      ['58MB edge runtime', 'Works on constrained hardware'],
+    ];
+
+    const demoFlows = [
+      {
+        title: 'Demo 1: Agentic Sovereignty',
+        time: '~2 min',
+        body: 'Watch 100 sovereign nodes aggregate intelligence in real-time. Point to the proof timeline, inject a fault, and show the proof fail.',
+      },
+      {
+        title: 'Demo 2: Efficiency',
+        time: '~2 min',
+        body: 'Show centralized versus SMP resource drain. Highlight the lower RAM, electricity, and water usage.',
+      },
+      {
+        title: 'If Stuff Breaks',
+        time: 'Fallback',
+        body: 'Show the code, run it locally, or point to the repo. Keep the story grounded in the algorithmic breakthrough.',
+      },
+      {
+        title: 'Close Strong',
+        time: '30 sec',
+        body: 'Choose the closing line for technical, sustainability, business, or hacker judges.',
+      },
+    ];
+
+    const demoQAs = [
+      ['“So this is just federated learning?”', 'No. FL trains locally. We aggregate outputs from trained models, which is a different problem and a different solution.'],
+      ['“How do you prevent bad nodes?”', 'Byzantine consensus. If 1/3 or fewer are malicious, math guarantees convergence to the honest aggregate.'],
+      ['“Will this really get deployed?”', 'Absolutely. Healthcare, agriculture, and supply chains all need infrastructure they do not have to centrally trust.'],
+      ['“What’s the O(d log n) thing?”', 'd is model dimension and n is node count. Traditional aggregation needs O(n) memory; this stays logarithmic.'],
+    ];
+
     const prometheusQueries = {
       rounds: 'consensus_rounds_total',
       nodes: 'nodes_participating',
@@ -618,6 +707,7 @@
       theme: localStorage.getItem('theme') || 'dark',
       vehicles: generateVehicleFleet(),
       audit: [],
+      helperNotes: [],
     };
 
     function generateVehicleFleet() {
@@ -652,6 +742,65 @@
       if (el.children.length > 100) el.removeChild(el.lastChild);
     }
 
+    function pushHelper(title, text) {
+      const logEl = document.getElementById('helper-notes');
+      if (!logEl) return;
+      const div = document.createElement('div');
+      div.innerHTML = `<strong style="color:var(--accent)">${title}</strong><br><span>${text}</span>`;
+      logEl.prepend(div);
+      state.helperNotes.unshift(`${title}: ${text}`);
+      if (logEl.children.length > 80) logEl.removeChild(logEl.lastChild);
+    }
+
+    function renderDemoBrief() {
+      const statGrid = document.getElementById('stat-grid');
+      const flowGrid = document.getElementById('flow-grid');
+      const qaGrid = document.getElementById('qa-grid');
+
+      if (statGrid && statGrid.children.length === 0) {
+        statGrid.innerHTML = demoStats.map(([stat, why]) => `
+          <div class="card">
+            <h3>${stat}</h3>
+            <div class="card-label" style="font-size:0.95rem; line-height:1.5; color:var(--text-primary)">${why}</div>
+          </div>
+        `).join('');
+      }
+
+      if (flowGrid && flowGrid.children.length === 0) {
+        flowGrid.innerHTML = demoFlows.map(flow => `
+          <div class="card">
+            <h3>${flow.title}</h3>
+            <div class="card-label" style="margin-bottom:0.75rem">${flow.time}</div>
+            <div style="font-size:0.95rem; line-height:1.6; color:var(--text-primary)">${flow.body}</div>
+          </div>
+        `).join('');
+      }
+
+      if (qaGrid && qaGrid.children.length === 0) {
+        qaGrid.innerHTML = demoQAs.map(([q, a]) => `
+          <div class="card">
+            <h3>${q}</h3>
+            <div style="font-size:0.95rem; line-height:1.6; color:var(--text-primary)">${a}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function setBriefHelper(title, text) {
+      pushHelper(title, text);
+      log(`${title}: ${text}`);
+    }
+
+    function copyDemoBrief() {
+      const briefText = [
+        'The Tech in One Image',
+        'Edge Nodes -> Byzantine Consensus -> Mohawk Aggregation -> zk-SNARK Verification -> Verified intelligence',
+        'Demo 1: Agentic Sovereignty',
+        'Demo 2: Efficiency',
+      ].join('\n');
+      return navigator.clipboard.writeText(briefText);
+    }
+
     // Tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -660,6 +809,7 @@
         btn.classList.add('active');
         const tab = btn.dataset.tab;
         document.getElementById(tab).classList.add('active');
+        if (tab === 'brief') renderDemoBrief();
         if (tab === 'map' && !window.mapInit) initMap();
         if (tab === 'vehicles') renderVehicles();
         log(`Switched to ${tab}`);
@@ -978,10 +1128,45 @@
       if (e.key === 'Enter') document.getElementById('proto-add-step')?.click();
     });
 
+    document.getElementById('helper-sovereignty')?.addEventListener('click', () => {
+      setBriefHelper('Demo 1', 'Watch 100 sovereign nodes aggregate intelligence in real-time.');
+      setBriefHelper('Proof', 'Each aggregation triggers a zk-SNARK proof.');
+      setBriefHelper('Fault Injection', 'Inject a fault and show the proof fail.');
+      document.querySelector('[data-tab="proto"]')?.click();
+    });
+
+    document.getElementById('helper-efficiency')?.addEventListener('click', () => {
+      setBriefHelper('Demo 2', 'Show centralized versus SMP resource drain.');
+      setBriefHelper('Sustainability', 'Highlight the RAM, electricity, and water savings.');
+      document.querySelector('[data-tab="metrics"]')?.click();
+    });
+
+    document.getElementById('helper-pitch')?.addEventListener('click', () => {
+      setBriefHelper('Pitch', 'This is formally verified Byzantine consensus with post-quantum cryptography. Lean4 proofs. Production-ready.');
+    });
+
+    document.getElementById('helper-close')?.addEventListener('click', () => {
+      setBriefHelper('Close Strong', 'Choose the closing line for technical, sustainability, business, or hacker judges.');
+    });
+
+    document.getElementById('helper-fallback')?.addEventListener('click', () => {
+      setBriefHelper('Fallback', 'Demo crashes? show the code. No internet? run it locally. Ran out of time? point to the repo.');
+    });
+
+    document.getElementById('helper-copy')?.addEventListener('click', async () => {
+      try {
+        await copyDemoBrief();
+        setBriefHelper('Copy', 'Copied the brief to clipboard.');
+      } catch {
+        setBriefHelper('Copy', 'Clipboard copy failed; use the visible brief instead.');
+      }
+    });
+
     // Init
     document.addEventListener('DOMContentLoaded', () => {
       if (state.theme === 'light') document.body.classList.add('light-mode');
       document.getElementById('user-role').value = state.role;
+      renderDemoBrief();
       renderProtoSteps();
       renderPromMetrics(promState.lastValues);
       log('🚀 Nexus initialized');
