@@ -73,6 +73,15 @@ Comparisons to common networking stacks (qualitative):
 
 Important: benchmark numbers depend heavily on host CPU, kernel, NIC, and kernel-bypass configuration (AF_XDP, hugepages, IRQ affinity). See `SMIP-MWP/benchmarks/` and generated `*.prof` for precise measurements captured during runs.
 
+Latest high-stress run snapshot:
+
+- Timestamp: 2026-05-24T16:59:58Z
+- Load: 300s, high, 12 benchmark iterations, 32 concurrent operations
+- `NewHybridSession_Cached`: 582.1-1278.0 ns/op, 1376 B/op, 4 allocs/op
+- `NewHybridSession_Uncached`: 766.9-1062.0 ns/op, 1392 B/op, 5 allocs/op
+- `EncryptInPlace`: 877.8-1357.0 ns/op, 1536 B/op, 1 allocs/op
+- `DecryptInPlace`: 651.6-750.6 ns/op, 0 B/op, 0 allocs/op
+
 How to interpret our artifacts:
 
 - `*.txt` — human-readable run logs and summaries.
