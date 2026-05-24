@@ -1,40 +1,58 @@
 # Mohawk Nexus Unified Workspace
 
-This workspace is being consolidated into one repository-level control surface for the Mohawk network stack.
+Mohawk Nexus is the root integration workspace for the Mohawk network stack. It ties together the Go control plane, the Rust datapath, the protocol and verification material, and the shared bridge contract used to validate the root-level integration flow.
 
-## Current layout
+## Workspace Layout
 
-- `SMIP-MWP/` - Go control plane, AF_XDP host integration, and bridge request ingestion
-- `SMIP-MWP-Rust/` - Rust datapath, routing, crypto, and bridge request consumer
-- `Sovereign-Mohawk-Proto/` - Protocol, security, formal verification, and higher-level federation material
-- `bridge/` - Shared bridge schema and example control request payload
-- `scripts/` - Workspace-level integration helpers
-- `go.work` - Go workspace spanning the Go subrepos so top-level tooling can see both modules
+- [SMIP-MWP/](SMIP-MWP/) - Go control plane, AF_XDP host integration, routing, and bridge request ingestion.
+- [SMIP-MWP-Rust/](SMIP-MWP-Rust/) - Rust datapath, routing, crypto, and CLI tooling.
+- [Sovereign-Mohawk-Proto/](Sovereign-Mohawk-Proto/) - Protocol, security, formal verification, and federation material.
+- [bridge/](bridge/) - Canonical bridge schema, manifest, and example control request payload.
+- [scripts/](scripts/) - Workspace-level validation and utility scripts.
+- [go.work](go.work) - Root Go workspace spanning the Go subrepos.
 
-## Single entrypoint
+## Requirements
 
-Use the root-level smoke target to exercise the shared bridge contract across the Go and Rust entrypoints:
+- Go 1.26.3 or newer.
+- Python 3.
+- Rust tooling is only needed if you run the Rust repository tests directly in [SMIP-MWP-Rust/](SMIP-MWP-Rust/).
+
+## Quick Start
+
+Bootstrap the workspace and review the current environment:
 
 ```bash
-make bridge-smoke
+make bootstrap
+make status
 ```
 
-The smoke path uses a shared example control request and keeps the Rust consumer optional when `cargo` is unavailable in the local environment.
-
-Use the root-level verify target when you want a single command that checks the Go bridge tests and then runs the workspace smoke path:
+Run the root verification path:
 
 ```bash
 make verify
 ```
 
-Use `make verify-go` when you only want the cross-module Go validation across `SMIP-MWP` and `Sovereign-Mohawk-Proto`.
+The root verify target runs bridge artifact generation and validation, Go tests across the workspace, and the bridge smoke check. It does not depend on the Rust repository test suite.
 
-Use `make status` for a lightweight workspace health check that reports the root go workspace and available toolchains.
+## Validation Targets
 
-Use `make verify-rust` to run the Rust workspace tests directly after rustup is installed.
+- `make generate-bridge` regenerates the canonical bridge schema artifacts under [bridge/](bridge/).
+- `make validate-bridge` regenerates and validates the bridge schema manifest and hashes.
+- `make verify-go` runs the Go tests across [SMIP-MWP/](SMIP-MWP/) and [Sovereign-Mohawk-Proto/](Sovereign-Mohawk-Proto/).
+- `make bridge-smoke` runs the root bridge contract smoke check.
+- `make verify-rust` runs the Rust workspace tests directly from [SMIP-MWP-Rust/](SMIP-MWP-Rust/) when Rust tooling is installed.
 
-Use `make bootstrap` for a quick first-run check that reports status and the recommended next commands.
+## Bridge Contract
 
-CI runs the same workspace verification command from [.github/workflows/ci.yml](.github/workflows/ci.yml), including the Rust workspace tests.
+The shared bridge contract is the main integration seam for this workspace. The canonical schema and manifest live in [bridge/bridge_contract.schema.json](bridge/bridge_contract.schema.json) and [bridge/bridge_contract.manifest.json](bridge/bridge_contract.manifest.json), with a representative control request in [bridge/examples/control_request.example.json](bridge/examples/control_request.example.json).
 
-Track the merge seam and remaining gaps in [TRACEABILITY_MATRIX.md](TRACEABILITY_MATRIX.md).
+Use [scripts/generate_bridge_contract.py](scripts/generate_bridge_contract.py) to regenerate the root artifacts, and [scripts/validate_bridge_contract.py](scripts/validate_bridge_contract.py) to verify the manifest version and SHA256 hashes.
+
+## CI
+
+GitHub Actions uses [.github/workflows/ci.yml](.github/workflows/ci.yml) to run `make verify` from the repository root.
+
+## Reference Material
+
+- [TRACEABILITY_MATRIX.md](TRACEABILITY_MATRIX.md) documents the current integration seam and remaining gaps.
+- [UNIFICATION_PLAN.md](UNIFICATION_PLAN.md) captures the broader consolidation direction for the workspace.
