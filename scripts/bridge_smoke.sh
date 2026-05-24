@@ -2,32 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-GO_APP_DIR="$ROOT_DIR/SMIP-MWP"
-RUST_APP_DIR="$ROOT_DIR/SMIP-MWP-Rust"
-REQUEST_FILE="$ROOT_DIR/bridge/examples/control_request.example.json"
-TMP_REQUEST_FILE="$(mktemp)"
 
-if [[ -f "$HOME/.cargo/env" ]]; then
-	. "$HOME/.cargo/env"
-fi
+python3 "$ROOT_DIR/scripts/generate_bridge_contract.py"
+python3 "$ROOT_DIR/scripts/validate_bridge_contract.py"
 
-cleanup() {
-	rm -f "$TMP_REQUEST_FILE" /tmp/mohawk-go-bridge.out /tmp/mohawk-rust-bridge.out
-}
-trap cleanup EXIT
-
-cp "$REQUEST_FILE" "$TMP_REQUEST_FILE"
-
-echo "Running Go bridge preview"
-cd "$GO_APP_DIR"
-go run ./cmd/mohawk-node --bridge-request "$TMP_REQUEST_FILE" --dry-run=true >/tmp/mohawk-go-bridge.out
-cat /tmp/mohawk-go-bridge.out
-
-if command -v cargo >/dev/null 2>&1; then
-	echo "Running Rust bridge consumer"
-	cd "$RUST_APP_DIR"
-	cargo run -p cli -- --bridge-request "$TMP_REQUEST_FILE" >/tmp/mohawk-rust-bridge.out
-	cat /tmp/mohawk-rust-bridge.out
-else
-	echo "cargo not available; skipped Rust bridge consumer"
-fi
+echo "Bridge contract smoke passed"

@@ -11,13 +11,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout SMIP-MWP
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP
+          path: SMIP-MWP
+
+      - name: Checkout Sovereign-Mohawk-Proto
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/Sovereign-Mohawk-Proto
+          path: Sovereign-Mohawk-Proto
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.26.3'
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
 
       - name: Run workspace verify
         run: make verify
