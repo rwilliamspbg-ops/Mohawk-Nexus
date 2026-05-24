@@ -11,9 +11,8 @@ generate-bridge:
 	python3 ./scripts/generate_bridge_contract.py
 
 validate-bridge:
-	go test ./SMIP-MWP/internal/bridge -run 'TestBridgeContractArtifacts|TestBridgeContractManifest|TestControlRequestMatchesFixture|TestControlRequestRoundTrip|TestTelemetryResponseMarshal'
-	cd ./SMIP-MWP-Rust && . "$$HOME/.cargo/env" && cargo test -p cli bridge_contract_artifacts_round_trip
-	cd ./SMIP-MWP-Rust && . "$$HOME/.cargo/env" && cargo test -p cli bridge_contract_manifest_matches_artifacts
+	python3 ./scripts/generate_bridge_contract.py
+	python3 ./scripts/validate_bridge_contract.py
 
 verify-go:
 	go test ./SMIP-MWP/... ./Sovereign-Mohawk-Proto/...
