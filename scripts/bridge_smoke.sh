@@ -23,11 +23,17 @@ cd "$GO_APP_DIR"
 go run ./cmd/mohawk-node --bridge-request "$TMP_REQUEST_FILE" --dry-run=true >/tmp/mohawk-go-bridge.out
 cat /tmp/mohawk-go-bridge.out
 
+grep -q "Bridge control request preview:" /tmp/mohawk-go-bridge.out
+grep -q "Routing table primed with sample entry" /tmp/mohawk-go-bridge.out
+
 if command -v cargo >/dev/null 2>&1; then
 	echo "Running Rust bridge consumer"
 	cd "$RUST_APP_DIR"
 	cargo run -p cli -- --bridge-request "$TMP_REQUEST_FILE" >/tmp/mohawk-rust-bridge.out
 	cat /tmp/mohawk-rust-bridge.out
+	grep -q "bridge request accepted for iface" /tmp/mohawk-rust-bridge.out
+	grep -q "bridge datapath initialized with" /tmp/mohawk-rust-bridge.out
+	grep -q '"health_state":' /tmp/mohawk-rust-bridge.out
 else
 	echo "cargo not available; skipped Rust bridge consumer"
 fi
