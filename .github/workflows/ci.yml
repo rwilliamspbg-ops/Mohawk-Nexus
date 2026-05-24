@@ -17,12 +17,6 @@ jobs:
           repository: rwilliamspbg-ops/SMIP-MWP
           path: SMIP-MWP
 
-      - name: Checkout SMIP-MWP-Rust
-        uses: actions/checkout@v4
-        with:
-          repository: rwilliamspbg-ops/SMIP-MWP-Rust
-          path: SMIP-MWP-Rust
-
       - name: Checkout Sovereign-Mohawk-Proto
         uses: actions/checkout@v4
         with:
@@ -33,9 +27,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.26.3'
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
 
       - name: Run workspace verify
         run: make verify

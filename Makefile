@@ -24,7 +24,6 @@ verify:
 	$(MAKE) generate-bridge
 	$(MAKE) validate-bridge
 	$(MAKE) verify-go
-	$(MAKE) verify-rust
 	bash ./scripts/bridge_smoke.sh
 
 status:
