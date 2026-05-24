@@ -11,6 +11,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout SMIP-MWP
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP
+          path: SMIP-MWP
+
+      - name: Checkout SMIP-MWP-Rust
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP-Rust
+          path: SMIP-MWP-Rust
+
+      - name: Checkout Sovereign-Mohawk-Proto
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/Sovereign-Mohawk-Proto
+          path: Sovereign-Mohawk-Proto
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
