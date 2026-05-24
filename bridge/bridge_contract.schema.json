@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rwilliamspbg-ops.github.io/mohawk/bridge_contract.schema.json",
+  "title": "Mohawk Go-Rust Bridge Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["runtime_config", "route_updates", "session_updates", "feature_flags"],
+  "properties": {
+    "runtime_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["iface", "queue_id", "zero_copy", "num_frames", "frame_size", "batch_size", "num_workers"],
+      "properties": {
+        "iface": { "type": "string", "minLength": 1 },
+        "queue_id": { "type": "integer", "minimum": 0 },
+        "zero_copy": { "type": "boolean" },
+        "num_frames": { "type": "integer", "minimum": 1 },
+        "frame_size": { "type": "integer", "minimum": 64 },
+        "batch_size": { "type": "integer", "minimum": 1 },
+        "batch_size_min": { "type": "integer", "minimum": 1 },
+        "batch_size_max": { "type": "integer", "minimum": 1 },
+        "num_workers": { "type": "integer", "minimum": 0 },
+        "fill_threshold": { "type": "integer", "minimum": 0 },
+        "fill_adaptive": { "type": "boolean" },
+        "fill_adapt_factor": { "type": "number", "minimum": 0 },
+        "fill_ema_alpha": { "type": "number", "minimum": 0, "maximum": 1 },
+        "fill_min": { "type": "integer", "minimum": 0 },
+        "fill_max": { "type": "integer", "minimum": 0 },
+        "metrics_addr": { "type": "string" },
+        "dry_run": { "type": "boolean" }
+      }
+    },
+    "route_updates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/routeUpdate" }
+    },
+    "session_updates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/sessionUpdate" }
+    },
+    "feature_flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stub_mode": { "type": "boolean" },
+        "enable_metrics": { "type": "boolean" },
+        "enable_adaptive_fill": { "type": "boolean" },
+        "enable_zero_copy": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "routeUpdate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dest_id", "next_hop_id"],
+      "properties": {
+        "dest_id": { "$ref": "#/$defs/fixed32" },
+        "next_hop_id": { "$ref": "#/$defs/fixed32" },
+        "next_hop_mac": { "type": "string" },
+        "metric": { "type": "integer" },
+        "last_seen": { "type": "string", "format": "date-time" }
+      }
+    },
+    "sessionUpdate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session_id", "action"],
+      "properties": {
+        "session_id": { "$ref": "#/$defs/fixed16" },
+        "flow_label": { "type": "integer", "minimum": 0 },
+        "action": { "type": "string", "enum": ["add", "remove"] },
+        "secret": { "type": "string" },
+        "info": { "type": "string" }
+      }
+    },
+    "telemetryResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["health_state", "forwarder_stats", "timestamp"],
+      "properties": {
+        "health_state": { "type": "string", "enum": ["ok", "degraded", "failed"] },
+        "forwarder_stats": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["received", "forwarded", "encrypted", "route_misses"],
+          "properties": {
+            "received": { "type": "integer", "minimum": 0 },
+            "forwarded": { "type": "integer", "minimum": 0 },
+            "encrypted": { "type": "integer", "minimum": 0 },
+            "route_misses": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "queue_stats": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "queue_depth": { "type": "integer", "minimum": 0 },
+            "fill_target": { "type": "integer", "minimum": 0 },
+            "fill_actual": { "type": "integer", "minimum": 0 },
+            "worker_count": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "last_error": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "fixed32": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0, "maximum": 255 },
+      "minItems": 32,
+      "maxItems": 32
+    },
+    "fixed16": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0, "maximum": 255 },
+      "minItems": 16,
+      "maxItems": 16
+    }
+  }
+}

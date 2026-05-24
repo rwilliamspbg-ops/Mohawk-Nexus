@@ -1,0 +1,44 @@
+{
+  "runtime_config": {
+    "iface": "eth0",
+    "queue_id": 0,
+    "zero_copy": true,
+    "num_frames": 4096,
+    "frame_size": 2048,
+    "batch_size": 64,
+    "batch_size_min": 16,
+    "batch_size_max": 256,
+    "num_workers": 4,
+    "fill_threshold": 64,
+    "fill_adaptive": true,
+    "fill_adapt_factor": 1.25,
+    "fill_ema_alpha": 0.2,
+    "fill_min": 16,
+    "fill_max": 256,
+    "metrics_addr": ":9090"
+  },
+  "route_updates": [
+    {
+      "dest_id": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      "next_hop_id": [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+      "next_hop_mac": "02:00:00:00:00:01",
+      "metric": 1,
+      "last_seen": "2026-05-24T00:00:00Z"
+    }
+  ],
+  "session_updates": [
+    {
+      "session_id": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      "flow_label": 7,
+      "action": "add",
+      "secret": "QkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkI=",
+      "info": "Y2xpLWRlbW8="
+    }
+  ],
+  "feature_flags": {
+    "stub_mode": false,
+    "enable_metrics": true,
+    "enable_adaptive_fill": true,
+    "enable_zero_copy": true
+  }
+}

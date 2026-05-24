@@ -1,0 +1,12 @@
+{
+  "contract": "Mohawk Go-Rust Bridge Contract",
+  "example": {
+    "path": "bridge/examples/control_request.example.json",
+    "sha256": "4a07862f94bdaac54ee398a25620948312160a9bb18facbbed2ca184a3052afc"
+  },
+  "schema": {
+    "path": "bridge/bridge_contract.schema.json",
+    "sha256": "8e27d83ebe3893efecbe61dd4b2bec79d8949a89d37263ce84bc19d9ab9bf340"
+  },
+  "version": "bridge_contract.manifest.v1"
+}
