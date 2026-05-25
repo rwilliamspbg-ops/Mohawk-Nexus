@@ -1,0 +1,34 @@
+name: perf-regression
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  bench-and-compare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.1'
+
+      - name: Run short crypto benchmark
+        run: |
+          mkdir -p SMIP-MWP/benchmarks/pr-run
+          go test ./SMIP-MWP/internal/crypto -bench . -run ^$ -benchmem -count 3 2>&1 | tee SMIP-MWP/benchmarks/pr-run/crypto-bench-pr.txt
+
+      - name: Compare with baseline
+        run: |
+          python3 scripts/compare_benchmarks.py --bench-file SMIP-MWP/benchmarks/pr-run/crypto-bench-pr.txt --baseline SMIP-MWP/benchmarks/baselines/crypto-baseline.json --threshold-percent 5.0
+
+      - name: Upload benchmark artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-benchmarks
+          path: SMIP-MWP/benchmarks/pr-run
+          retention-days: 7
