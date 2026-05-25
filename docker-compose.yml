@@ -32,6 +32,7 @@ services:
       - mohawk-net
     ports:
       - "9000:9000"
+      - "9001:9001"
     restart: unless-stopped
 
   fl-client-1:
@@ -75,13 +76,6 @@ services:
       - "9101:9101"
     restart: unless-stopped
 
-  swip-client:
-    image: alpine:3.18
-    container_name: swip-client
-    networks:
-      - mohawk-net
-    command: ["sh", "-c", "while true; do sleep 60; done"]
-
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -99,6 +93,11 @@ services:
       - mohawk-net
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
 
 networks:
   mohawk-net:
