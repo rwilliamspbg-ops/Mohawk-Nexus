@@ -24,7 +24,7 @@ jobs:
 
       - name: Compare with baseline
         run: |
-          python3 scripts/compare_benchmarks.py --bench-file SMIP-MWP/benchmarks/pr-run/crypto-bench-pr.txt --baseline SMIP-MWP/benchmarks/baselines/crypto-baseline.json --threshold-percent 5.0
+          python3 scripts/compare_benchmarks.py --bench-file SMIP-MWP/benchmarks/pr-run/crypto-bench-pr.txt --baseline benchmarks/baselines/crypto-baseline.json --threshold-percent 5.0
 
       - name: Upload benchmark artifact
         uses: actions/upload-artifact@v4
