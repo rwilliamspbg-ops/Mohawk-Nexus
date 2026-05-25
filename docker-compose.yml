@@ -63,6 +63,19 @@ services:
     command: ["python", "/app/fl/client.py"]
 
   swip-client:
+    build:
+      context: .
+      dockerfile: images/swip/Dockerfile
+    image: mohawk/swip:local
+    container_name: swip-client
+    networks:
+      - mohawk-net
+    ports:
+      - "9100:9100"
+      - "9101:9101"
+    restart: unless-stopped
+
+  swip-client:
     image: alpine:3.18
     container_name: swip-client
     networks:

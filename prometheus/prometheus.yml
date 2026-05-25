@@ -8,3 +8,6 @@ scrape_configs:
   - job_name: 'fl'
     static_configs:
       - targets: ['fl-coordinator:9001']
+  - job_name: 'swip'
+    static_configs:
+      - targets: ['swip-client:9101']
