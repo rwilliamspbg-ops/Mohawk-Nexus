@@ -55,6 +55,15 @@ Common targets:
 - `make bridge-smoke` — simple smoke test of the bridge contract.
 - `make verify-rust` — run Rust tests in `SMIP-MWP-Rust/` (requires Rust toolchain and repository checkout).
 
+FL quickstart (local, mock):
+
+```bash
+# build local FL images and run coordinator + two clients
+docker-compose build fl-coordinator fl-client-1 fl-client-2
+docker-compose up -d fl-coordinator fl-client-1 fl-client-2
+docker-compose logs -f fl-coordinator
+```
+
 Running performance and stress harnesses (local):
 
 ```bash

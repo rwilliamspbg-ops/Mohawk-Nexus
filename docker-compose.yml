@@ -23,13 +23,44 @@ services:
     restart: unless-stopped
 
   fl-coordinator:
-    image: python:3.11-slim
+    build:
+      context: .
+      dockerfile: images/fl/Dockerfile
+    image: mohawk/fl:local
     container_name: fl-coordinator
     networks:
       - mohawk-net
-    command: ["sh", "-c", "python -m http.server 9000"]
     ports:
       - "9000:9000"
+    restart: unless-stopped
+
+  fl-client-1:
+    build:
+      context: .
+      dockerfile: images/fl/Dockerfile
+    image: mohawk/fl-client:local
+    container_name: fl-client-1
+    networks:
+      - mohawk-net
+    depends_on:
+      - fl-coordinator
+    environment:
+      - COORD_HOST=http://fl-coordinator:9000
+    command: ["python", "/app/fl/client.py"]
+
+  fl-client-2:
+    build:
+      context: .
+      dockerfile: images/fl/Dockerfile
+    image: mohawk/fl-client:local
+    container_name: fl-client-2
+    networks:
+      - mohawk-net
+    depends_on:
+      - fl-coordinator
+    environment:
+      - COORD_HOST=http://fl-coordinator:9000
+    command: ["python", "/app/fl/client.py"]
 
   swip-client:
     image: alpine:3.18
