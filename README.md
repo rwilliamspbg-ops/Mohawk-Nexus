@@ -16,8 +16,6 @@ Mohawk Nexus is the root integration workspace for the Mohawk network stack. It 
     <img src="https://img.shields.io/badge/Sponsor%20Mohawk%20Nexus-❤️-%23EA4AAA?style=for-the-badge&logo=GitHub-Sponsors&logoColor=white" alt="Sponsor on GitHub" />
   </a>
 </p>
-[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus)
-
 
 ## Workspace Layout
 
