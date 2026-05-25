@@ -9,6 +9,7 @@ Mohawk Nexus is the root integration workspace for the Mohawk network stack. It 
   <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml/badge.svg" alt="Build Images"/>
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20AF_XDP-FF6600" alt="AF_XDP"/>
   <img src="https://img.shields.io/badge/High%20Performance-Datapath-blueviolet" alt="Performance"/>
+	[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus)
 </p>
 
 ## Workspace Layout
