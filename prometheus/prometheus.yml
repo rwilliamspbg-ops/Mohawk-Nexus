@@ -5,3 +5,6 @@ scrape_configs:
   - job_name: 'mohawk'
     static_configs:
       - targets: ['control:8080', 'datapath:8080']
+  - job_name: 'fl'
+    static_configs:
+      - targets: ['fl-coordinator:9001']
