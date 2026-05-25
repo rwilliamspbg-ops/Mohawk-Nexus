@@ -1,4 +1,4 @@
-FROM rust:1.76-bullseye AS builder
+FROM rust:1.95-bullseye AS builder
 WORKDIR /src
 COPY SMIP-MWP-Rust /src/SMIP-MWP-Rust
 WORKDIR /src/SMIP-MWP-Rust
