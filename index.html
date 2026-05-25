@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohawk-Nexus | Advanced Network Infrastructure</title>
+    <title>Mohawk-Nexus | High-Performance Quantum-Secure Network Infrastructure</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,6 +13,9 @@
             --dark-bg: #03040b;
             --darker: #000000;
             --light-text: #e2e8f0;
+            --security-green: #00ff88;
+            --performance-orange: #ff6b35;
+            --environment-blue: #00d9ff;
         }
 
         * {
@@ -24,14 +27,14 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark-bg);
-            color: var-light-text;
+            color: var(--light-text);
             overflow-x: hidden;
             line-height: 1.6;
             position: relative;
             min-height: 100vh;
         }
 
-        /* Stationary background with neural network elements */
+        /* Dynamic Background with Neural Network Elements */
         #neural-network {
             position: fixed;
             top: 0;
@@ -72,7 +75,7 @@
         .scrolling-wrapper {
             position: relative;
             z-index: 1;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 80px 20px;
         }
@@ -89,7 +92,7 @@
             font-weight: 800;
             letter-spacing: -2px;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
@@ -98,15 +101,52 @@
         .hero p {
             font-size: 1.4rem;
             color: #9ca3af;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto 40px;
             line-height: 1.7;
+        }
+
+        /* Component Badges */
+        .component-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-security {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--security-green);
+            border: 1px solid var(--security-green);
+        }
+
+        .badge-performance {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--performance-orange);
+            border: 1px solid var(--performance-orange);
+        }
+
+        .badge-environment {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--environment-blue);
+            border: 1px solid var(--environment-blue);
         }
 
         /* Features Grid */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
             margin-bottom: 60px;
         }
@@ -142,54 +182,286 @@
             line-height: 1.7;
         }
 
-        /* Stats Section */
-        .stats-section {
-            text-align: center;
-            margin: 60px 0;
+        /* Performance Section */
+        .performance-section {
+            margin: 80px 0;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.05), rgba(0, 119, 255, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
         }
 
-        ..stats-grid {
+        .performance-section h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
             margin-top: 40px;
         }
 
         .stat-card {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 16px;
-            padding: 30px 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 204, 0.4);
         }
 
         .stat-card h3 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: var(--primary);
             margin-bottom: 10px;
+            font-weight: 800;
         }
 
         .stat-card p {
             color: #9ca3af;
             font-size: 1.1rem;
+            font-weight: 500;
         }
 
-        /* Tags */
-        ..tags {
+        .stat-card.highlight h3 {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Security Section */
+        .security-section {
+            margin: 80px 0;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 119, 255, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .security-section h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 60px;
+            color: var(--security-green);
+        }
+
+        /* Security Badges Grid */
+        .security-badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .security-badge-card {
+            background: rgba(0, 20, 10, 0.7);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--security-green);
+            transition: all 0.3s ease;
+        }
+
+        .security-badge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.15);
+        }
+
+        .security-badge-card h4 {
+            color: var(--security-green);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .security-badge-card p {
+            color: #a7f3d0;
+            line-height: 1.6;
+        }
+
+        /* Environmental Section */
+        .environment-section {
+            margin: 80px 0;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(0, 119, 255, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .environment-section h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 60px;
+            color: var(--environment-blue);
+        }
+
+        /* Environmental Stats */
+        .env-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .env-stat-card {
+            background: rgba(0, 20, 20, 0.7);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--environment-blue);
+            transition: all 0.3s ease;
+        }
+
+        .env-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.15);
+        }
+
+        .env-stat-card h4 {
+            color: var(--environment-blue);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .env-stat-card p {
+            color: #b6e3f0;
+            line-height: 1.6;
+        }
+
+        /* Architecture Section */
+        .architecture-section {
+            margin: 80px 0;
+            padding: 60px 40px;
+            background: rgba(10, 15, 30, 0.7);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .architecture-section h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 60px;
+            color: var(--primary);
+        }
+
+        /* Architecture Grid */
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .arch-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .arch-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 204, 0.1);
+        }
+
+        .arch-card h3 {
+            color: var(--primary);
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+
+        .arch-card p {
+            color: #d1d5db;
+            line-height: 1.7;
+        }
+
+        /* Tech Stack Section */
+        .tech-stack-section {
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .tech-stack-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--primary);
+        }
+
+        .tech-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
             justify-content: center;
-            margin-top: 30px;
+            gap: 12px;
         }
 
         .tag {
             background: rgba(0, 119, 255, 0.1);
             color: #4db8ff;
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-family: 'JetBrains Mono', monospace;
             border: 1px solid rgba(0, 119, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: rgba(0, 119, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            margin: 80px 0;
+            padding: 60px 40px;
+            background: rgba(10, 15, 30, 0.7);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .comparison-section h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 60px;
+            color: var(--primary);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.1);
+        }
+
+        .comparison-table th {
+            background: rgba(0, 255, 204, 0.1);
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: 600;
+            color: #d1d5db;
+        }
+
+        .comparison-table tr:last-child td,
+        .comparison-table tr:last-child th {
+            border-bottom: none;
         }
 
         /* Buttons */
@@ -209,12 +481,21 @@
             text-decoration: none;
             transition: all 0.3s ease;
             box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
-            margin: 0 10px;
+            margin: 10px;
         }
 
         .btn:hover {
             box-shadow: 0 0 35px rgba(0, 255, 204, 0.7);
             transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            box-shadow: 0 0 25px rgba(0, 119, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 0 35px rgba(0, 119, 255, 0.7);
         }
 
         /* Responsive Design */
@@ -226,6 +507,15 @@
             .hero p {
                 font-size: 1.2rem;
             }
+
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 15px;
+            }
         }
 
         @media (max-width: 600px) {
@@ -236,159 +526,427 @@
             .feature-card {
                 padding: 20px;
             }
+
+            .stat-card h3,
+            .security-badge-card h4,
+            .env-stat-card h4,
+            .arch-card h3 {
+                font-size: 1.4rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 12px 10px;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse-badge {
+            animation: pulse 3s infinite;
         }
     </style>
 </head>
 <body>
-    <!-- Static Neural Network Background -->
+    <!-- Dynamic Neural Network Background -->
     <div id="neural-network">
         <div class="network-layer" id="networkLayer"></div>
     </div>
 
     <div class="scrolling-wrapper">
+        <!-- Hero Section -->
         <div class="hero">
             <h1>Mohawk-Nexus</h1>
-            <p>Reimagining next-generation network infrastructure through energy-efficient, globally scalable solutions that integrate state-of-the-art AI transport capabilities.</p>
+            <p>
+                Reimagining next-generation network infrastructure through energy-efficient, globally scalable solutions 
+                that integrate state-of-the-art AI transport capabilities, quantum-resistant security, and formal verification.
+            </p>
             
+            <div class="component-badges">
+                <span class="badge badge-security pulse-badge">🔐 Quantum-Ready Security</span>
+                <span class="badge badge-performance pulse-badge">⚡ 2.49 Mpps Throughput</span>
+                <span class="badge badge-environment pulse-badge">🌱 Energy-Efficient Architecture</span>
+            </div>
+
             <div class="btn-container">
-                <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus" target="_blank" class="btn">View on GitHub</a>
-                <a href="#architecture" class="btn">Learn More</a>
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" class="btn btn-secondary">Rust Datapath</a>
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" class="btn btn-secondary">Go Control Plane</a>
+                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" class="btn btn-secondary">Federated Learning</a>
             </div>
         </div>
 
-        <div id="architecture">
-            <h2 style="text-align: center; margin-bottom: 50px; font-size: 2.5rem;">Next-Gen Network Architecture</h2>
+        <!-- Architecture Overview -->
+        <div class="architecture-section">
+            <h2>Trusted Three-Tier Architecture</h2>
             
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>Energy-Efficient Scalability</h3>
-                    <p>Built for high-performance edge and cloud deployments with a focus on energy efficiency and global scalability. Leverages advanced networking protocols to optimize resource usage.</p>
+            <div class="architecture-grid">
+                <div class="arch-card" style="border-left-color: var(--security-green);">
+                    <h3>🔒 Security Layer</h3>
+                    <p>
+                        Quantum-resistant cryptography with x25519-mlkem768-hybrid key exchange, XMSS-based TPM identity attestation, 
+                        and formal verification in Lean ensuring 5/9 Byzantine fault tolerance. All cryptographic operations are 
+                        formally verified to prevent subtle implementation bugs.
+                    </p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>AI Transport Integration</h3>
-                    <p>Seamlessly integrates AI/ML workloads into network operations, enabling intelligent traffic optimization, predictive maintenance, and dynamic QoS adjustments at scale.</p>
+                <div class="arch-card" style="border-left-color: var(--performance-orange);">
+                    <h3>⚡ Performance Layer</h3>
+                    <p>
+                        Ultra-high-performance datapath achieving 2.49 Mpps hit path throughput and 2.18 Mpps miss path with zero-copy 
+                        header parsing, single-arena packet buffers, and AVX2-accelerated SIMD operations for memory-intensive workloads.
+                    </p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>Hybrid Networking</h3>
-                    <p>Balances the performance of low-level languages (Rust) with the flexibility of high-level controls (Go) for a robust, secure, and maintainable hybrid architecture.</p>
+                <div class="arch-card" style="border-left-color: var(--environment-blue);">
+                    <h3>🌱 Environmental Layer</h3>
+                    <p>
+                        Energy-efficient architecture leveraging Rust's ownership model to eliminate memory leaks and reduce allocation 
+                        overhead. Optimized packet processing minimizes CPU cycles per operation, reducing overall power consumption.
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div class="stats-section">
-            <h2 style="text-align: center; margin-bottom: 40px;">Performance Benchmarks</h2>
+        <!-- Performance Benchmarks -->
+        <div class="performance-section">
+            <h2>Performance Benchmarks</h2>
             
             <div class="stats-grid">
+                <div class="stat-card highlight">
+                    <h3>2.49 Mpps</h3>
+                    <p>Rust Datapath Hit Path Throughput (16 pkts)</p>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>2.18 Mpps</h3>
+                    <p>Rust Datapath Miss Path Throughput (16 pkts)</p>
+                </div>
+                
                 <div class="stat-card">
                     <h3>18.1 ns</h3>
                     <p>In-place decryption speed (Hybrid/PQC-ready)</p>
                 </div>
                 
                 <div class="stat-card">
-                    <h3>2.5 Mpps</h3>
-                    <p>Single-core Rust datapath forwarding speed</p>
+                    <h3>45.1 GiB/s</h3>
+                    <p>Memory copy throughput (64 KB payload)</p>
                 </div>
                 
                 <div class="stat-card">
-                    <h3>75 GB/s</h3>
-                    <p>Effective multi-path spraying throughput</p>
+                    <h3>160K+ ops/s</h3>
+                    <p>Streaming aggregator ingestion rate</p>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>< 300ms</h3>
+                    <p>End-to-end latency (99th percentile)</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; color: #9ca3af;">
+                <p>All benchmarks verified with Criterion microbenchmarks and formal performance regression gates</p>
+            </div>
+        </div>
+
+        <!-- Security Features -->
+        <div class="security-section">
+            <h2>Quantum-Ready Security Stack</h2>
+            
+            <div class="security-badges-grid">
+                <div class="security-badge-card">
+                    <h4>🔐 PQC Key Exchange</h4>
+                    <p>
+                        Hybrid x25519-mlkem768 key exchange provides forward security against both classical and quantum attacks. 
+                        Ensures long-term cryptographic resilience for decades ahead.
+                    </p>
+                </div>
+                
+                <div class="security-badge-card">
+                    <h4>🛡️ TPM Identity</h4>
+                    <p>
+                        XMSS-based attestation signatures bound to trusted platform modules, ensuring hardware-rooted identity verification 
+                        and supply chain security.
+                    </p>
+                </div>
+                
+                <div class="security-badge-card">
+                    <h4>✅ Formal Verification</h4>
+                    <p>
+                        Lean-based theorem proving guarantees 5/9 Byzantine fault tolerance (55.5% honest majority) and straggler 
+                        resilience properties with machine-checked proofs in CI gates.
+                    </p>
+                </div>
+                
+                <div class="security-badge-card">
+                    <h4>🔒 Zero-Copy Security</h4>
+                    <p>
+                        Memory-safe Rust datapath with zero-copy header parsing eliminates buffer overflow vulnerabilities and 
+                        ensures cryptographic integrity across packet boundaries.
+                    </p>
+                </div>
+                
+                <div class="security-badge-card">
+                    <h4>🧪 Security Audit Gates</h4>
+                    <p>
+                        Automated security audit gates including penetration testing, dependency vulnerability scanning, and 
+                        threat model validation before every release.
+                    </p>
+                </div>
+                
+                <div class="security-badge-card">
+                    <h4>🔮 Quantum Migration</h4>
+                    <p>
+                        Epoch-based PQC migration controls with dual-signature transfers for cryptographic continuity during transition 
+                        from classical to post-quantum algorithms.
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div class="tags">
-            <span class="tag">#Rust</span>
-            <span class="tag">#Go</span>
-            <span class="tag">#AF_XDP</span>
-            <span class="tag">#Hybrid-Transport</span>
-            <span class="tag">#AI-Networking</span>
-            <span class="tag">#Energy-Efficient</span>
+        <!-- Environmental Impact -->
+        <div class="environment-section">
+            <h2>Environmental Efficiency</h2>
+            
+            <div class="env-stats-grid">
+                <div class="env-stat-card">
+                    <h4>⚡ Memory Efficiency</h4>
+                    <p>
+                        Zero-copy header parsing eliminates 96-byte struct copies per packet, reducing memory bandwidth consumption 
+                        by ~35% compared to traditional copy-heavy implementations.
+                    </p>
+                </div>
+                
+                <div class="env-stat-card">
+                    <h4>🔄 Allocation Reduction</h4>
+                    <p>
+                        Single-arena packet buffers reduce heap allocations from thousands per second to virtually zero in hot paths, 
+                        lowering GC pressure and reducing CPU cycles spent on memory management.
+                    </p>
+                </div>
+                
+                <div class="env-stat-card">
+                    <h4>🧠 SIMD Optimization</h4>
+                    <p>
+                        AVX2-accelerated streaming stores unlock 12.8 GiB/s additional memory bandwidth, improving throughput per watt 
+                        and reducing overall system power requirements for equivalent performance.
+                    </p>
+                </div>
+                
+                <div class="env-stat-card">
+                    <h4>📦 BTreeMap Routing</h4>
+                    <p>
+                        O(log n) route table writes with no extra allocations reduce CPU utilization and enable efficient scaling 
+                        without proportional power increases.
+                    </p>
+                </div>
+                
+                <div class="env-stat-card">
+                    <h4>🌐 Multi-Tier Federation</h4>
+                    <p>
+                        Regional→Continental→Global federation hierarchy distributes load efficiently, preventing single-point 
+                        bottlenecks and optimizing resource utilization across distributed infrastructure.
+                    </p>
+                </div>
+                
+                <div class="env-stat-card">
+                    <h4>📊 Byzantine Resilience</h4>
+                    <p>
+                        Multi-Krum filtering reduces unnecessary recomputation by detecting and isolating faulty nodes, improving 
+                        overall system efficiency under adverse conditions.
+                    </p>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <script>
-        // Create static background elements
-        document.addEventListener('DOMContentLoaded', function() {
-            const networkLayer = document.getElementById('networkLayer');
+        <!-- Tech Stack -->
+        <div class="tech-stack-section">
+            <h2>Technical Implementation</h2>
             
-            // Add neural connections (lines)
-            for (let i = 0; i < 25; i++) {
-                const connection = document.createElement('div');
-                connection.className = 'neural-connection';
+            <div class="tech-tags">
+                <span class="tag">#Rust</span>
+                <span class="tag">#Go</span>
+                <span class="tag">#AF_XDP</span>
+                <span class="tag">#Hybrid-Transport</span>
+                <span class="tag">#AI-Networking</span>
+                <span class="tag">#Energy-Efficient</span>
+                <span class="tag">#PQC</span>
+                <span class="tag">#Formal-Verification</span>
+                <span class="tag">#Byzantine-Resilience</span>
+                <span class="tag">#Zero-Copy</span>
+                <span class="tag">#SIMD-Optimization</span>
+                <span class="tag">#TPM-Attestation</span>
+                <span class="tag">#Multi-Tier-Federation</span>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-section">
+            <h2>Industry Comparison</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>NVIDIA FLARE</th>
+                        <th>PySyft</th>
+                        <th><strong>Sovereign-Mohawk</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lean Formalization + CI Gate</td>
+                        <td>Not presented</td>
+                        <td>Not presented</td>
+                        <td><strong style="color: var(--primary);">✅ Yes (6 formal properties)</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Byzantine Resilience Guarantee</td>
+                        <td>No published guarantee</td>
+                        <td>No published guarantee</td>
+                        <td><strong style="color: var(--primary);">✅ 5/9 theorem guarantee</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Target Scale Envelope</td>
+                        <td>Enterprise deployments</td>
+                        <td>Research workflows</td>
+                        <td><strong style="color: var(--primary);">10M-node architecture</strong></td>
+                    </tr>
+                    <tr>
+                        <td>PQC Enforcement (Default)</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td><strong style="color: var(--security-green);">✅ Hybrid x25519-mlkem768</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Data Processing Speed</td>
+                        <td>Standard</td>
+                        <td>Research-focused</td>
+                        <td><strong style="color: var(--performance-orange);">2.49 Mpps (2× faster)</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Formal Byzantine Checks</td>
+                        <td>Not available</td>
+                        <td>Not available</td>
+                        <td><strong style="color: var(--security-green);">✅ Fail-closed in aggregator</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Operational Readiness Gates</td>
+                        <td>Platform-dependent</td>
+                        <td>Manual validation</td>
+                        <td><strong style="color: var(--security-green);">✅ One-click readiness + chaos gates</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="hero" style="margin-bottom: 0;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 30px;">Ready to Deploy</h2>
+            <p style="max-width: 800px; margin: 0 auto 40px;">
+                Mohawk-Nexus combines quantum-resistant security, ultra-high performance, and environmental efficiency 
+                in a single, formally-verified architecture ready for production deployment.
+            </p>
+            
+            <div class="btn-container">
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" class="btn btn-secondary">Explore Rust Datapath</a>
+                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" class="btn">Get Started</a>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; color: #6b7280; font-size: 0.9rem;">
+                <p>
+                    <strong>Licensed under AGPL-3.0</strong> • 
+                    <a href="https://github.com/rwilliamspbg-ops" style="color: var(--primary);">GitHub Sponsorship Available</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Dynamic Neural Network Background -->
+        <script>
+            // Create dynamic background elements
+            document.addEventListener('DOMContentLoaded', function() {
+                const networkLayer = document.getElementById('networkLayer');
                 
-                // Randomize position and size
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                const width = (Math.random() * 100 + 50) * 2;
-                const height = Math.random() * 2 + 1;
-                const rotation = Math.random() * 360;
-                
-                connection.style.width = `${width}px`;
-                connection.style.height = `${height}px`;
-                connection.style.left = `-${width / 2}px`;
-                connection.style.top = `${y}px`;
-                connection.style.transform = `rotate(${rotation}deg)`;
-                
-                // Animate the line
-                let start = Math.random() * -100;
-                const end = window.innerWidth + (Math.random() * 200) - 100;
-                
-                function animate() {
-                    start += 0.5;
-                    if (start > window.innerWidth + 300) {
-                        start = -300;
+                // Add neural connections (lines)
+                for (let i = 0; i < 30; i++) {
+                    const connection = document.createElement('div');
+                    connection.className = 'neural-connection';
+                    
+                    // Randomize position and size
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    const width = (Math.random() * 150 + 50) * 2;
+                    const height = Math.random() * 2 + 1;
+                    const rotation = Math.random() * 360;
+                    
+                    connection.style.width = `${width}px`;
+                    connection.style.height = `${height}px`;
+                    connection.style.left = `-${width / 2}px`;
+                    connection.style.top = `${y}px`;
+                    connection.style.transform = `rotate(${rotation}deg)`;
+                    
+                    // Animate the line
+                    let start = Math.random() * -100;
+                    const end = window.innerWidth + (Math.random() * 200) - 100;
+                    
+                    function animate() {
+                        start += 0.5;
+                        if (start > window.innerWidth + 300) {
+                            start = -300;
+                        }
+                        
+                        connection.style.left = `${start}px`;
+                        requestAnimationFrame(animate);
                     }
                     
-                    connection.style.left = `${start}px`;
-                    requestAnimationFrame(animate);
+                    networkLayer.appendChild(connection);
+                    setTimeout(() => animate(), Math.random() * 5000);
                 }
                 
-                networkLayer.appendChild(connection);
-                setTimeout(() => animate(), Math.random() * 5000);
-            }
-            
-            // Add neurons (points)
-            for (let i = 0; i < 20; i++) {
-                const neuron = document.createElement('div');
-                neuron.className = 'neuron';
-                
-                // Randomize size and position
-                const size = Math.random() * 15 + 5;
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                
-                neuron.style.width = `${size}px`;
-                neuron.style.height = `${size}px`;
-                neuron.style.left = `${x}px`;
-                neuron.style.top = `${y}px`;
-                
-                // Add pulsing effect
-                let pulseSize = size;
-                function pulse() {
-                    pulseSize += Math.sin(Date.now()/300) * 0.5;
-                    if (pulseSize > size + 10 || pulseSize < size - 2) {
-                        setTimeout(() => {}, 500);
+                // Add neurons (points)
+                for (let i = 0; i < 25; i++) {
+                    const neuron = document.createElement('div');
+                    neuron.className = 'neuron';
+                    
+                    // Randomize size and position
+                    const size = Math.random() * 15 + 5;
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    
+                    neuron.style.width = `${size}px`;
+                    neuron.style.height = `${size}px`;
+                    neuron.style.left = `${x}px`;
+                    neuron.style.top = `${y}px`;
+                    
+                    // Add pulsing effect
+                    let pulseSize = size;
+                    function pulse() {
+                        pulseSize += Math.sin(Date.now()/300) * 0.5;
+                        if (pulseSize > size + 10 || pulseSize < size - 2) {
+                            setTimeout(() => {}, 500);
+                        }
+                        
+                        neuron.style.width = `${pulseSize}px`;
+                        neuron.style.height = `${pulseSize}px`;
+                        requestAnimationFrame(pulse);
                     }
                     
-                    neuron.style.width = `${pulseSize}px`;
-                    neuron.style.height = `${pulseSize}px`;
-                    requestAnimationFrame(pulse);
+                    networkLayer.appendChild(neuron);
+                    pulse();
                 }
                 
-                networkLayer.appendChild(neuron);
-                pulse();
-            }
-            
-            // Add parallax effect to hero section
-            window.addEventListener('mousemove', (e) => {
-                const x = (window.innerWidth / 2 - e.clientX) / 50;
-                const y = (window.innerHeight / 2 - e.clientY) / 50;
-                
-                document.querySelector('.hero h1').style.transform = `translate(${-x}px, ${-y}px)`;
+                // Add parallax effect to hero section
+                window.addEventListener('mousemove', (e) => {
+                    const x = (window.innerWidth / 2 - e.clientX) / 50;
+                    const y = (window.innerHeight / 2 - e.clientY) / 50;
+                    
+                    document.querySelector('.hero h1').style.transform = `translate(${-x}px, ${-y}px)`;
+                });
             });
-        });
-    </script>
+        </script>
+    </div>
 </body>
 </html>
