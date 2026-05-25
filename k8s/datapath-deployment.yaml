@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: datapath
-          image: mohawk/datapath:latest
+          image: ghcr.io/rwilliamspbg-ops/mohawk-datapath:latest
           resources:
             requests:
               cpu: "200m"
