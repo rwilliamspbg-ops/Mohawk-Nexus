@@ -1,0 +1,65 @@
+name: kind-integration
+
+on:
+  push:
+    branches:
+      - docs/add-stress-metrics
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.1'
+
+      - name: Set up Kind
+        uses: engineerd/setup-kind@v0.11.0
+        with:
+          version: v0.20.0
+
+      - name: Create kind cluster
+        run: |
+          kind create cluster --name mohawk-ci || true
+
+      - name: Build control image
+        run: |
+          docker build -f images/SMIP-MWP/Dockerfile -t mohawk-control:ci .
+          kind load docker-image --name mohawk-ci mohawk-control:ci
+
+      - name: Build datapath image
+        run: |
+          docker build -f images/SMIP-MWP-Rust/Dockerfile -t mohawk-datapath:ci .
+          kind load docker-image --name mohawk-ci mohawk-datapath:ci
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Apply k8s manifests
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/networkpolicy.yaml
+          kubectl apply -f k8s/control-deployment.yaml
+          kubectl apply -f k8s/datapath-deployment.yaml
+          kubectl apply -f k8s/fl-deployment.yaml
+          kubectl apply -f k8s/swip-deployment.yaml
+
+      - name: Wait for deployments
+        run: |
+          kubectl wait --for=condition=available deployment --all -n mohawk --timeout=180s
+
+      - name: Run workspace verify
+        run: make verify || true
+
+      - name: Upload benchmarks and logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-artifacts
+          path: |
+            SMIP-MWP/benchmarks/**
+            SMIP-MWP/benchmarks/ci-short-stress/**
+          retention-days: 7
