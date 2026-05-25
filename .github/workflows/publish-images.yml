@@ -26,6 +26,14 @@ jobs:
           path: SMIP-MWP
           fetch-depth: 0
 
+      - name: Checkout SMIP-MWP-Rust repo
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP-Rust
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: SMIP-MWP-Rust
+          fetch-depth: 0
+
       - name: Log in to GHCR
         uses: docker/login-action@v2
         with:
