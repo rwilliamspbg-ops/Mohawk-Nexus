@@ -38,6 +38,24 @@ services:
       - mohawk-net
     command: ["sh", "-c", "while true; do sleep 60; done"]
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    networks:
+      - mohawk-net
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:9.5.0
+    container_name: grafana
+    networks:
+      - mohawk-net
+    ports:
+      - "3000:3000"
+
 networks:
   mohawk-net:
     driver: bridge

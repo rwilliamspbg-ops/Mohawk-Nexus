@@ -1,0 +1,41 @@
+name: build-images
+
+on:
+  push:
+    branches:
+      - docs/add-stress-metrics
+
+jobs:
+  build-and-save:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build control image
+        run: |
+          docker build -f images/SMIP-MWP/Dockerfile -t mohawk-control:ci .
+
+      - name: Build datapath image
+        run: |
+          docker build -f images/SMIP-MWP-Rust/Dockerfile -t mohawk-datapath:ci .
+
+      - name: Save images
+        run: |
+          docker save mohawk-control:ci -o mohawk-control-ci.tar || true
+          docker save mohawk-datapath:ci -o mohawk-datapath-ci.tar || true
+
+      - name: Upload images as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-images
+          path: |
+            mohawk-control-ci.tar
+            mohawk-datapath-ci.tar
+          retention-days: 7
