@@ -29,7 +29,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == '/ready':
             self._send(200, {'ready': True})
             return
-        if path.startswith('/debug/pprof'):
+        if path.startswith('/debug/pprof') or path.startswith('/debug/profile'):
             try:
                 dur = 2
                 if '?' in self.path:
@@ -40,22 +40,28 @@ class Handler(BaseHTTPRequestHandler):
                                 dur = int(part.split('=', 1)[1])
                             except Exception:
                                 pass
-                pr = cProfile.Profile()
-                pr.enable()
+                try:
+                    from pyinstrument import Profiler
+                except Exception:
+                    self._send(500, {'error': 'pyinstrument not installed'})
+                    return
+                profiler = Profiler()
+                profiler.start()
                 end = time.time() + dur
                 while time.time() < end:
                     s = 0
                     for i in range(5000):
                         s += i * i
-                pr.disable()
-                sio = StringIO()
-                ps = pstats.Stats(pr, stream=sio).sort_stats('cumulative')
-                ps.print_stats(40)
-                data = sio.getvalue()
+                profiler.stop()
+                html = profiler.output_html()
+                profdir = Path('run_data/profiles')
+                profdir.mkdir(parents=True, exist_ok=True)
+                fname = profdir / f"swip-profile-{int(time.time())}.html"
+                fname.write_text(html)
                 self.send_response(200)
-                self.send_header('Content-Type', 'text/plain; charset=utf-8')
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
                 self.end_headers()
-                self.wfile.write(data.encode())
+                self.wfile.write(html.encode())
             except Exception as e:
                 self._send(500, {'error': str(e)})
             return

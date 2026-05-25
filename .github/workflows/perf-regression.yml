@@ -32,3 +32,39 @@ jobs:
           name: pr-benchmarks
           path: SMIP-MWP/benchmarks/pr-run
           retention-days: 7
+
+  collect-profiles:
+    runs-on: ubuntu-latest
+    needs: bench-and-compare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build docker images
+        run: |
+          docker compose build fl-coordinator fl-client-1 fl-client-2 swip-client
+
+      - name: Start services
+        run: |
+          docker compose up -d fl-coordinator fl-client-1 fl-client-2 swip-client prometheus
+          # wait for health endpoints
+          for i in {1..30}; do
+            if curl -sS http://localhost:9000/healthz >/dev/null 2>&1 && curl -sS http://localhost:9100/healthz >/dev/null 2>&1; then
+              echo 'services healthy'
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Capture profiles
+        run: |
+          mkdir -p ci-profiles
+          curl -sS "http://localhost:9000/debug/profile?duration=5" -o ci-profiles/fl-profile.html || true
+          curl -sS "http://localhost:9100/debug/profile?duration=5" -o ci-profiles/swip-profile.html || true
+
+      - name: Upload profiles
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-profiles
+          path: ci-profiles
+          retention-days: 30
