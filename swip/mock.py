@@ -6,6 +6,7 @@ import cProfile
 import pstats
 from io import StringIO
 import time
+from pathlib import Path
 
 REQUESTS = Counter('swip_requests_total', 'Total HTTP requests to SWIP mock', ['method'])
 OPERATIONS = Counter('swip_operations_total', 'Total operations performed')
