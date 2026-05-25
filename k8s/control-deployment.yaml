@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mohawk-control
+  namespace: mohawk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mohawk-control
+  template:
+    metadata:
+      labels:
+        app: mohawk-control
+    spec:
+      containers:
+        - name: control
+          image: mohawk/control:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

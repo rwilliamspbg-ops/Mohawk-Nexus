@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  control:
+    build:
+      context: .
+      dockerfile: images/SMIP-MWP/Dockerfile
+    image: mohawk/control:local
+    container_name: mohawk-control
+    networks:
+      - mohawk-net
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  datapath:
+    build:
+      context: .
+      dockerfile: images/SMIP-MWP-Rust/Dockerfile
+    image: mohawk/datapath:local
+    container_name: mohawk-datapath
+    networks:
+      - mohawk-net
+    restart: unless-stopped
+
+  fl-coordinator:
+    image: python:3.11-slim
+    container_name: fl-coordinator
+    networks:
+      - mohawk-net
+    command: ["sh", "-c", "python -m http.server 9000"]
+    ports:
+      - "9000:9000"
+
+  swip-client:
+    image: alpine:3.18
+    container_name: swip-client
+    networks:
+      - mohawk-net
+    command: ["sh", "-c", "while true; do sleep 60; done"]
+
+networks:
+  mohawk-net:
+    driver: bridge

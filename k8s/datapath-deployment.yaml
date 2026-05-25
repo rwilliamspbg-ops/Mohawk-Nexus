@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mohawk-datapath
+  namespace: mohawk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mohawk-datapath
+  template:
+    metadata:
+      labels:
+        app: mohawk-datapath
+    spec:
+      containers:
+        - name: datapath
+          image: mohawk/datapath:latest
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          securityContext:
+            privileged: true

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-coordinator
+  namespace: mohawk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-coordinator
+  template:
+    metadata:
+      labels:
+        app: fl-coordinator
+    spec:
+      containers:
+        - name: fl
+          image: python:3.11-slim
+          command: ["python","-m","http.server","9000"]
+          ports:
+            - containerPort: 9000
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
