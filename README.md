@@ -2,6 +2,15 @@
 
 Mohawk Nexus is the root integration workspace for the Mohawk network stack. It brings together the Go control plane, the Rust datapath, protocol definitions, verification material, and the canonical bridge contract used for cross-component validation and integration testing.
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Go-1.26.1-00ADD8?logo=go&logoColor=white" alt="Go"/>
+  <img src="https://img.shields.io/badge/Rust-1.0+-DEA584?logo=rust&logoColor=white" alt="Rust"/>
+  <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/ci.yml/badge.svg" alt="CI"/>
+  <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml/badge.svg" alt="Build Images"/>
+  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20AF_XDP-FF6600" alt="AF_XDP"/>
+  <img src="https://img.shields.io/badge/High%20Performance-Datapath-blueviolet" alt="Performance"/>
+</p>
+
 ## Workspace Layout
 
 - [SMIP-MWP/](SMIP-MWP/) — Go control plane, AF_XDP host integration, routing, crypto bindings and bridge request ingestion.
