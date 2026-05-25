@@ -13,10 +13,9 @@ jobs:
       packages: write
       id-token: write
     steps:
-      - name: Checkout (with submodules)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
           fetch-depth: 0
 
       - name: Log in to GHCR

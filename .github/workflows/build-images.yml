@@ -9,10 +9,9 @@ jobs:
   build-and-save:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (with submodules)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
           fetch-depth: 0
 
       - name: Set up QEMU
