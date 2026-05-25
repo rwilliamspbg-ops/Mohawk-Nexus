@@ -1,0 +1,58 @@
+name: publish-images
+
+on:
+  push:
+    branches:
+      - docs/add-stress-metrics
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout SMIP-MWP repo
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: SMIP-MWP
+          fetch-depth: 0
+
+      - name: Checkout SMIP-MWP-Rust repo
+        uses: actions/checkout@v4
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP-Rust
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: SMIP-MWP-Rust
+          fetch-depth: 0
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push control image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: images/SMIP-MWP/Dockerfile
+          push: true
+          tags: ghcr.io/rwilliamspbg-ops/mohawk-control:latest
+
+      - name: Build and push datapath image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: images/SMIP-MWP-Rust/Dockerfile
+          push: true
+          tags: ghcr.io/rwilliamspbg-ops/mohawk-datapath:latest

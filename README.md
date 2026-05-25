@@ -13,10 +13,24 @@ Mohawk Nexus is the root integration workspace for the Mohawk network stack. It 
 
 ## Requirements
 
-- Go (1.26+ recommended)
+- Go (1.26.1 recommended — pinned for reproducible builds)
 - Python 3.8+
 - Docker (for containerized performance/stress runs)
 - Rust toolchain (only required for running `SMIP-MWP-Rust` tests locally)
+
+Note: For reproducible local builds and CI parity we pin Go to `1.26.1`.
+You can install it locally (no sudo) and add it to your shell `PATH`:
+
+```bash
+GO_INSTALL_DIR="$HOME/.go/go1.26.1"
+curl -fsSL -o /tmp/go1.26.1.linux-amd64.tar.gz https://go.dev/dl/go1.26.1.linux-amd64.tar.gz
+rm -rf "$GO_INSTALL_DIR" && mkdir -p "$GO_INSTALL_DIR"
+tar -C "$GO_INSTALL_DIR" -xzf /tmp/go1.26.1.linux-amd64.tar.gz --strip-components=1
+export PATH="$GO_INSTALL_DIR/bin:$PATH"
+go version
+```
+
+Tip: If you use a Codespace or Dev Container, see `.devcontainer/devcontainer.json` for a pinned Go feature.
 
 ## Usage
 
@@ -40,6 +54,15 @@ Common targets:
 - `make verify-go` — run Go unit tests and benchmarks across the Go repos.
 - `make bridge-smoke` — simple smoke test of the bridge contract.
 - `make verify-rust` — run Rust tests in `SMIP-MWP-Rust/` (requires Rust toolchain and repository checkout).
+
+FL quickstart (local, mock):
+
+```bash
+# build local FL images and run coordinator + two clients
+docker-compose build fl-coordinator fl-client-1 fl-client-2
+docker-compose up -d fl-coordinator fl-client-1 fl-client-2
+docker-compose logs -f fl-coordinator
+```
 
 Running performance and stress harnesses (local):
 
@@ -72,6 +95,15 @@ Comparisons to common networking stacks (qualitative):
 - WireGuard: extremely lightweight crypto VPN; WireGuard is highly-optimized for single-packet crypto paths, while Mohawk targets richer forwarding features, pluggable routing and protocol-level bridge contract validation.
 
 Important: benchmark numbers depend heavily on host CPU, kernel, NIC, and kernel-bypass configuration (AF_XDP, hugepages, IRQ affinity). See `SMIP-MWP/benchmarks/` and generated `*.prof` for precise measurements captured during runs.
+
+Latest high-stress run snapshot:
+
+- Timestamp: 2026-05-24T16:59:58Z
+- Load: 300s, high, 12 benchmark iterations, 32 concurrent operations
+- `NewHybridSession_Cached`: 582.1-1278.0 ns/op, 1376 B/op, 4 allocs/op
+- `NewHybridSession_Uncached`: 766.9-1062.0 ns/op, 1392 B/op, 5 allocs/op
+- `EncryptInPlace`: 877.8-1357.0 ns/op, 1536 B/op, 1 allocs/op
+- `DecryptInPlace`: 651.6-750.6 ns/op, 0 B/op, 0 allocs/op
 
 How to interpret our artifacts:
 
@@ -107,7 +139,16 @@ GitHub Actions runs `make verify` from the repository root (see `.github/workflo
 
 ## References
 
+- [STACK_INTEGRATION_PLAN.md](STACK_INTEGRATION_PLAN.md)
+- [STACK_TOPOLOGY_AND_METRICS_SPEC.md](STACK_TOPOLOGY_AND_METRICS_SPEC.md)
+- [STACK_INTEGRATION_CHECKLIST.md](STACK_INTEGRATION_CHECKLIST.md)
 - `TRACEABILITY_MATRIX.md`
 - `UNIFICATION_PLAN.md`
 
 If you need a condensed usage guide or an examples section added to this README, tell me which workflows to highlight and I'll add them.
+
+## Dev Container / Codespace
+
+For reproducible development environments (Codespaces or Dev Containers) this repository pins Go to `1.26.1`. See `.devcontainer/devcontainer.json` for an example devcontainer configuration which sets `GOROOT` and prepends the pinned Go binary directory to the `PATH` so builds and tests use Go 1.26.1.
+
+If you prefer to install Go locally without sudo, follow the steps in the Requirements section to install to `$HOME/.go/go1.26.1` and add it to your shell profile (`~/.bashrc` / `~/.profile`).

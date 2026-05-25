@@ -1,0 +1,6 @@
+{
+  "BenchmarkNewHybridSession_Cached-4": 630.05,
+  "BenchmarkNewHybridSession_Uncached-4": 830.0,
+  "BenchmarkEncryptInPlace-4": 908.05,
+  "BenchmarkDecryptInPlace-4": 670.55
+}
