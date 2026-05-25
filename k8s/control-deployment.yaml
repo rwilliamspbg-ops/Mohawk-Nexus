@@ -16,6 +16,9 @@ spec:
       containers:
         - name: control
           image: mohawk-control:ci
+          command: ["/bin/sh", "-c"]
+          args:
+            - /usr/local/bin/mohawk-node --demo && sleep infinity
           ports:
             - containerPort: 8080
           resources:
