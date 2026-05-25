@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: control
-          image: ghcr.io/rwilliamspbg-ops/mohawk-control:latest
+          image: mohawk-control:ci
           ports:
             - containerPort: 8080
           resources:
