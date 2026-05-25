@@ -3,6 +3,11 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
+import cProfile
+import pstats
+from io import StringIO
+import time
+
 
 STATE = Path('run_data/rounds.json')
 STATE.parent.mkdir(parents=True, exist_ok=True)
@@ -24,6 +29,46 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
+        path = self.path.split('?')[0]
+        if path == '/healthz':
+            self._send(200, {'status': 'ok'})
+            return
+        if path == '/ready':
+            self._send(200, {'ready': True})
+            return
+        if path.startswith('/debug/pprof'):
+            # simple CPU profile for a short duration (seconds) and return top stats
+            try:
+                # parse duration from query string if provided
+                dur = 2
+                if '?' in self.path:
+                    q = self.path.split('?', 1)[1]
+                    for part in q.split('&'):
+                        if part.startswith('duration='):
+                            try:
+                                dur = int(part.split('=', 1)[1])
+                            except Exception:
+                                pass
+                pr = cProfile.Profile()
+                pr.enable()
+                # run a short CPU-bound sample workload to collect profile
+                end = time.time() + dur
+                while time.time() < end:
+                    s = 0
+                    for i in range(10000):
+                        s += i * i
+                pr.disable()
+                sio = StringIO()
+                ps = pstats.Stats(pr, stream=sio).sort_stats('cumulative')
+                ps.print_stats(40)
+                data = sio.getvalue()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/plain; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(data.encode())
+            except Exception as e:
+                self._send(500, {'error': str(e)})
+            return
         # return current round
         if STATE.exists():
             content = json.loads(STATE.read_text())
