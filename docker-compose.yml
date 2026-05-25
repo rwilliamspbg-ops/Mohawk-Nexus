@@ -1,0 +1,104 @@
+version: '3.8'
+services:
+  control:
+    build:
+      context: .
+      dockerfile: images/SMIP-MWP/Dockerfile
+    image: mohawk/control:local
+    container_name: mohawk-control
+    networks:
+      - mohawk-net
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  datapath:
+    build:
+      context: .
+      dockerfile: images/SMIP-MWP-Rust/Dockerfile
+    image: mohawk/datapath:local
+    container_name: mohawk-datapath
+    networks:
+      - mohawk-net
+    restart: unless-stopped
+
+  fl-coordinator:
+    build:
+      context: .
+      dockerfile: images/fl/Dockerfile
+    image: mohawk/fl:local
+    container_name: fl-coordinator
+    networks:
+      - mohawk-net
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+
+  fl-client-1:
+    build:
+      context: .
+      dockerfile: images/fl/Dockerfile
+    image: mohawk/fl-client:local
+    container_name: fl-client-1
+    networks:
+      - mohawk-net
+    depends_on:
+      - fl-coordinator
+    environment:
+      - COORD_HOST=http://fl-coordinator:9000
+    command: ["python", "/app/fl/client.py"]
+
+  fl-client-2:
+    build:
+      context: .
+      dockerfile: images/fl/Dockerfile
+    image: mohawk/fl-client:local
+    container_name: fl-client-2
+    networks:
+      - mohawk-net
+    depends_on:
+      - fl-coordinator
+    environment:
+      - COORD_HOST=http://fl-coordinator:9000
+    command: ["python", "/app/fl/client.py"]
+
+  swip-client:
+    build:
+      context: .
+      dockerfile: images/swip/Dockerfile
+    image: mohawk/swip:local
+    container_name: swip-client
+    networks:
+      - mohawk-net
+    ports:
+      - "9100:9100"
+      - "9101:9101"
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    networks:
+      - mohawk-net
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:9.5.0
+    container_name: grafana
+    networks:
+      - mohawk-net
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+networks:
+  mohawk-net:
+    driver: bridge

@@ -26,7 +26,22 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.26.3'
+          go-version: '1.26.1'
+
+      - name: Ensure Python 3 is available
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-venv python3-pip
 
       - name: Run workspace verify
         run: make verify
+
+      - name: Upload benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace-benchmarks
+          path: |
+            SMIP-MWP/benchmarks/**
+            SMIP-MWP/benchmarks/ci-short-stress/**
+          retention-days: 7

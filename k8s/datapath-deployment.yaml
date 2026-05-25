@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mohawk-datapath
+  namespace: mohawk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mohawk-datapath
+  template:
+    metadata:
+      labels:
+        app: mohawk-datapath
+    spec:
+      containers:
+        - name: datapath
+          image: mohawk-datapath:ci
+          command: ["/bin/sh", "-c"]
+          args:
+            - /usr/local/bin/mohawk-node-rust --demo && sleep infinity
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          securityContext:
+            privileged: true

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swip-client
+  namespace: mohawk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swip-client
+  template:
+    metadata:
+      labels:
+        app: swip-client
+    spec:
+      containers:
+        - name: swip
+          image: alpine:3.18
+          command: ["sh","-c","while true; do sleep 3600; done"]
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "32Mi"
