@@ -1,0 +1,747 @@
+id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+name: Development
+type: 1
+canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+blocks:
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Filters and displays benchmark results for datapath_with_refill test
+    cases, showing test name, execution time, and throughput metrics.
+  height: 1000
+  id: 06bb3eb4-99d3-49b3-a55b-b1f0d9bb0b55
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: print_full_results
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 14000
+  y: 4200
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Adds FastPacketBuffer and BufferPool libraries to a Rust benchmark
+    suite, then generates comprehensive benchmarks comparing buffer allocation strategies
+    (pool, refill, fresh alloc) and datapath performance with packet handling variations.
+  height: 1000
+  id: 0b9f408a-7e67-46a7-9b5c-fdd028472224
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_final_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 10000
+  y: 4200
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Generates and registers a Criterion benchmark suite comparing zero-copy
+    and clone-based packet polling strategies, measuring performance of poll_slices
+    vs traditional poll methods across various packet batch sizes.
+  height: 1000
+  id: 180dde96-1693-4de1-a5fe-355d0b1cfb22
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_poll_slices_bench
+  parent_id: null
+  properties: {}
+  status: 1
+  type: 1
+  variables: null
+  width: 1600
+  x: 16000
+  y: 7000
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust, validates source integrity, and runs SIMD allocation
+    benchmarks with configurable sample size and warm-up time, then parses and displays
+    results grouped by benchmark category with timing and throughput metrics.
+  height: 1000
+  id: 235d35fe-252c-4c32-9d4a-1a418e3a662a
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_simd_alloc_benchmarks
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 8000
+  y: 1400
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Fixes Rust source code structure by relocating the `process_batch_slices`
+    method from outside the impl block to inside, ensuring proper code organization
+    and compilation. Validates final structure with assertions.
+  height: 1000
+  id: 28e274b5-c105-4a45-9e7b-f2effe2e5c75
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_poll_slices_impl
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 14000
+  y: 7000
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Extends a Rust benchmark library with ZeroCopyRing data structure and
+    writes comprehensive zero-copy packet performance benchmarks comparing clone-based,
+    Arc-shared, zero-copy ring, and scatter-gather socket strategies.
+  height: 1000
+  id: 30fb1786-0930-4052-acc0-3e1afb47f214
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_zero_copy_bench
+  parent_id: null
+  properties: {}
+  status: 1
+  type: 1
+  variables: null
+  width: 1600
+  x: 22000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Executes Rust performance benchmarks with custom sample size and warm-up
+    configuration, parsing & displaying timing and throughput results by benchmark
+    group.
+  height: 1000
+  id: 37aad41e-7e58-4de0-b507-44a130deb4ec
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_final_benchmarks
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 12000
+  y: 4200
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust, verifies source integrity, cleans Cargo locks, then
+    runs performance benchmarks on a Rust workspace with configurable sample size
+    and warm-up time, parsing and displaying results.
+  height: 1000
+  id: 3ae10be4-28ff-4f79-bb0f-b2e9ce3abe10
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: restore_all_cargo_tomls_and_build
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 2000
+  y: 12600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust toolchain and runs zero-copy benchmarks on a Rust workspace,
+    parsing timing and throughput metrics to display performance comparisons across
+    test variants and data sizes.
+  height: 1000
+  id: 4322a2c8-d111-49fe-bc65-88cfebcc94ac
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_zero_copy_bench
+  parent_id: null
+  properties: {}
+  status: 1
+  type: 1
+  variables: null
+  width: 1600
+  x: 24000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust toolchain, validates Rust project source integrity, and
+    runs umem_bench performance benchmarks with configurable sampling to measure time
+    and throughput across multiple test variants with baseline comparisons.
+  height: 1000
+  id: 44482df9-34c7-48ec-a1ed-f0e4d7461677
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_umem_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 8000
+  y: 4200
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust, validates source integrity, and runs performance benchmarks
+    on poll_slices with configurable sample size and warm-up time, then parses and
+    displays results with performance comparisons.
+  height: 1000
+  id: 50197e28-f760-4898-9a15-55a815569e55
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_poll_slices_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 18000
+  y: 7000
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust/Cargo via apt-get and builds the SMIP-MWP-Rust workspace
+    in release mode, listing compiled binaries and sizes upon success.
+  height: 1000
+  id: 52c0e05b-610b-4fe1-af40-21970d7f6ab8
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: install_rust_apt_and_build
+  parent_id: null
+  properties: {}
+  status: 4
+  type: 1
+  variables: null
+  width: 1600
+  x: 2000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust, fixes Rust compilation errors in SMIP-MWP workspace
+    (MockSocket exports, borrow conflicts, module imports), and runs cargo check diagnostics.
+  height: 1000
+  id: 67498782-5387-4b5a-88fc-c58c0a4aa63b
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_true_zerocopy_impl
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 0
+  y: 15600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Clones or pulls the latest version of a GitHub Rust repository (SMIP-MWP-Rust)
+    and lists its 26 contents for verification.
+  height: 1000
+  id: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: git_clone_repo
+  parent_id: null
+  properties: {}
+  status: 1
+  type: 1
+  variables: null
+  width: 1600
+  x: 0
+  y: 0
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Injects zero-copy packet poll implementations into Rust AF_XDP socket
+    driver. Adds poll_slices method to MockSocket and RealSocket, and creates SimulatedUmemSocket
+    with pre-allocated UMEM slab for benchmarking ring-based packet delivery without
+    syscalls.
+  height: 1000
+  id: 7bf06e75-4678-47e0-909d-f720728c9bd7
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_umem_poll_slices_impl
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 4000
+  y: 1400
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust toolchain and compiles a Rust project (SMIP-MWP-Rust)
+    in release mode, then lists generated binaries with file sizes.
+  height: 1000
+  id: 831d6175-5693-4815-90af-9c6d5242b4b9
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: build_rust_project
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 2000
+  y: 12600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Installs Rust, validates source integrity, and executes Criterion benchmarks
+    on a Rust recommendations module with configurable sample size and warm-up time,
+    parsing and displaying results in grouped tables by benchmark variant.
+  height: 1000
+  id: 8847c916-5ae3-45db-9933-7b111fdce688
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_recommendations_benchmarks
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 12000
+  y: 2800
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Scans the Rust workspace to locate the XdpSocket trait definition and
+    lists all Rust files, identifying which files reference or define the trait.
+  height: 1000
+  id: 8c03bcec-af82-4642-a690-40fce04d8255
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: read_datapath_sources
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 14000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Reads and displays the socket.rs source code from the SMIP-MWP-Rust
+    project, focusing on AF_XDP socket implementation including UMEM registration,
+    bind operations, and ring mmap configuration.
+  height: 1000
+  id: 93fd3433-df53-4ee5-b654-9cd3c7ab7dbb
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: read_full_socket_sources
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 2000
+  y: 1400
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Appends FastBuffer and BumpArena memory utility modules to a Rust benchmark
+    library if not already present. FastBuffer provides heap-allocated, optimized
+    byte buffers with zero-fill; BumpArena offers a pre-allocated ring-buffer arena
+    for buffer reuse without allocator overhead.
+  height: 1000
+  id: 9600b9a9-f296-46dc-8eb5-97839777c4a6
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_fast_buffer_lib
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 8000
+  y: 2800
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Generates a comprehensive Criterion benchmark suite for UMEM socket
+    performance, measuring poll latency, end-to-end forwarder throughput, and data-movement
+    costs across packet batch sizes (16, 64, 256) with polling vs. legacy clone comparisons.
+  height: 1000
+  id: 9add2641-9b77-4c0a-8f98-c3e9241a3fcf
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_umem_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 6000
+  y: 2800
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Scans and displays all Rust source files from the datapath crate and
+    benchmark library, printing their contents for code review.
+  height: 1000
+  id: a1e19058-943d-4118-a9b3-d2efd490e57e
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: read_datapath_socket_trait
+  parent_id: null
+  properties: {}
+  status: 1
+  type: 1
+  variables: null
+  width: 1600
+  x: 18000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Generates and configures a Criterion benchmark suite for SIMD memory
+    allocation strategies (AVX2, portable SIMD, arena bump, Vec techniques) across
+    multiple buffer sizes, writing the benchmark harness to Cargo.toml.
+  height: 1000
+  id: a71cd7e6-bc6e-4977-a80c-78ca365b97cc
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_simd_alloc_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 6000
+  y: 1400
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: 'Displays raw source code from two Rust files: bench library and datapath
+    socket module.'
+  height: 1000
+  id: af76c9a8-2343-44f3-8340-6d96d5d638b6
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: print_bench_lib_raw
+  parent_id: null
+  properties: {}
+  status: 1
+  type: 1
+  variables: null
+  width: 1600
+  x: 20000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Prepares a Rust benchmark workspace by restoring integrity, injecting
+    socket abstractions and slice-based I/O primitives, then regenerates bench module
+    APIs to fix compilation errors.
+  height: 1000
+  id: b494e230-ced9-4581-ac7b-2b78d54685de
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_true_zerocopy_mmap
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 0
+  y: 18600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Creates extended memory allocation benchmarks using Criterion, comparing
+    Vec allocation, cache-line-aligned allocation, and fill operations across multiple
+    sizes from 1KB to 8MB. Writes benchmark code and registers it in Cargo.toml.
+  height: 1000
+  id: bcb138d4-b794-418c-a654-34ae085f2f67
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_extended_alloc_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 4000
+  y: 0
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: "Creates a Rust Criterion benchmark suite comparing FastBuffer, BumpArena,\
+    \ and Vec allocation strategies across buffer sizes (1KB\u20138MB), including\
+    \ fast-path refill tests and a conditional strategy recommendation for optimal\
+    \ performance."
+  height: 1000
+  id: c4dc6d19-0b40-4c38-aa83-5ba27b13c47b
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_recommendations_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 10000
+  y: 2800
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Diagnoses system environment by executing shell commands (uname, OS
+    info, user, package manager, Rust tools, curl, internet connectivity) and captures
+    output via temp file to work around I/O redirection issues.
+  height: 1000
+  id: d7deffbf-ac65-44de-bc62-48327ffe0083
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: diagnose_io_redirect
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 2000
+  y: 11200
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Fixes Rust borrow-checker conflicts in buffer pooling code by refactoring
+    FastPacketBuffer and BufferPool to use a split-borrow pattern, then rewrites benchmark
+    suite to test buffer pool, arena, and datapath refill strategies.
+  height: 1000
+  id: d9b2ae85-027d-4c02-b118-37863f84e080
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: fix_lib_and_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 12000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: 'Runs Rust memory allocation benchmarks: installs Rust toolchain, validates
+    source code, executes extended allocation benchmark suite with configurable sample
+    size & warmup, then parses and displays performance results (timing & throughput)
+    grouped by benchmark variant.'
+  height: 1000
+  id: da9797d5-578d-4f04-856d-5b88a76e0da1
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_extended_alloc_benchmarks
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 6000
+  y: 0
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Reads and displays benchmark source files from the SMIP-MWP-Rust project,
+    including allocation benchmark tests, Cargo configuration, and library setup.
+  height: 1000
+  id: f3c79ad1-bcab-4282-811e-ff4e92d59106
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: read_bench_sources
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 2000
+  y: 0
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Locates and displays socket-related Rust source files from the SMIP-MWP-Rust
+    workspace, including socket.rs, library modules, and benchmark/datapath configurations
+    to review networking implementation details.
+  height: 1000
+  id: f79d44cf-a986-4c6a-a84d-13b5cd87b90d
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: read_socket_sources
+  parent_id: null
+  properties: {}
+  status: 1
+  type: 1
+  variables: null
+  width: 1600
+  x: 16000
+  y: 5600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: 'Sets up Rust environment and configures a comprehensive benchmark
+    suite (true_zerocopy_bench.rs) comparing zero-copy socket implementations: clone
+    baseline, copy_nonoverlapping UMEM-to-Vec, and transmute-based true zero-copy
+    across packet polling, end-to-end forwarder throughput, and data movement cost
+    scenarios.'
+  height: 1000
+  id: ff7cba36-681b-46dd-a89f-066fe813246f
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_true_zerocopy_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 0
+  y: 21600
+edges:
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 0e505e73-ab95-46ea-98e0-8771872ed7ef
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: a71cd7e6-bc6e-4977-a80c-78ca365b97cc
+  target: 235d35fe-252c-4c32-9d4a-1a418e3a662a
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 1a729586-f128-44cb-9b2c-37930f042abf
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: a71cd7e6-bc6e-4977-a80c-78ca365b97cc
+  target: 9600b9a9-f296-46dc-8eb5-97839777c4a6
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 23bf9af7-1832-49aa-b725-bc5a1cf96a4a
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 9600b9a9-f296-46dc-8eb5-97839777c4a6
+  target: c4dc6d19-0b40-4c38-aa83-5ba27b13c47b
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 3197058d-0f4c-4dca-937c-1369fd6332aa
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: af76c9a8-2343-44f3-8340-6d96d5d638b6
+  target: 30fb1786-0930-4052-acc0-3e1afb47f214
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 363e77c0-7cf2-4266-a400-fe413472f3b6
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 37aad41e-7e58-4de0-b507-44a130deb4ec
+  target: 06bb3eb4-99d3-49b3-a55b-b1f0d9bb0b55
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 3bfbb4a1-d76c-44fa-bff0-6e4a3a1e4b26
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 0b9f408a-7e67-46a7-9b5c-fdd028472224
+  target: 37aad41e-7e58-4de0-b507-44a130deb4ec
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 590b2651-0d10-47dd-8c2f-441b2f07b725
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 28e274b5-c105-4a45-9e7b-f2effe2e5c75
+  target: 180dde96-1693-4de1-a5fe-355d0b1cfb22
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 60712ff9-461c-435d-8459-f858d4507cc9
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: a1e19058-943d-4118-a9b3-d2efd490e57e
+  target: af76c9a8-2343-44f3-8340-6d96d5d638b6
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 67bf4717-5421-40bb-8ffe-8e72bdf3eec2
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: bcb138d4-b794-418c-a654-34ae085f2f67
+  target: a71cd7e6-bc6e-4977-a80c-78ca365b97cc
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 7b6882ef-7e89-4616-83ce-27e82ae425fe
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 93fd3433-df53-4ee5-b654-9cd3c7ab7dbb
+  target: 7bf06e75-4678-47e0-909d-f720728c9bd7
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 7ce952e1-603d-4895-9ee5-9b409b9069c9
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 180dde96-1693-4de1-a5fe-355d0b1cfb22
+  target: 50197e28-f760-4898-9a15-55a815569e55
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 83a34e47-024f-4a6c-ae1e-59009f20e27f
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  target: d7deffbf-ac65-44de-bc62-48327ffe0083
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 92d4e323-febd-44c4-88db-b389d70e1bfe
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 30fb1786-0930-4052-acc0-3e1afb47f214
+  target: 4322a2c8-d111-49fe-bc65-88cfebcc94ac
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 96a1c768-3eb2-4fc5-ac27-9f6c907df85e
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: d9b2ae85-027d-4c02-b118-37863f84e080
+  target: 28e274b5-c105-4a45-9e7b-f2effe2e5c75
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 96acf591-968c-4367-9588-da63bafb1ac7
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 9600b9a9-f296-46dc-8eb5-97839777c4a6
+  target: 0b9f408a-7e67-46a7-9b5c-fdd028472224
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 99ef907f-b439-4ea1-860f-126ab8b5baa8
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  target: 831d6175-5693-4815-90af-9c6d5242b4b9
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: a4f534bf-085f-4176-a523-2022048f111d
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 0b9f408a-7e67-46a7-9b5c-fdd028472224
+  target: d9b2ae85-027d-4c02-b118-37863f84e080
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: ac2f6e17-eb0b-462a-a212-13e877fb0789
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: f3c79ad1-bcab-4282-811e-ff4e92d59106
+  target: bcb138d4-b794-418c-a654-34ae085f2f67
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: ac58d307-693d-4662-ab22-1fa264fc2df7
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 9add2641-9b77-4c0a-8f98-c3e9241a3fcf
+  target: 44482df9-34c7-48ec-a1ed-f0e4d7461677
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: b87594e4-9ff4-47ff-9222-36f386962300
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  target: 93fd3433-df53-4ee5-b654-9cd3c7ab7dbb
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: caa50c2f-7237-49a5-9029-3a9354086835
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  target: 52c0e05b-610b-4fe1-af40-21970d7f6ab8
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: d104a17c-af9d-429f-bee7-874a23052faa
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  target: 3ae10be4-28ff-4f79-bb0f-b2e9ce3abe10
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: e0ff074e-bc00-41bb-ad20-ff63852d7809
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 8c03bcec-af82-4642-a690-40fce04d8255
+  target: f79d44cf-a986-4c6a-a84d-13b5cd87b90d
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: e2e3eb95-d30e-45f2-8b8b-6eeddc3b9e0c
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: f79d44cf-a986-4c6a-a84d-13b5cd87b90d
+  target: a1e19058-943d-4118-a9b3-d2efd490e57e
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: ef5b11b7-3eec-4d41-bed1-aafd71bc3a1f
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  target: 28e274b5-c105-4a45-9e7b-f2effe2e5c75
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: f27f2bd5-7f53-46c1-a42d-6e71089bf9ee
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: bcb138d4-b794-418c-a654-34ae085f2f67
+  target: da9797d5-578d-4f04-856d-5b88a76e0da1
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: f343ee05-60fd-4e20-8719-91a9f174ad36
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: d9b2ae85-027d-4c02-b118-37863f84e080
+  target: 8c03bcec-af82-4642-a690-40fce04d8255
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: f68568be-880b-493f-bb55-149ae4b661c8
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
+  target: f3c79ad1-bcab-4282-811e-ff4e92d59106
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: fa2a18ad-b890-4bee-8e8d-ba2ed934eaa6
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: c4dc6d19-0b40-4c38-aa83-5ba27b13c47b
+  target: 8847c916-5ae3-45db-9933-7b111fdce688
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: ffe8e806-1a29-4976-9391-c2d07210abb4
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: 7bf06e75-4678-47e0-909d-f720728c9bd7
+  target: 9add2641-9b77-4c0a-8f98-c3e9241a3fcf
