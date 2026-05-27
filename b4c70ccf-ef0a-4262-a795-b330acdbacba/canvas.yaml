@@ -228,6 +228,24 @@ layers:
   - auto_size: false
     canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
     compute_settings: null
+    description: Sets up & runs Rust benchmarks comparing threshold-based dispatch
+      strategies (clone vs. in-place processing) to measure performance trade-offs
+      at different batch sizes.
+    height: 1000
+    id: 5bfd7519-4fc8-478f-a9f3-0b262a4da3ae
+    layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+    name: run_threshold_bench
+    parent_id: null
+    properties: {}
+    status: 4
+    type: 1
+    variables: null
+    width: 1600
+    x: 0
+    y: 30600
+  - auto_size: false
+    canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+    compute_settings: null
     description: Installs Rust, fixes Rust compilation errors in SMIP-MWP workspace
       (MockSocket exports, borrow conflicts, module imports), and runs cargo check
       diagnostics.
@@ -405,6 +423,25 @@ layers:
     width: 1600
     x: 18000
     y: 5600
+  - auto_size: false
+    canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+    compute_settings: null
+    description: Sets up a Rust benchmarking environment for threshold-based dispatch
+      optimization. Installs Rust toolchain, injects helper methods into the datapath
+      library, generates a threshold socket adapter, and creates a benchmark suite
+      to measure clone vs. inplace processing tradeoffs.
+    height: 1000
+    id: a613175f-458b-4d3c-9c8c-2f2a33a45d75
+    layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+    name: write_threshold_bench
+    parent_id: null
+    properties: {}
+    status: 3
+    type: 1
+    variables: null
+    width: 1600
+    x: 0
+    y: 27600
   - auto_size: false
     canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
     compute_settings: null
