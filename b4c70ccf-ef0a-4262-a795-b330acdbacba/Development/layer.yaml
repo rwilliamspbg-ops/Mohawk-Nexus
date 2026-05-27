@@ -450,6 +450,25 @@ blocks:
 - auto_size: false
   canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
   compute_settings: null
+  description: Parses in-place forwarding benchmark results, extracts timing and throughput
+    metrics from regex patterns, groups results by variant and packet count, and generates
+    formatted comparison tables showing performance gains (speedup ratios) across
+    different optimization approaches.
+  height: 1000
+  id: ba2c82af-56f7-4173-b107-d002c3f9f459
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: parse_inplace_results
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 6000
+  y: 24600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
   description: Creates extended memory allocation benchmarks using Criterion, comparing
     Vec allocation, cache-line-aligned allocation, and fill operations across multiple
     sizes from 1KB to 8MB. Writes benchmark code and registers it in Cargo.toml.
@@ -542,6 +561,42 @@ blocks:
 - auto_size: false
   canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
   compute_settings: null
+  description: Sets up Rust environment, restores corrupted project files from git,
+    and writes an in-place packet forwarding benchmark suite that compares zero-copy
+    ring vs. vector-based socket performance across three throughput scenarios.
+  height: 1000
+  id: e22869b5-3c8b-4bd9-a974-8bafe2601d61
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: write_inplace_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 2000
+  y: 24600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
+  description: Restores Rust workspace from git, fixes corrupted files (Cargo.toml
+    and .rs), sets up Rust environment, injects testing infrastructure (SimulatedUmemSocket,
+    socket traits, batch processing methods), and runs cargo check on the bench crate.
+  height: 1000
+  id: e544df2f-7824-489c-8afc-2156445abbbb
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  name: run_inplace_bench
+  parent_id: null
+  properties: {}
+  status: 3
+  type: 1
+  variables: null
+  width: 1600
+  x: 4000
+  y: 24600
+- auto_size: false
+  canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  compute_settings: null
   description: Reads and displays benchmark source files from the SMIP-MWP-Rust project,
     including allocation benchmark tests, Cargo configuration, and library setup.
   height: 1000
@@ -611,6 +666,11 @@ edges:
   source: 9600b9a9-f296-46dc-8eb5-97839777c4a6
   target: c4dc6d19-0b40-4c38-aa83-5ba27b13c47b
 - canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 29fa5db6-ac0e-4c06-a90f-29be949ce676
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: e22869b5-3c8b-4bd9-a974-8bafe2601d61
+  target: e544df2f-7824-489c-8afc-2156445abbbb
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
   id: 3197058d-0f4c-4dca-937c-1369fd6332aa
   layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
   source: af76c9a8-2343-44f3-8340-6d96d5d638b6
@@ -655,6 +715,11 @@ edges:
   layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
   source: 79530ba2-fea3-44f9-9dff-4b8473e2304c
   target: d7deffbf-ac65-44de-bc62-48327ffe0083
+- canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
+  id: 84a6d00c-c8d6-4c80-92df-88167cf3323d
+  layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
+  source: e544df2f-7824-489c-8afc-2156445abbbb
+  target: ba2c82af-56f7-4173-b107-d002c3f9f459
 - canvas_id: b4c70ccf-ef0a-4262-a795-b330acdbacba
   id: 92d4e323-febd-44c4-88db-b389d70e1bfe
   layer_id: 3671969e-5b3d-4a1d-a6e9-5c57ce90db9f
