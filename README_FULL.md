@@ -2,7 +2,7 @@
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/ci.yml?branch=main)
 ![Perf Regression](https://img.shields.io/badge/perf-regression-enabled-brightgreen)
-![License](https://img.shields.io/github/license/rwilliamspbg-ops/Mohawk-Nexus)
+![License](https://img.shields.io/badge/license-multi--repo-0EA5E9)
 
 Why Mohawk Nexus
 
@@ -100,4 +100,4 @@ Contributing
 
 License
 
-- MIT (see `LICENSE`)
+- Mixed, component-specific licensing (see `LICENSE` and `LICENSES.md`)

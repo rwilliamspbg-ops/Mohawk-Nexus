@@ -43,7 +43,7 @@ Mohawk Nexus is the root integration workspace for the Mohawk network stack. It 
     <img src="https://img.shields.io/github/issues/rwilliamspbg-ops/Mohawk-Nexus" alt="Open Issues"/>
   </a>
   <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-22C55E" alt="License"/>
+    <img src="https://img.shields.io/badge/License-Multi--Repo-0EA5E9" alt="License"/>
   </a>
 </p>
 
@@ -247,3 +247,10 @@ If you need a condensed usage guide or an examples section added to this README,
 For reproducible development environments (Codespaces or Dev Containers) this repository pins Go to `1.26.1`. See `.devcontainer/devcontainer.json` for an example devcontainer configuration which sets `GOROOT` and prepends the pinned Go binary directory to the `PATH` so builds and tests use Go 1.26.1.
 
 If you prefer to install Go locally without sudo, follow the steps in the Requirements section to install to `$HOME/.go/go1.26.1` and add it to your shell profile (`~/.bashrc` / `~/.profile`).
+
+## License
+
+This workspace is multi-license because it aggregates multiple component repositories with different upstream licenses.
+
+- See `LICENSE` for the root workspace license notice.
+- See `LICENSES.md` for the per-component license matrix and upstream links.

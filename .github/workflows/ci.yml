@@ -108,9 +108,10 @@ jobs:
           go-version: '1.22'
 
       - name: Run Go SDK conformance tests
-        run: |
-          cd sdk/go
-          GOWORK=off go test ./... -v
+        working-directory: sdk/go
+        env:
+          GOWORK: off
+        run: go test ./... -v
 
   sdk-rust-conformance:
     name: sdk-rust-conformance-${{ matrix.os }}

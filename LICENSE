@@ -1,0 +1,9 @@
+Mohawk-Nexus License Notice
+
+This repository is an integration workspace that aggregates multiple component
+repositories with different licenses.
+
+No single SPDX identifier covers all components in this workspace.
+
+See LICENSES.md for the authoritative per-component license matrix and links to
+upstream license texts.

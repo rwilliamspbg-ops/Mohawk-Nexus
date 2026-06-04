@@ -8,6 +8,7 @@ All notable changes to this repository will be documented in this file.
 - Device compatibility matrix and runtime profile guidance for portable, accelerated, and experimental deployment modes.
 - Non-privileged datapath compatibility manifest at `k8s/datapath-deployment-unprivileged.yaml`.
 - Release-ready portability implementation plan in `PORTABILITY_IMPLEMENTATION_PLAN.md`.
+- Root `LICENSE` notice and `LICENSES.md` cross-repo licensing matrix for accurate multi-repo license attribution.
 
 ### Changed
 - Kubernetes FL deployment now runs the real FL coordinator image and exposes API and metrics ports with readiness/liveness probes.
@@ -15,6 +16,7 @@ All notable changes to this repository will be documented in this file.
 - Kind integration workflow now builds and loads FL and SWIP images.
 - Build and publish image workflows now include FL and SWIP images for linux amd64 and arm64.
 - Deployment guide now documents portable, accelerated, and experimental non-privileged modes.
+- Repository license messaging now reflects mixed upstream licensing instead of a single MIT claim.
 
 ### Fixed
 - Removed reliance on placeholder FL and SWIP Kubernetes stubs in default deployment manifests.
