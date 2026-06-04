@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "swip_scale_basic",
+      "kind": "swip_scale",
+      "input": { "value": 2.0 },
+      "expected": { "result": 3.0 }
+    },
+    {
+      "name": "fl_aggregate_after_two_updates",
+      "kind": "fl_apply_update",
+      "input": {
+        "state": { "round": 0, "updates": [0.2] },
+        "value": 0.6
+      },
+      "expected": { "round": 1, "global": 0.4, "updates": [] }
+    },
+    {
+      "name": "fl_buffer_single_update",
+      "kind": "fl_apply_update",
+      "input": {
+        "state": { "round": 1, "updates": [] },
+        "value": 0.25
+      },
+      "expected": { "round": 1, "updates": [0.25] }
+    }
+  ]
+}

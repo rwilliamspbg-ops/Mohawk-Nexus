@@ -3,17 +3,56 @@
 Mohawk Nexus is the root integration workspace for the Mohawk network stack. It brings together the Go control plane, the Rust datapath, protocol definitions, verification material, and the canonical bridge contract used for cross-component validation and integration testing.
 
 <p align="center">
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/ci.yml">
+    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/ci.yml/badge.svg" alt="CI"/>
+  </a>
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml">
+    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml/badge.svg" alt="Build Images"/>
+  </a>
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/publish-images.yml">
+    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/publish-images.yml/badge.svg" alt="Publish Images"/>
+  </a>
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/kind-integration.yml">
+    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/kind-integration.yml/badge.svg" alt="Kind Integration"/>
+  </a>
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/perf-regression.yml">
+    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/perf-regression.yml/badge.svg" alt="Perf Regression"/>
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Go-1.26.1-00ADD8?logo=go&logoColor=white" alt="Go"/>
   <img src="https://img.shields.io/badge/Rust-1.0+-DEA584?logo=rust&logoColor=white" alt="Rust"/>
-  <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/ci.yml/badge.svg" alt="CI"/>
-  <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml/badge.svg" alt="Build Images"/>
-  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20AF_XDP-FF6600" alt="AF_XDP"/>
-  <img src="https://img.shields.io/badge/High%20Performance-Datapath-blueviolet" alt="Performance"/>
-
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python"/>
+  <img src="https://img.shields.io/badge/Node-20%2B-339933?logo=node.js&logoColor=white" alt="Node"/>
+  <img src="https://img.shields.io/badge/SDK-Python%20%7C%20Go%20%7C%20Rust%20%7C%20TypeScript-4A5568" alt="SDK Languages"/>
+  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-0A66C2" alt="Platforms"/>
+  <img src="https://img.shields.io/badge/Containers-Multi--Arch%20amd64%20%7C%20arm64-2496ED?logo=docker&logoColor=white" alt="Container Architectures"/>
+  <img src="https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white" alt="Kubernetes"/>
+  <img src="https://img.shields.io/badge/Datapath-AF__XDP%20Accelerated-FF6600" alt="AF_XDP"/>
 </p>
+
+<p align="center">
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/stargazers">
+    <img src="https://img.shields.io/github/stars/rwilliamspbg-ops/Mohawk-Nexus?style=flat&logo=github" alt="GitHub Stars"/>
+  </a>
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/network/members">
+    <img src="https://img.shields.io/github/forks/rwilliamspbg-ops/Mohawk-Nexus?style=flat&logo=github" alt="GitHub Forks"/>
+  </a>
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/issues">
+    <img src="https://img.shields.io/github/issues/rwilliamspbg-ops/Mohawk-Nexus" alt="Open Issues"/>
+  </a>
+  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-22C55E" alt="License"/>
+  </a>
+</p>
+
 <p align="center">
   <a href="https://github.com/sponsors/rwilliamspbg-ops">
-    <img src="https://img.shields.io/badge/Sponsor%20Mohawk%20Nexus-❤️-%23EA4AAA?style=for-the-badge&logo=GitHub-Sponsors&logoColor=white" alt="Sponsor on GitHub" />
+    <img src="https://img.shields.io/badge/Sponsor%20Mohawk%20Nexus-❤-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor Mohawk Nexus" />
+  </a>
+  <a href="https://github.com/sponsors/rwilliamspbg-ops">
+    <img src="https://img.shields.io/badge/Become%20a%20Sponsor-Sustain%20Development-111827?style=for-the-badge&logo=github&logoColor=white" alt="Become a Sponsor" />
   </a>
 </p>
 
@@ -47,6 +86,25 @@ go version
 
 Tip: If you use a Codespace or Dev Container, see `.devcontainer/devcontainer.json` for a pinned Go feature.
 
+## Device Compatibility Matrix
+
+Mohawk Nexus supports multiple deployment profiles. The high-performance datapath remains Linux-focused due to AF_XDP requirements, while portable workflows cover broader device classes.
+
+| Device class | Primary profile | Status | Notes |
+|---|---|---|---|
+| Linux x86_64 server with AF_XDP-capable NIC | accelerated | supported | Full control + datapath profile; requires privileged datapath runtime and NIC/kernel tuning. |
+| Linux arm64 server or edge node | portable | supported | Control/FL/SWIP services supported; use accelerated profile only where AF_XDP prerequisites are met. |
+| Raspberry Pi / ARM SBC | portable | supported | Prefer portable workflows and reduced profiling overhead. |
+| macOS developer laptop | portable | supported for development | Use Docker/CI workflows and bridge validation; AF_XDP datapath is not available locally. |
+| Windows developer workstation | portable | supported for development | Use Docker/CI workflows and bridge validation; AF_XDP datapath is not available locally. |
+| Managed Kubernetes without privileged pods | portable | supported | Deploy non-privileged stack mode from `DEPLOYMENT.md`; skip accelerated datapath deployment. |
+
+### Runtime Profiles
+
+- `portable`: cross-device integration profile for control + FL + SWIP and bridge validation.
+- `accelerated`: Linux AF_XDP profile for high-performance datapath workloads.
+- `experimental`: non-privileged datapath trial mode for compatibility testing only.
+
 ## Usage
 
 Bootstrap and check workspace status:
@@ -70,7 +128,7 @@ Common targets:
 - `make bridge-smoke` — simple smoke test of the bridge contract.
 - `make verify-rust` — run Rust tests in `SMIP-MWP-Rust/` (requires Rust toolchain and repository checkout).
 
-FL quickstart (local, mock):
+FL quickstart (local, portable):
 
 ```bash
 # build local FL images and run coordinator + two clients

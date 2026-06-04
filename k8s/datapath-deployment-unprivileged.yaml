@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mohawk-datapath-unprivileged
+  namespace: mohawk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mohawk-datapath-unprivileged
+  template:
+    metadata:
+      labels:
+        app: mohawk-datapath-unprivileged
+    spec:
+      containers:
+        - name: datapath
+          image: mohawk-datapath:ci
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/local/bin/mohawk-node-rust"]
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]

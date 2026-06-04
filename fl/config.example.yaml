@@ -10,3 +10,10 @@ profiling:
   default_duration_seconds: 5
 storage:
   state_dir: run_data
+client:
+  coord_url: http://fl-coordinator:9000
+  get_timeout: 5
+  post_timeout: 5
+  max_retries: 3
+  base_backoff_seconds: 0.5
+  max_backoff_seconds: 5

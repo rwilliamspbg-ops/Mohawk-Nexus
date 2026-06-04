@@ -1,4 +1,4 @@
-# Example SWIP mock configuration
+# Example SWIP service configuration
 server:
   host: 0.0.0.0
   port: 9100
@@ -8,3 +8,5 @@ metrics:
 profiling:
   enabled: true
   default_duration_seconds: 5
+storage:
+  state_dir: run_data

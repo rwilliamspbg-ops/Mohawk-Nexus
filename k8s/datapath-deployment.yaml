@@ -16,9 +16,7 @@ spec:
       containers:
         - name: datapath
           image: mohawk-datapath:ci
-          command: ["/bin/sh", "-c"]
-          args:
-            - /usr/local/bin/mohawk-node-rust --demo && sleep infinity
+          command: ["/usr/local/bin/mohawk-node-rust"]
           resources:
             requests:
               cpu: "200m"

@@ -15,11 +15,28 @@ spec:
     spec:
       containers:
         - name: fl
-          image: python:3.11-slim
-          command: ["python","-m","http.server","9000"]
+          image: mohawk/fl:local
+          imagePullPolicy: IfNotPresent
+          command: ["python", "/app/fl/coordinator.py"]
           ports:
             - containerPort: 9000
+            - containerPort: 9001
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 9000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
             requests:
               cpu: "50m"
               memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"

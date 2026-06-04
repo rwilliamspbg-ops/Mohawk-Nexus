@@ -1,15 +1,70 @@
 #!/usr/bin/env python3
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import os
 from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
-import cProfile
-import pstats
-from io import StringIO
 import time
 
 
-STATE = Path('run_data/rounds.json')
+def _env_int(name, default):
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def _env_bool(name, default):
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _read_config_file(path):
+    if not path:
+        return {}
+    config_path = Path(path)
+    if not config_path.exists():
+        return {}
+    with config_path.open("r", encoding="utf-8") as handle:
+        if config_path.suffix in {".json"}:
+            data = json.load(handle)
+        elif config_path.suffix in {".yaml", ".yml"}:
+            import yaml
+
+            data = yaml.safe_load(handle) or {}
+        else:
+            return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _load_config():
+    file_cfg = _read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
+    server_cfg = file_cfg.get("server", {}) if isinstance(file_cfg.get("server", {}), dict) else {}
+    metrics_cfg = file_cfg.get("metrics", {}) if isinstance(file_cfg.get("metrics", {}), dict) else {}
+    profiling_cfg = file_cfg.get("profiling", {}) if isinstance(file_cfg.get("profiling", {}), dict) else {}
+    storage_cfg = file_cfg.get("storage", {}) if isinstance(file_cfg.get("storage", {}), dict) else {}
+
+    return {
+        "host": os.environ.get("FL_SERVER_HOST", str(server_cfg.get("host", "0.0.0.0"))),
+        "port": _env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
+        "metrics_enabled": _env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
+        "metrics_port": _env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
+        "profiling_enabled": _env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
+        "default_profile_duration_seconds": _env_int(
+            "FL_PROFILING_DEFAULT_DURATION_SECONDS",
+            int(profiling_cfg.get("default_duration_seconds", 2)),
+        ),
+        "state_dir": os.environ.get("FL_STATE_DIR", str(storage_cfg.get("state_dir", "run_data"))),
+    }
+
+
+CONFIG = _load_config()
+STATE = Path(CONFIG["state_dir"]) / "rounds.json"
 STATE.parent.mkdir(parents=True, exist_ok=True)
 
 # Prometheus metrics
@@ -37,8 +92,11 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, {'ready': True})
             return
         if path.startswith('/debug/pprof') or path.startswith('/debug/profile'):
+            if not CONFIG["profiling_enabled"]:
+                self._send(404, {'error': 'profiling disabled'})
+                return
             try:
-                dur = 2
+                dur = int(CONFIG["default_profile_duration_seconds"])
                 if '?' in self.path:
                     q = self.path.split('?', 1)[1]
                     for part in q.split('&'):
@@ -109,10 +167,15 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, content)
 
 def main():
-    # start Prometheus metrics on 9001
-    start_http_server(9001)
-    server = HTTPServer(('0.0.0.0', 9000), Handler)
-    print('FL coordinator listening on 9000, metrics on 9001')
+    if CONFIG["metrics_enabled"]:
+        start_http_server(int(CONFIG["metrics_port"]))
+    server = HTTPServer((CONFIG["host"], int(CONFIG["port"])), Handler)
+    print(
+        'FL coordinator listening on',
+        CONFIG["port"],
+        'metrics',
+        CONFIG["metrics_port"] if CONFIG["metrics_enabled"] else 'disabled',
+    )
     server.serve_forever()
 
 if __name__ == '__main__':

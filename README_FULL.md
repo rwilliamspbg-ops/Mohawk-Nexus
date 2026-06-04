@@ -56,7 +56,7 @@ docker compose up -d prometheus grafana fl-coordinator fl-client-1 fl-client-2 s
 ```bash
 python3 fl/coordinator.py &
 python3 fl/client.py &
-python3 swip/mock.py &
+python3 swip/service.py &
 curl http://localhost:9000/healthz
 curl http://localhost:9000/debug/profile?duration=5 -o fl-profile.html
 curl http://localhost:9100/debug/profile?duration=5 -o swip-profile.html

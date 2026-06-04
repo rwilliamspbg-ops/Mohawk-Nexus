@@ -3,7 +3,9 @@ name: kind-integration
 on:
   push:
     branches:
-      - docs/add-stress-metrics
+      - main
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   integration:
@@ -55,6 +57,16 @@ jobs:
         run: |
           docker build -f images/SMIP-MWP-Rust/Dockerfile -t mohawk-datapath:ci .
           kind load docker-image --name mohawk-ci mohawk-datapath:ci
+
+      - name: Build FL image
+        run: |
+          docker build -f images/fl/Dockerfile -t mohawk/fl:local .
+          kind load docker-image --name mohawk-ci mohawk/fl:local
+
+      - name: Build SWIP image
+        run: |
+          docker build -f images/swip/Dockerfile -t mohawk/swip:local .
+          kind load docker-image --name mohawk-ci mohawk/swip:local
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
