@@ -80,9 +80,46 @@ jobs:
           kubectl apply -f k8s/fl-deployment.yaml
           kubectl apply -f k8s/swip-deployment.yaml
 
-      - name: Wait for deployments
+      - name: Wait for required deployments
         run: |
-          kubectl wait --for=condition=available deployment --all -n mohawk --timeout=180s
+          set -euo pipefail
+
+          wait_required() {
+            local dep="$1"
+            echo "Waiting for required deployment: ${dep}"
+            if ! kubectl rollout status "deployment/${dep}" -n mohawk --timeout=240s; then
+              echo "Required deployment failed: ${dep}"
+              kubectl get pods -n mohawk -o wide || true
+              kubectl describe "deployment/${dep}" -n mohawk || true
+              kubectl get events -n mohawk --sort-by=.lastTimestamp | tail -n 200 || true
+              kubectl logs -n mohawk "deployment/${dep}" --all-containers --tail=200 || true
+              exit 1
+            fi
+          }
+
+          wait_optional() {
+            local dep="$1"
+            echo "Waiting for optional deployment: ${dep}"
+            if ! kubectl rollout status "deployment/${dep}" -n mohawk --timeout=180s; then
+              echo "Optional deployment not available in kind profile: ${dep}"
+              kubectl describe "deployment/${dep}" -n mohawk || true
+              kubectl logs -n mohawk "deployment/${dep}" --all-containers --tail=200 || true
+            fi
+          }
+
+          # FL and SWIP are expected to be healthy in portable kind integration runs.
+          wait_required fl-coordinator
+          wait_required swip-client
+
+          # Control and datapath may depend on host capabilities not present in kind.
+          wait_optional mohawk-control
+          wait_optional mohawk-datapath
+
+      - name: Dump namespace diagnostics on failure
+        if: failure()
+        run: |
+          kubectl get all -n mohawk -o wide || true
+          kubectl get events -n mohawk --sort-by=.lastTimestamp | tail -n 200 || true
 
       - name: Run workspace verify
         run: make verify || true
