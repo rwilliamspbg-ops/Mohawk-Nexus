@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: setup bootstrap bridge-smoke verify validate-bridge generate-bridge generate-bridge-bindings verify-go verify-rust status lint fmt-all test-all verify-generated e2e-bridge-portable e2e-bridge-accelerated hardening-check policy-apply-kyverno policy-apply-gatekeeper policy-validate policy-validate-strict
+.PHONY: setup bootstrap bridge-smoke verify validate-bridge generate-bridge generate-bridge-bindings verify-go verify-rust status lint fmt-all test-all verify-generated e2e-bridge-portable e2e-bridge-accelerated hardening-check policy-apply-kyverno policy-apply-gatekeeper policy-validate policy-validate-strict bench-go-sdk bench-compare
 
 setup: bootstrap
 
@@ -22,9 +22,27 @@ validate-bridge:
 	python3 ./scripts/validate_bridge_contract.py
 
 verify-go:
-	@pkgs="$$(go list ./SMIP-MWP/... ./Sovereign-Mohawk-Proto/... | grep -v 'github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/internal/federation$$')"; \
-	go test $$pkgs; \
-	go test ./Sovereign-Mohawk-Proto/internal/federation -run '^$$'
+	@set -e; \
+	ran=0; \
+	for dir in ./SMIP-MWP ./Sovereign-Mohawk-Proto ./sdk/go; do \
+		if [ -f "$$dir/go.mod" ]; then \
+			ran=1; \
+			if [ "$$dir" = "./Sovereign-Mohawk-Proto" ] && [ -d "$$dir/internal/federation" ]; then \
+				( cd "$$dir" && \
+					pkgs="$$(GOWORK=off go list ./... | grep -v '/internal/federation$$')"; \
+					if [ -n "$$pkgs" ]; then \
+						GOWORK=off go test $$pkgs; \
+					fi; \
+					GOWORK=off go test ./internal/federation -run '^$$' ); \
+			else \
+				( cd "$$dir" && GOWORK=off go test ./... ); \
+			fi; \
+		fi; \
+	done; \
+	if [ "$$ran" -eq 0 ]; then \
+		echo "No Go modules found to verify"; \
+		exit 1; \
+	fi
 
 verify-rust:
 	cd ./SMIP-MWP-Rust && . "$$HOME/.cargo/env" && cargo test --workspace --all-targets
@@ -69,6 +87,13 @@ policy-validate-strict:
 
 verify-generated:
 	git diff --exit-code -- bridge/ sdk/go/mohawksdk/bridge_contract.go sdk/rust/src/bridge_contract.rs sdk/python/mohawk_sdk/bridge_contract.py sdk/typescript/src/bridgeContract.js
+
+bench-go-sdk:
+	mkdir -p benchmarks/pr-run
+	go test ./sdk/go/mohawksdk -bench . -run ^$ -benchmem -count 10 2>&1 | tee benchmarks/pr-run/go-sdk-bench-pr.txt
+
+bench-compare:
+	python3 scripts/compare_benchmarks.py --bench-file benchmarks/pr-run/go-sdk-bench-pr.txt --baseline benchmarks/baselines/go_sdk_baseline.json --threshold-percent 10.0
 
 verify:
 	$(MAKE) generate-bridge

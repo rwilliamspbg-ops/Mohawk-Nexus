@@ -83,3 +83,64 @@ func TestConformanceCases(t *testing.T) {
 		})
 	}
 }
+
+func FuzzFlApplyUpdate(f *testing.F) {
+	f.Add(0, int64(0), 0.0)
+	f.Add(5, int64(3), 40.2)
+	f.Add(1, int64(1), 35.25)
+	f.Add(0, int64(0), -999.999)
+	f.Add(100, int64(3), 0.5)
+
+	f.Fuzz(func(t *testing.T, round int, numUpdates int64, value float64) {
+		if numUpdates < 0 || numUpdates > 1000 {
+			return
+		}
+		
+		updates := make([]float64, numUpdates)
+		for i := range updates {
+			updates[i] = float64(i) * 0.1
+		}
+		
+		state := FLState{Round: round, Updates: updates}
+		result := FlApplyUpdate(state, value)
+
+		if result.Round < round {
+			t.Errorf("round decreased: got %d, expected >= %d", result.Round, round)
+		}
+
+		if result.Global != nil && (*result.Global < -1e15 || *result.Global > 1e15) {
+			t.Errorf("global value out of reasonable range: %v", *result.Global)
+		}
+
+		for i, v := range result.Updates {
+			if v < -1e15 || v > 1e15 {
+				t.Errorf("update[%d] out of reasonable range: %v", i, v)
+			}
+		}
+	})
+}
+
+func FuzzSwipScale(f *testing.F) {
+	f.Add(0.0)
+	f.Add(123.456789)
+	f.Add(-999.999)
+	f.Add(1e-10)
+	f.Add(1e6)
+
+	f.Fuzz(func(t *testing.T, value float64) {
+		if value < -1e9 || value > 1e9 {
+			return
+		}
+		
+		result := SwipScale(value)
+
+		expectedScale := value * 1.5
+		tolerance := 2e-6
+		if result < expectedScale-tolerance || result > expectedScale+tolerance {
+			diff := result - expectedScale
+			if diff < -tolerance || diff > tolerance {
+				t.Errorf("SwipScale(%v) = %v, expected ~%v (diff: %v)", value, result, expectedScale, diff)
+			}
+		}
+	})
+}
