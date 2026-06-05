@@ -1,12 +1,77 @@
-# Python
+```
+# Go-specific ignores
+*.o
+*.a
+*.so
+*.exe
+*.dll
+*.out
+*.test
+*.prof
+coverage.out
+
+# Dependencies
+vendor/
+Godeps/
+
+# Build artifacts
+bin/
+pkg/
+target/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+htmlcov/
+.coverage
+
+# Cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
 
-# Rust
-sdk/rust/target/
-
-# Node
-node_modules/
-
-# OS/editor
-.DS_Store
+# Archives
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+```

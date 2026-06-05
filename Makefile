@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: setup bootstrap bridge-smoke verify validate-bridge generate-bridge generate-bridge-bindings verify-go verify-rust status lint fmt-all test-all verify-generated e2e-bridge-portable e2e-bridge-accelerated hardening-check policy-apply-kyverno policy-apply-gatekeeper policy-validate policy-validate-strict
+.PHONY: setup bootstrap bridge-smoke verify validate-bridge generate-bridge generate-bridge-bindings verify-go verify-rust status lint fmt-all test-all verify-generated e2e-bridge-portable e2e-bridge-accelerated hardening-check policy-apply-kyverno policy-apply-gatekeeper policy-validate policy-validate-strict bench-go-sdk bench-compare
 
 setup: bootstrap
 
@@ -69,6 +69,13 @@ policy-validate-strict:
 
 verify-generated:
 	git diff --exit-code -- bridge/ sdk/go/mohawksdk/bridge_contract.go sdk/rust/src/bridge_contract.rs sdk/python/mohawk_sdk/bridge_contract.py sdk/typescript/src/bridgeContract.js
+
+bench-go-sdk:
+	mkdir -p benchmarks/pr-run
+	go test ./sdk/go/mohawksdk -bench . -run ^$ -benchmem -count 10 2>&1 | tee benchmarks/pr-run/go-sdk-bench-pr.txt
+
+bench-compare:
+	python3 scripts/compare_benchmarks.py --bench-file benchmarks/pr-run/go-sdk-bench-pr.txt --baseline benchmarks/baselines/go_sdk_baseline.json --threshold-percent 10.0
 
 verify:
 	$(MAKE) generate-bridge
