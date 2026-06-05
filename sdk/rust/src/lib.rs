@@ -40,47 +40,54 @@ pub fn fl_apply_update(state: FLState, value: f64) -> FLState {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "bench"))]
 mod benches {
     use super::*;
-    use test::Bencher;
 
-    #[bench]
-    fn bench_swip_scale(b: &mut Bencher) {
+    #[test]
+    fn bench_swip_scale() {
         let value = 123.456789_f64;
-        b.iter(|| swip_scale(value));
+        for _ in 0..1000 {
+            let _ = swip_scale(value);
+        }
     }
 
-    #[bench]
-    fn bench_fl_apply_update_aggregate(b: &mut Bencher) {
+    #[test]
+    fn bench_fl_apply_update_aggregate() {
         let state = FLState {
             round: 5,
             global: None,
             updates: vec![10.5, 20.3, 30.7],
         };
         let value = 40.2_f64;
-        b.iter(|| fl_apply_update(state.clone(), value));
+        for _ in 0..1000 {
+            let _ = fl_apply_update(state.clone(), value);
+        }
     }
 
-    #[bench]
-    fn bench_fl_apply_update_buffer(b: &mut Bencher) {
+    #[test]
+    fn bench_fl_apply_update_buffer() {
         let state = FLState {
             round: 0,
             global: None,
             updates: vec![],
         };
         let value = 15.75_f64;
-        b.iter(|| fl_apply_update(state.clone(), value));
+        for _ in 0..1000 {
+            let _ = fl_apply_update(state.clone(), value);
+        }
     }
 
-    #[bench]
-    fn bench_fl_apply_update_second_update(b: &mut Bencher) {
+    #[test]
+    fn bench_fl_apply_update_second_update() {
         let state = FLState {
             round: 1,
             global: None,
             updates: vec![25.5],
         };
         let value = 35.25_f64;
-        b.iter(|| fl_apply_update(state.clone(), value));
+        for _ in 0..1000 {
+            let _ = fl_apply_update(state.clone(), value);
+        }
     }
 }
