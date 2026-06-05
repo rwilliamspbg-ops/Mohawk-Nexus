@@ -47,7 +47,14 @@ fi
 
 wait_required fl-coordinator
 wait_required swip-client
-wait_required mohawk-control
+
+if [[ "$profile" == "accelerated" ]]; then
+  wait_required mohawk-control
+else
+  # In portable CI we validate manifest compatibility and hardening, while
+  # the control image may run in short-lived dry-run mode.
+  wait_optional mohawk-control
+fi
 
 if [[ "$profile" == "accelerated" ]]; then
   wait_required mohawk-datapath
