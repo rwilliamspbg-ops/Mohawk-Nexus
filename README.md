@@ -2,59 +2,32 @@
 
 Mohawk Nexus is the root integration workspace for the Mohawk network stack. It brings together the Go control plane, the Rust datapath, protocol definitions, verification material, and the canonical bridge contract used for cross-component validation and integration testing.
 
-<p align="center">
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/ci.yml">
-    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/ci.yml/badge.svg" alt="CI"/>
-  </a>
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml">
-    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml/badge.svg" alt="Build Images"/>
-  </a>
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/publish-images.yml">
-    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/publish-images.yml/badge.svg" alt="Publish Images"/>
-  </a>
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/kind-integration.yml">
-    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/kind-integration.yml/badge.svg" alt="Kind Integration"/>
-  </a>
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/perf-regression.yml">
-    <img src="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/perf-regression.yml/badge.svg" alt="Perf Regression"/>
-  </a>
-</p>
+[![CI](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/ci.yml)
+[![Build Images](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/build-images.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Build%20Images)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/build-images.yml)
+[![Publish Images](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/publish-images.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Publish%20Images)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/publish-images.yml)
+[![Kind Integration](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/kind-integration.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Kind%20Integration)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/kind-integration.yml)
+[![Perf Regression](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/perf-regression.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Perf%20Regression)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/perf-regression.yml)
+[![Coverage](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/coverage.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Coverage)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/coverage.yml)
+[![Bridge E2E](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/bridge-e2e.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Bridge%20E2E)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/bridge-e2e.yml)
+[![Policy Validate](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/policy-validate.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Policy%20Validate)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/policy-validate.yml)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Go-1.26.1-00ADD8?logo=go&logoColor=white" alt="Go"/>
-  <img src="https://img.shields.io/badge/Rust-1.0+-DEA584?logo=rust&logoColor=white" alt="Rust"/>
-  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/Node-20%2B-339933?logo=node.js&logoColor=white" alt="Node"/>
-  <img src="https://img.shields.io/badge/SDK-Python%20%7C%20Go%20%7C%20Rust%20%7C%20TypeScript-4A5568" alt="SDK Languages"/>
-  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-0A66C2" alt="Platforms"/>
-  <img src="https://img.shields.io/badge/Containers-Multi--Arch%20amd64%20%7C%20arm64-2496ED?logo=docker&logoColor=white" alt="Container Architectures"/>
-  <img src="https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white" alt="Kubernetes"/>
-  <img src="https://img.shields.io/badge/Datapath-AF__XDP%20Accelerated-FF6600" alt="AF_XDP"/>
-</p>
+![Go](https://img.shields.io/badge/Go-1.26.1-00ADD8?style=flat-square&logo=go&logoColor=white)
+![Rust](https://img.shields.io/badge/Rust-1.0%2B-DEA584?style=flat-square&logo=rust&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+![Node](https://img.shields.io/badge/Node-20%2B-339933?style=flat-square&logo=node.js&logoColor=white)
+![SDK](https://img.shields.io/badge/SDK-Python%20%7C%20Go%20%7C%20Rust%20%7C%20TypeScript-4A5568?style=flat-square)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-0A66C2?style=flat-square)
+![Containers](https://img.shields.io/badge/Containers-amd64%20%7C%20arm64-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?style=flat-square&logo=kubernetes&logoColor=white)
+![Datapath](https://img.shields.io/badge/Datapath-AF__XDP%20Accelerated-FF6600?style=flat-square)
 
-<p align="center">
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/stargazers">
-    <img src="https://img.shields.io/github/stars/rwilliamspbg-ops/Mohawk-Nexus?style=flat&logo=github" alt="GitHub Stars"/>
-  </a>
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/network/members">
-    <img src="https://img.shields.io/github/forks/rwilliamspbg-ops/Mohawk-Nexus?style=flat&logo=github" alt="GitHub Forks"/>
-  </a>
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/issues">
-    <img src="https://img.shields.io/github/issues/rwilliamspbg-ops/Mohawk-Nexus" alt="Open Issues"/>
-  </a>
-  <a href="https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-Multi--Repo-0EA5E9" alt="License"/>
-  </a>
-</p>
+[![Stars](https://img.shields.io/github/stars/rwilliamspbg-ops/Mohawk-Nexus?style=flat-square&logo=github)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/stargazers)
+[![Forks](https://img.shields.io/github/forks/rwilliamspbg-ops/Mohawk-Nexus?style=flat-square&logo=github)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/network/members)
+[![Open Issues](https://img.shields.io/github/issues/rwilliamspbg-ops/Mohawk-Nexus?style=flat-square)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/issues)
+[![License](https://img.shields.io/badge/License-Multi--Repo-0EA5E9?style=flat-square)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/blob/main/LICENSE)
 
-<p align="center">
-  <a href="https://github.com/sponsors/rwilliamspbg-ops">
-    <img src="https://img.shields.io/badge/Sponsor%20Mohawk%20Nexus-❤-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor Mohawk Nexus" />
-  </a>
-  <a href="https://github.com/sponsors/rwilliamspbg-ops">
-    <img src="https://img.shields.io/badge/Become%20a%20Sponsor-Sustain%20Development-111827?style=for-the-badge&logo=github&logoColor=white" alt="Become a Sponsor" />
-  </a>
-</p>
+[![Sponsor Mohawk Nexus](https://img.shields.io/badge/Sponsor%20Mohawk%20Nexus-%E2%9D%A4-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rwilliamspbg-ops)
+[![Become a Sponsor](https://img.shields.io/badge/Become%20a%20Sponsor-Sustain%20Development-111827?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/rwilliamspbg-ops)
 
 ## Workspace Layout
 
@@ -65,9 +38,16 @@ Mohawk Nexus is the root integration workspace for the Mohawk network stack. It 
 - [scripts/](scripts/) — Workspace-level generation, validation and test helpers.
 - `go.work` — Root Go workspace that ties Go modules across the repository.
 
+## Quick Start Docs
+
+- [GETTING_STARTED.md](GETTING_STARTED.md) — 5-minute portable setup and verification path.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — contributor workflow, interface change process, and component SHA tracking.
+- [SECURITY.md](SECURITY.md) — coordinated vulnerability disclosure process.
+- [DEPLOYMENT.md](DEPLOYMENT.md) — deployment profiles and runtime guidance.
+
 ## Requirements
 
-- Go (1.26.1 recommended — pinned for reproducible builds)
+- Go (1.26.1 recommended — pinned for reproducible builds; 1.22+ should work for most local workflows)
 - Python 3.8+
 - Docker (for containerized performance/stress runs)
 - Rust toolchain (only required for running `SMIP-MWP-Rust` tests locally)
@@ -218,6 +198,7 @@ Mohawk Nexus provides the following capabilities:
 
 ## Contributing & Development Workflow
 
+- Follow [CONTRIBUTING.md](CONTRIBUTING.md) for root workspace expectations and component sync guidelines.
 - Follow `CONTRIBUTING.md` in each sub-repo for component-specific guidelines.
 - For cross-repo changes, prefer root-owned shims or fallbacks when a subrepo SHA is unpublished — this keeps CI green while component PRs are being prepared.
 
@@ -226,7 +207,12 @@ Mohawk Nexus provides the following capabilities:
 The canonical bridge schema and manifest are in `bridge/`. Use these tools:
 
 - `scripts/generate_bridge_contract.py` — regenerate canonical artifacts.
+- `scripts/generate_bridge_bindings.py` — regenerate SDK bridge constants for Go/Rust/Python/TypeScript.
 - `scripts/validate_bridge_contract.py` — verify manifest and SHA256s.
+
+Version source of truth:
+
+- `bridge/bridge_contract.version.json` tracks schema and manifest version identifiers.
 
 ## CI
 

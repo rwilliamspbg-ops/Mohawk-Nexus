@@ -13,6 +13,9 @@ spec:
       labels:
         app: mohawk-datapath-unprivileged
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: datapath
           image: mohawk-datapath:ci

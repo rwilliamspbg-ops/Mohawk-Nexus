@@ -77,3 +77,30 @@ fn conformance_cases() {
         }
     }
 }
+
+#[test]
+fn bridge_contract_metadata() {
+    let raw = std::fs::read_to_string("../../bridge/bridge_contract.version.json").expect("read version");
+    let v: Value = serde_json::from_str(&raw).expect("parse version");
+
+    assert_eq!(
+        mohawk_sdk_rs::bridge_contract::BRIDGE_CONTRACT_NAME,
+        v.get("contract").and_then(|x| x.as_str()).expect("contract")
+    );
+    assert_eq!(
+        mohawk_sdk_rs::bridge_contract::BRIDGE_CONTRACT_SCHEMA_VERSION,
+        v.get("schema_version")
+            .and_then(|x| x.as_str())
+            .expect("schema_version")
+    );
+    assert_eq!(
+        mohawk_sdk_rs::bridge_contract::BRIDGE_CONTRACT_MANIFEST_VERSION,
+        v.get("manifest_version")
+            .and_then(|x| x.as_str())
+            .expect("manifest_version")
+    );
+    assert_eq!(
+        mohawk_sdk_rs::bridge_contract::BRIDGE_CONTRACT_SCHEMA_SHA256.len(),
+        64
+    );
+}

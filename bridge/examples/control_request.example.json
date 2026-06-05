@@ -1,4 +1,5 @@
 {
+  "contract_version": "1.0.0",
   "runtime_config": {
     "iface": "eth0",
     "queue_id": 0,

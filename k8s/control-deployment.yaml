@@ -13,6 +13,9 @@ spec:
       labels:
         app: mohawk-control
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: control
           image: mohawk-control:ci

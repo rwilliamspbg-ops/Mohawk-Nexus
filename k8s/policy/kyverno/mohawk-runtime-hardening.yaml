@@ -1,0 +1,80 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mohawk-runtime-hardening
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: control-requires-runtime-default-and-no-privileged
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+              namespaces:
+                - mohawk
+              names:
+                - mohawk-control
+      validate:
+        message: mohawk-control must run with RuntimeDefault seccomp and non-privileged container.
+        pattern:
+          spec:
+            template:
+              spec:
+                securityContext:
+                  seccompProfile:
+                    type: RuntimeDefault
+                containers:
+                  - securityContext:
+                      privileged: false
+
+    - name: datapath-accelerated-requires-privileged-and-runtime-default
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+              namespaces:
+                - mohawk
+              names:
+                - mohawk-datapath
+      validate:
+        message: mohawk-datapath must run privileged with RuntimeDefault seccomp.
+        pattern:
+          spec:
+            template:
+              spec:
+                securityContext:
+                  seccompProfile:
+                    type: RuntimeDefault
+                containers:
+                  - securityContext:
+                      privileged: true
+
+    - name: datapath-unprivileged-requires-restrictions
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+              namespaces:
+                - mohawk
+              names:
+                - mohawk-datapath-unprivileged
+      validate:
+        message: mohawk-datapath-unprivileged must enforce RuntimeDefault seccomp and strict unprivileged settings.
+        pattern:
+          spec:
+            template:
+              spec:
+                securityContext:
+                  seccompProfile:
+                    type: RuntimeDefault
+                containers:
+                  - securityContext:
+                      privileged: false
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL

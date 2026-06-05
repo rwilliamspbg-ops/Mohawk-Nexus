@@ -32,7 +32,9 @@ jobs:
       - name: Validate bridge contract
         run: |
           python scripts/generate_bridge_contract.py
+          python scripts/generate_bridge_bindings.py
           python scripts/validate_bridge_contract.py
+          git diff --exit-code -- bridge/ sdk/go/mohawksdk/bridge_contract.go sdk/rust/src/bridge_contract.rs sdk/python/mohawk_sdk/bridge_contract.py sdk/typescript/src/bridgeContract.js
 
   verify:
     runs-on: ubuntu-latest
@@ -149,3 +151,37 @@ jobs:
         run: |
           cd sdk/typescript
           npm test
+
+  rust-security-audit:
+    name: rust-security-audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-audit
+        env:
+          CARGO_NET_RETRY: 10
+          CARGO_HTTP_TIMEOUT: 120
+          CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+        run: |
+          for attempt in 1 2 3; do
+            cargo install cargo-audit --locked && break
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "cargo-audit install failed after 3 attempts"
+              exit 1
+            fi
+            echo "Retrying cargo-audit install (attempt $((attempt + 1))/3)"
+            sleep 10
+          done
+
+      - name: Run cargo audit on Rust SDK
+        working-directory: sdk/rust
+        env:
+          CARGO_NET_RETRY: 10
+          CARGO_HTTP_TIMEOUT: 120
+          CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+        run: cargo audit

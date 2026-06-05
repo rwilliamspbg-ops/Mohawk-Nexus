@@ -8,6 +8,15 @@ The original workspace contents have been cleared and the three requested source
 - `SMIP-MWP`
 - `SMIP-MWP-Rust`
 
+## Component pinning and update process
+
+To keep integration reproducible while components evolve independently:
+
+1. Pin each component update to an explicit upstream commit SHA in PR descriptions.
+2. Keep root integration CI able to check out pinned SHAs recursively when submodule mode is used.
+3. If snapshot mode is used, keep component directories synchronized to upstream SHAs and document source SHAs in release notes.
+4. Treat bridge schema updates and protocol verification artifacts as contract changes that must be versioned and validated in CI.
+
 ## Target outcome
 
 Build one high-performance network stack with a clear split between control plane, dataplane, and verification:
