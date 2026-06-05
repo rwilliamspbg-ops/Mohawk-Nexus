@@ -1,0 +1,5 @@
+{
+  "contract": "Mohawk Go-Rust Bridge Contract",
+  "schema_version": "1.0.0",
+  "manifest_version": "bridge_contract.manifest.v2"
+}

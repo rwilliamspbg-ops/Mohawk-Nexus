@@ -1,3 +1,16 @@
 from .logic import fl_apply_update, swip_scale
+from .bridge_contract import (
+	BRIDGE_CONTRACT_MANIFEST_VERSION,
+	BRIDGE_CONTRACT_NAME,
+	BRIDGE_CONTRACT_SCHEMA_SHA256,
+	BRIDGE_CONTRACT_SCHEMA_VERSION,
+)
 
-__all__ = ["fl_apply_update", "swip_scale"]
+__all__ = [
+	"fl_apply_update",
+	"swip_scale",
+	"BRIDGE_CONTRACT_NAME",
+	"BRIDGE_CONTRACT_SCHEMA_VERSION",
+	"BRIDGE_CONTRACT_MANIFEST_VERSION",
+	"BRIDGE_CONTRACT_SCHEMA_SHA256",
+]

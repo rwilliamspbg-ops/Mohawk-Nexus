@@ -19,6 +19,9 @@ def main() -> None:
     schema_path = BRIDGE_DIR / "bridge_contract.schema.json"
     example_path = BRIDGE_DIR / "examples" / "control_request.example.json"
     manifest_path = BRIDGE_DIR / "bridge_contract.manifest.json"
+    version_path = BRIDGE_DIR / "bridge_contract.version.json"
+
+    version = json.loads(version_path.read_text(encoding="utf-8"))
 
     manifest = {
         "schema": {
@@ -29,8 +32,13 @@ def main() -> None:
             "path": "bridge/examples/control_request.example.json",
             "sha256": sha256_hex(example_path),
         },
-        "contract": "Mohawk Go-Rust Bridge Contract",
-        "version": "bridge_contract.manifest.v1",
+        "version_file": {
+            "path": "bridge/bridge_contract.version.json",
+            "sha256": sha256_hex(version_path),
+        },
+        "contract": version["contract"],
+        "schema_version": version["schema_version"],
+        "version": version["manifest_version"],
     }
 
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")

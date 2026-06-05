@@ -1,0 +1,143 @@
+name: policy-validate
+
+on:
+  push:
+    paths:
+      - 'k8s/policy/**'
+      - 'scripts/validate_admission_policies.sh'
+      - '.github/workflows/policy-validate.yml'
+  pull_request:
+    paths:
+      - 'k8s/policy/**'
+      - 'scripts/validate_admission_policies.sh'
+      - '.github/workflows/policy-validate.yml'
+  workflow_dispatch:
+    inputs:
+      policy_engine:
+        description: Policy engine(s) to install before validation
+        required: false
+        default: none
+        type: choice
+        options:
+          - none
+          - kyverno
+          - gatekeeper
+          - both
+      strict_server_validation:
+        description: Fail if no supported policy CRDs are present
+        required: false
+        default: false
+        type: boolean
+      run_strict_both:
+        description: Run a dedicated strict job with both Kyverno and Gatekeeper and publish summary artifact
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  validate-policy-manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install kind
+        run: |
+          KIND_VERSION="v0.20.0"
+          curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Create kind cluster
+        run: kind create cluster --name mohawk-policy-validate || true
+
+      - name: Install optional policy engines
+        if: github.event_name == 'workflow_dispatch' && inputs.policy_engine != 'none'
+        run: |
+          set -euo pipefail
+          engine="${{ inputs.policy_engine }}"
+
+          if [[ "$engine" == "kyverno" || "$engine" == "both" ]]; then
+            kubectl apply -f https://github.com/kyverno/kyverno/releases/download/v1.13.2/install.yaml
+          fi
+
+          if [[ "$engine" == "gatekeeper" || "$engine" == "both" ]]; then
+            kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.16.3/deploy/gatekeeper.yaml
+          fi
+
+      - name: Wait for optional policy engines
+        if: github.event_name == 'workflow_dispatch' && inputs.policy_engine != 'none'
+        run: |
+          set -euo pipefail
+          engine="${{ inputs.policy_engine }}"
+
+          if [[ "$engine" == "kyverno" || "$engine" == "both" ]]; then
+            kubectl rollout status deployment/kyverno-admission-controller -n kyverno --timeout=300s
+          fi
+
+          if [[ "$engine" == "gatekeeper" || "$engine" == "both" ]]; then
+            kubectl rollout status deployment/gatekeeper-controller-manager -n gatekeeper-system --timeout=300s
+          fi
+
+      - name: Validate admission policy manifests (skip if CRDs absent)
+        run: |
+          chmod +x scripts/validate_admission_policies.sh
+          args=""
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.strict_server_validation }}" == "true" ]]; then
+            args="--require-present"
+          fi
+          ./scripts/validate_admission_policies.sh ${args}
+
+  strict-both-engines-summary:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_strict_both
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install kind
+        run: |
+          KIND_VERSION="v0.20.0"
+          curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Create kind cluster
+        run: kind create cluster --name mohawk-policy-strict || true
+
+      - name: Install Kyverno and Gatekeeper
+        run: |
+          kubectl apply -f https://github.com/kyverno/kyverno/releases/download/v1.13.2/install.yaml
+          kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.16.3/deploy/gatekeeper.yaml
+
+      - name: Wait for policy engines
+        run: |
+          kubectl rollout status deployment/kyverno-admission-controller -n kyverno --timeout=300s
+          kubectl rollout status deployment/gatekeeper-controller-manager -n gatekeeper-system --timeout=300s
+
+      - name: Strict policy validation and summary
+        run: |
+          chmod +x scripts/validate_admission_policies.sh
+          POLICY_SUMMARY_FILE=policy-validation-summary.md \
+          POLICY_ENGINE_REQUESTED=both \
+          ./scripts/validate_admission_policies.sh --require-present
+
+      - name: Publish policy summary to workflow UI
+        run: |
+          {
+            echo "## Strict Policy Validation"
+            echo
+            cat policy-validation-summary.md
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload policy validation summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: policy-validation-summary
+          path: policy-validation-summary.md

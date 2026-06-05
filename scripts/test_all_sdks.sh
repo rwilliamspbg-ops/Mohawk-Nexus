@@ -46,6 +46,7 @@ need_cmd npm
 
 log "running bridge contract generation and validation"
 python scripts/generate_bridge_contract.py
+python scripts/generate_bridge_bindings.py
 python scripts/validate_bridge_contract.py
 
 log "all sdk checks passed"

@@ -1,0 +1,92 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: mohawkruntimehardening
+spec:
+  crd:
+    spec:
+      names:
+        kind: MohawkRuntimeHardening
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package mohawkruntimehardening
+
+        drop_all(container) {
+          sec := object.get(container, "securityContext", {})
+          caps := object.get(sec, "capabilities", {})
+          drops := object.get(caps, "drop", [])
+          drops[_] == "ALL"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-control"
+          sc := input.review.object.spec.template.spec.securityContext
+          sc.seccompProfile.type != "RuntimeDefault"
+          msg := "mohawk-control must set pod seccompProfile.type to RuntimeDefault"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-control"
+          container := input.review.object.spec.template.spec.containers[_]
+          container.securityContext.privileged
+          msg := "mohawk-control containers must not be privileged"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-datapath"
+          sc := input.review.object.spec.template.spec.securityContext
+          sc.seccompProfile.type != "RuntimeDefault"
+          msg := "mohawk-datapath must set pod seccompProfile.type to RuntimeDefault"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-datapath"
+          container := input.review.object.spec.template.spec.containers[_]
+          not container.securityContext.privileged
+          msg := "mohawk-datapath containers must be privileged in accelerated profile"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-datapath-unprivileged"
+          sc := input.review.object.spec.template.spec.securityContext
+          sc.seccompProfile.type != "RuntimeDefault"
+          msg := "mohawk-datapath-unprivileged must set pod seccompProfile.type to RuntimeDefault"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-datapath-unprivileged"
+          container := input.review.object.spec.template.spec.containers[_]
+          container.securityContext.privileged
+          msg := "mohawk-datapath-unprivileged containers must not be privileged"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-datapath-unprivileged"
+          container := input.review.object.spec.template.spec.containers[_]
+          container.securityContext.allowPrivilegeEscalation != false
+          msg := "mohawk-datapath-unprivileged must set allowPrivilegeEscalation=false"
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          input.review.object.metadata.namespace == "mohawk"
+          input.review.object.metadata.name == "mohawk-datapath-unprivileged"
+          container := input.review.object.spec.template.spec.containers[_]
+          not drop_all(container)
+          msg := "mohawk-datapath-unprivileged must drop ALL capabilities"
+        }

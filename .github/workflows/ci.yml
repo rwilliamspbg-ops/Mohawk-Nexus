@@ -32,7 +32,9 @@ jobs:
       - name: Validate bridge contract
         run: |
           python scripts/generate_bridge_contract.py
+          python scripts/generate_bridge_bindings.py
           python scripts/validate_bridge_contract.py
+          git diff --exit-code -- bridge/ sdk/go/mohawksdk/bridge_contract.go sdk/rust/src/bridge_contract.rs sdk/python/mohawk_sdk/bridge_contract.py sdk/typescript/src/bridgeContract.js
 
   verify:
     runs-on: ubuntu-latest
@@ -149,3 +151,20 @@ jobs:
         run: |
           cd sdk/typescript
           npm test
+
+  rust-security-audit:
+    name: rust-security-audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: Run cargo audit on Rust SDK
+        working-directory: sdk/rust
+        run: cargo audit

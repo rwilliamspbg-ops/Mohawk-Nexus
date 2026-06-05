@@ -4,8 +4,12 @@
   "title": "Mohawk Go-Rust Bridge Contract",
   "type": "object",
   "additionalProperties": false,
-  "required": ["runtime_config", "route_updates", "session_updates", "feature_flags"],
+  "required": ["contract_version", "runtime_config", "route_updates", "session_updates", "feature_flags"],
   "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
     "runtime_config": {
       "type": "object",
       "additionalProperties": false,

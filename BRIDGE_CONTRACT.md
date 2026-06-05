@@ -98,6 +98,25 @@ TelemetryResponse {
 }
 ```
 
+## Versioning and generation
+
+Bridge contract versions are managed from one source of truth:
+
+- `bridge/bridge_contract.version.json` defines `schema_version` and manifest version.
+- `bridge/bridge_contract.schema.json` enforces `contract_version` with a schema constant.
+- `bridge/examples/control_request.example.json` carries the same `contract_version`.
+
+Generated artifacts:
+
+- `bridge/bridge_contract.manifest.json` from `scripts/generate_bridge_contract.py`
+- SDK constants from `scripts/generate_bridge_bindings.py`:
+  - `sdk/go/mohawksdk/bridge_contract.go`
+  - `sdk/rust/src/bridge_contract.rs`
+  - `sdk/python/mohawk_sdk/bridge_contract.py`
+  - `sdk/typescript/src/bridgeContract.js`
+
+CI validates these generated files are up to date.
+
 ## Ownership rules
 
 - Go decides when to apply configuration.

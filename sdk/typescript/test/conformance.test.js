@@ -3,7 +3,14 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { flApplyUpdate, swipScale } = require("../src/index");
+const {
+  flApplyUpdate,
+  swipScale,
+  BRIDGE_CONTRACT_NAME,
+  BRIDGE_CONTRACT_SCHEMA_VERSION,
+  BRIDGE_CONTRACT_MANIFEST_VERSION,
+  BRIDGE_CONTRACT_SCHEMA_SHA256,
+} = require("../src/index");
 
 test("conformance cases", () => {
   const fixturePath = path.join(__dirname, "..", "..", "fixtures", "conformance", "cases.json");
@@ -24,4 +31,14 @@ test("conformance cases", () => {
 
     throw new Error(`unknown case kind: ${c.kind}`);
   }
+});
+
+test("bridge contract metadata", () => {
+  const versionPath = path.join(__dirname, "..", "..", "bridge", "bridge_contract.version.json");
+  const version = JSON.parse(fs.readFileSync(versionPath, "utf8"));
+
+  assert.equal(BRIDGE_CONTRACT_NAME, version.contract);
+  assert.equal(BRIDGE_CONTRACT_SCHEMA_VERSION, version.schema_version);
+  assert.equal(BRIDGE_CONTRACT_MANIFEST_VERSION, version.manifest_version);
+  assert.equal(BRIDGE_CONTRACT_SCHEMA_SHA256.length, 64);
 });

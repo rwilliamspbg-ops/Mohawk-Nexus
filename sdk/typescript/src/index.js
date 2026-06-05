@@ -2,6 +2,13 @@ function round6(value) {
   return Math.round(Number(value) * 1_000_000) / 1_000_000;
 }
 
+const {
+  BRIDGE_CONTRACT_NAME,
+  BRIDGE_CONTRACT_SCHEMA_VERSION,
+  BRIDGE_CONTRACT_MANIFEST_VERSION,
+  BRIDGE_CONTRACT_SCHEMA_SHA256,
+} = require("./bridgeContract");
+
 function swipScale(value) {
   return round6(Number(value) * 1.5);
 }
@@ -29,4 +36,8 @@ function flApplyUpdate(state, value) {
 module.exports = {
   flApplyUpdate,
   swipScale,
+  BRIDGE_CONTRACT_NAME,
+  BRIDGE_CONTRACT_SCHEMA_VERSION,
+  BRIDGE_CONTRACT_MANIFEST_VERSION,
+  BRIDGE_CONTRACT_SCHEMA_SHA256,
 };

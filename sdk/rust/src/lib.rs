@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+pub mod bridge_contract;
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FLState {
     pub round: i64,

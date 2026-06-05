@@ -1,0 +1,149 @@
+name: bridge-e2e
+
+on:
+  push:
+    paths:
+      - 'bridge/**'
+      - 'k8s/**'
+      - 'scripts/**'
+      - '.github/workflows/bridge-e2e.yml'
+  pull_request:
+    paths:
+      - 'bridge/**'
+      - 'k8s/**'
+      - 'scripts/**'
+      - '.github/workflows/bridge-e2e.yml'
+  workflow_dispatch:
+    inputs:
+      run_afxdp:
+        description: 'Run accelerated AF_XDP job even if host prerequisites are unknown'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  portable-e2e:
+    name: portable-e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install kind
+        run: |
+          KIND_VERSION="v0.20.0"
+          curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Create kind cluster
+        run: kind create cluster --name mohawk-bridge-e2e || true
+
+      - name: Build and load images
+        run: |
+          docker build -f images/SMIP-MWP/Dockerfile -t mohawk-control:ci .
+          docker build -f images/SMIP-MWP-Rust/Dockerfile -t mohawk-datapath:ci .
+          docker build -f images/fl/Dockerfile -t mohawk/fl:local .
+          docker build -f images/swip/Dockerfile -t mohawk/swip:local .
+          kind load docker-image --name mohawk-bridge-e2e mohawk-control:ci
+          kind load docker-image --name mohawk-bridge-e2e mohawk-datapath:ci
+          kind load docker-image --name mohawk-bridge-e2e mohawk/fl:local
+          kind load docker-image --name mohawk-bridge-e2e mohawk/swip:local
+
+      - name: Run portable bridge e2e
+        run: |
+          chmod +x scripts/e2e_bridge_k8s.sh scripts/check_afxdp_prereqs.sh
+          ./scripts/e2e_bridge_k8s.sh portable
+
+      - name: Dump diagnostics on failure
+        if: failure()
+        run: |
+          kubectl get all -n mohawk -o wide || true
+          kubectl get events -n mohawk --sort-by=.lastTimestamp | tail -n 200 || true
+
+  afxdp-prereq-gate:
+    name: afxdp-prereq-gate
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.gate.outputs.ready }}
+      reason: ${{ steps.gate.outputs.reason }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect AF_XDP prerequisites
+        id: gate
+        run: |
+          chmod +x scripts/check_afxdp_prereqs.sh
+          ./scripts/check_afxdp_prereqs.sh --iface "${AF_XDP_IFACE:-eth0}"
+
+  accelerated-e2e:
+    name: accelerated-e2e
+    needs: afxdp-prereq-gate
+    if: needs.afxdp-prereq-gate.outputs.ready == 'true' || (github.event_name == 'workflow_dispatch' && inputs.run_afxdp)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install kind
+        run: |
+          KIND_VERSION="v0.20.0"
+          curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Verify AF_XDP prerequisites (strict)
+        run: |
+          chmod +x scripts/check_afxdp_prereqs.sh
+          ./scripts/check_afxdp_prereqs.sh --require --iface "${AF_XDP_IFACE:-eth0}"
+
+      - name: Create kind cluster
+        run: kind create cluster --name mohawk-bridge-afxdp || true
+
+      - name: Build and load images
+        run: |
+          docker build -f images/SMIP-MWP/Dockerfile -t mohawk-control:ci .
+          docker build -f images/SMIP-MWP-Rust/Dockerfile -t mohawk-datapath:ci .
+          docker build -f images/fl/Dockerfile -t mohawk/fl:local .
+          docker build -f images/swip/Dockerfile -t mohawk/swip:local .
+          kind load docker-image --name mohawk-bridge-afxdp mohawk-control:ci
+          kind load docker-image --name mohawk-bridge-afxdp mohawk-datapath:ci
+          kind load docker-image --name mohawk-bridge-afxdp mohawk/fl:local
+          kind load docker-image --name mohawk-bridge-afxdp mohawk/swip:local
+
+      - name: Run accelerated bridge e2e
+        run: |
+          chmod +x scripts/e2e_bridge_k8s.sh
+          ./scripts/e2e_bridge_k8s.sh accelerated
+
+      - name: Assert accelerated runtime hardening
+        run: |
+          chmod +x scripts/check_k8s_runtime_hardening.sh
+          ./scripts/check_k8s_runtime_hardening.sh accelerated
+
+      - name: Dump diagnostics on failure
+        if: failure()
+        run: |
+          kubectl get all -n mohawk -o wide || true
+          kubectl get events -n mohawk --sort-by=.lastTimestamp | tail -n 200 || true

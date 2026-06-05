@@ -1,0 +1,13 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: MohawkRuntimeHardening
+metadata:
+  name: mohawk-runtime-hardening
+spec:
+  match:
+    kinds:
+      - apiGroups:
+          - apps
+        kinds:
+          - Deployment
+    namespaces:
+      - mohawk
