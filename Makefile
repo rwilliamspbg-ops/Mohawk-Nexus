@@ -22,9 +22,27 @@ validate-bridge:
 	python3 ./scripts/validate_bridge_contract.py
 
 verify-go:
-	@pkgs="$$(go list ./SMIP-MWP/... ./Sovereign-Mohawk-Proto/... | grep -v 'github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/internal/federation$$')"; \
-	go test $$pkgs; \
-	go test ./Sovereign-Mohawk-Proto/internal/federation -run '^$$'
+	@set -e; \
+	ran=0; \
+	for dir in ./SMIP-MWP ./Sovereign-Mohawk-Proto ./sdk/go; do \
+		if [ -f "$$dir/go.mod" ]; then \
+			ran=1; \
+			if [ "$$dir" = "./Sovereign-Mohawk-Proto" ] && [ -d "$$dir/internal/federation" ]; then \
+				( cd "$$dir" && \
+					pkgs="$$(GOWORK=off go list ./... | grep -v '/internal/federation$$')"; \
+					if [ -n "$$pkgs" ]; then \
+						GOWORK=off go test $$pkgs; \
+					fi; \
+					GOWORK=off go test ./internal/federation -run '^$$' ); \
+			else \
+				( cd "$$dir" && GOWORK=off go test ./... ); \
+			fi; \
+		fi; \
+	done; \
+	if [ "$$ran" -eq 0 ]; then \
+		echo "No Go modules found to verify"; \
+		exit 1; \
+	fi
 
 verify-rust:
 	cd ./SMIP-MWP-Rust && . "$$HOME/.cargo/env" && cargo test --workspace --all-targets
