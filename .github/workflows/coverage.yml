@@ -20,6 +20,8 @@ jobs:
           go-version: '1.22'
 
       - name: Run Go tests with coverage
+        env:
+          GOWORK: off
         run: |
           go test ./... -covermode=atomic -coverprofile=coverage-go.out
           go tool cover -func=coverage-go.out | tee coverage-go.txt

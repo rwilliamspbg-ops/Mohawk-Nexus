@@ -34,7 +34,7 @@ test("conformance cases", () => {
 });
 
 test("bridge contract metadata", () => {
-  const versionPath = path.join(__dirname, "..", "..", "bridge", "bridge_contract.version.json");
+  const versionPath = path.join(__dirname, "..", "..", "..", "bridge", "bridge_contract.version.json");
   const version = JSON.parse(fs.readFileSync(versionPath, "utf8"));
 
   assert.equal(BRIDGE_CONTRACT_NAME, version.contract);

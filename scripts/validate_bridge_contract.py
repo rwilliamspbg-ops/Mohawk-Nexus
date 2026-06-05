@@ -11,7 +11,8 @@ BRIDGE_DIR = ROOT / "bridge"
 
 
 def sha256_hex(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    data = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def main() -> None:
