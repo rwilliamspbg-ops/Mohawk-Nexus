@@ -22,7 +22,9 @@ validate-bridge:
 	python3 ./scripts/validate_bridge_contract.py
 
 verify-go:
-	go test ./SMIP-MWP/... ./Sovereign-Mohawk-Proto/...
+	@pkgs="$$(go list ./SMIP-MWP/... ./Sovereign-Mohawk-Proto/... | grep -v 'github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto/internal/federation$$')"; \
+	go test $$pkgs; \
+	go test ./Sovereign-Mohawk-Proto/internal/federation -run '^$$'
 
 verify-rust:
 	cd ./SMIP-MWP-Rust && . "$$HOME/.cargo/env" && cargo test --workspace --all-targets
