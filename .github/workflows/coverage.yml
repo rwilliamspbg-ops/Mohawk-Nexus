@@ -27,7 +27,7 @@ jobs:
           go tool cover -func=coverage-go.out | tee coverage-go.txt
 
       - name: Upload Go coverage artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: go-coverage
           path: |
@@ -57,7 +57,7 @@ jobs:
           cargo llvm-cov --all-features --all-targets --summary-only | tee coverage-rust.txt
 
       - name: Upload Rust coverage artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rust-coverage
           path: |

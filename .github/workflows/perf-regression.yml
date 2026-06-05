@@ -27,7 +27,7 @@ jobs:
           python3 scripts/compare_benchmarks.py --bench-file SMIP-MWP/benchmarks/pr-run/crypto-bench-pr.txt --baseline benchmarks/baselines/crypto-baseline.json --threshold-percent 5.0
 
       - name: Upload benchmark artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pr-benchmarks
           path: SMIP-MWP/benchmarks/pr-run
@@ -63,7 +63,7 @@ jobs:
           curl -sS "http://localhost:9100/debug/profile?duration=5" -o ci-profiles/swip-profile.html || true
 
       - name: Upload profiles
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ci-profiles
           path: ci-profiles
