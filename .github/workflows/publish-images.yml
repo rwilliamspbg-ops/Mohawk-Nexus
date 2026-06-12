@@ -17,12 +17,12 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Checkout SMIP-MWP repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: rwilliamspbg-ops/SMIP-MWP
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout SMIP-MWP-Rust repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: rwilliamspbg-ops/SMIP-MWP-Rust
           token: ${{ secrets.GITHUB_TOKEN }}
