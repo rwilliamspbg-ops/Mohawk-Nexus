@@ -57,7 +57,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: 'SMIP-MWP/go.mod'
+          go-version-file: 'Sovereign-Mohawk-Proto/go.mod'
 
       - name: Ensure Python 3 is available
         run: |
