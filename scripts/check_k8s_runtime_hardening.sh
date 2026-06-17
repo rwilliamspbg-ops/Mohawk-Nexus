@@ -11,7 +11,7 @@ fi
 
 deployments_json="$(kubectl get deployments -n "$namespace" -o json)"
 
-python3 - "$profile" <<'PY' <<<"$deployments_json"
+python3 /dev/fd/3 "$profile" 3<<'PY' <<<"$deployments_json"
 import json
 import sys
 
