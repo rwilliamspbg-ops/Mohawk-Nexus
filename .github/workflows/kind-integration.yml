@@ -69,7 +69,7 @@ jobs:
           kind load docker-image --name mohawk-ci mohawk/swip:local
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v5
 
       - name: Apply k8s manifests
         run: |

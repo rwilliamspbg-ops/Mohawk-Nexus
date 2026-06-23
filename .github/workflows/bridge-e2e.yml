@@ -56,7 +56,7 @@ jobs:
           sudo mv ./kind /usr/local/bin/kind
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v5
 
       - name: Create kind cluster
         run: kind create cluster --name mohawk-bridge-e2e || true
@@ -135,7 +135,7 @@ jobs:
           sudo mv ./kind /usr/local/bin/kind
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v5
 
       - name: Verify AF_XDP prerequisites (strict)
         run: |
