@@ -43,7 +43,7 @@ jobs:
         uses: docker/setup-buildx-action@v4
 
       - name: Build control image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: images/SMIP-MWP/Dockerfile
@@ -51,7 +51,7 @@ jobs:
           push: false
 
       - name: Build datapath image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: images/SMIP-MWP-Rust/Dockerfile
@@ -59,7 +59,7 @@ jobs:
           push: false
 
       - name: Build FL image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: images/fl/Dockerfile
@@ -67,7 +67,7 @@ jobs:
           push: false
 
       - name: Build SWIP image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: images/swip/Dockerfile
