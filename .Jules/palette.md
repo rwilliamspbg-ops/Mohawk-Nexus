@@ -1,0 +1,3 @@
+## 2026-07-11 - [Reduced Motion and Focus Isolation on Dynamic Network Visualizations]
+**Learning:** Highly animated WebGL or Canvas-like background decorations (e.g., neural network node/edge grids) pose vestibular and cognitive accessibility hazards. Disabling CSS animations alone via `prefers-reduced-motion` can leave active requestAnimationFrame loops spinning in JavaScript, causing background battery drain and rendering jank.
+**Action:** Detect `window.matchMedia('(prefers-reduced-motion: reduce)').matches` directly in JavaScript to conditionally abort loop registrations and hide background visualizers entirely, while concurrently overriding transition and animation properties in global CSS.

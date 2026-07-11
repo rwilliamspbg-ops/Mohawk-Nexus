@@ -549,6 +549,59 @@
         .pulse-badge {
             animation: pulse 3s infinite;
         }
+
+        /* Keyboard Focus & Screen Reader Helpers */
+        :focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 4px;
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 4px;
+            transform: translateY(-3px);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Respect prefers-reduced-motion user preference */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-delay: -1ms !important;
+                animation-duration: 1ms !important;
+                animation-iteration-count: 1 !important;
+                background-attachment: initial !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0s !important;
+                transition-delay: 0s !important;
+            }
+
+            .pulse-badge {
+                animation: none !important;
+            }
+
+            .feature-card:hover,
+            .stat-card:hover,
+            .security-badge-card:hover,
+            .env-stat-card:hover,
+            .arch-card:hover,
+            .tag:hover,
+            .btn:hover,
+            .btn-secondary:hover {
+                transform: none !important;
+                transition: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -573,9 +626,15 @@
             </div>
 
             <div class="btn-container">
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" class="btn btn-secondary">Rust Datapath</a>
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" class="btn btn-secondary">Go Control Plane</a>
-                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" class="btn btn-secondary">Federated Learning</a>
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    Rust Datapath <span class="sr-only">(opens in a new tab)</span>
+                </a>
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    Go Control Plane <span class="sr-only">(opens in a new tab)</span>
+                </a>
+                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    Federated Learning <span class="sr-only">(opens in a new tab)</span>
+                </a>
             </div>
         </div>
 
@@ -852,14 +911,20 @@
             </p>
             
             <div class="btn-container">
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" class="btn btn-secondary">Explore Rust Datapath</a>
-                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" class="btn">Get Started</a>
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    Explore Rust Datapath <span class="sr-only">(opens in a new tab)</span>
+                </a>
+                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn">
+                    Get Started <span class="sr-only">(opens in a new tab)</span>
+                </a>
             </div>
 
             <div style="text-align: center; margin-top: 30px; color: #6b7280; font-size: 0.9rem;">
                 <p>
                     <strong>Licensed under AGPL-3.0</strong> • 
-                    <a href="https://github.com/rwilliamspbg-ops" style="color: var(--primary);">GitHub Sponsorship Available</a>
+                    <a href="https://github.com/rwilliamspbg-ops" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">
+                        GitHub Sponsorship Available <span class="sr-only">(opens in a new tab)</span>
+                    </a>
                 </p>
             </div>
         </div>
@@ -870,6 +935,16 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const networkLayer = document.getElementById('networkLayer');
                 
+                // Check if user prefers reduced motion
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (prefersReducedMotion) {
+                    // Hide dynamic layer or keep it completely static without spawning elements/listeners
+                    if (networkLayer) {
+                        networkLayer.style.display = 'none';
+                    }
+                    return;
+                }
+
                 // Add neural connections (lines)
                 for (let i = 0; i < 30; i++) {
                     const connection = document.createElement('div');
