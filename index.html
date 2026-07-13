@@ -574,6 +574,48 @@
             border: 0;
         }
 
+        /* Back to Top Styling */
+        .back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 99;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(13, 17, 28, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, visibility 0.3s;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            color: #ffffff;
+            border-color: var(--secondary);
+            box-shadow: 0 0 25px rgba(0, 119, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .back-to-top:active {
+            transform: translateY(0);
+        }
+
         /* Respect prefers-reduced-motion user preference */
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -597,14 +639,15 @@
             .arch-card:hover,
             .tag:hover,
             .btn:hover,
-            .btn-secondary:hover {
+            .btn-secondary:hover,
+            .back-to-top:hover {
                 transform: none !important;
                 transition: none !important;
             }
         }
     </style>
 </head>
-<body>
+<body tabindex="-1">
     <!-- Dynamic Neural Network Background -->
     <div id="neural-network">
         <div class="network-layer" id="networkLayer"></div>
@@ -929,6 +972,14 @@
             </div>
         </div>
 
+        <!-- Back to Top Button -->
+        <button id="back-to-top" class="back-to-top" aria-label="Back to Top" title="Back to Top">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5"></line>
+                <polyline points="5 12 12 5 19 12"></polyline>
+            </svg>
+        </button>
+
         <!-- Dynamic Neural Network Background -->
         <script>
             // Create dynamic background elements
@@ -1019,6 +1070,31 @@
                     const y = (window.innerHeight / 2 - e.clientY) / 50;
                     
                     document.querySelector('.hero h1').style.transform = `translate(${-x}px, ${-y}px)`;
+                });
+            });
+
+            // Back to Top functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const backToTopBtn = document.getElementById('back-to-top');
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 400) {
+                        backToTopBtn.classList.add('visible');
+                    } else {
+                        backToTopBtn.classList.remove('visible');
+                    }
+                });
+
+                backToTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+                    });
+
+                    // Reset focus to the body element (or container) for screen-readers and keyboard navigation
+                    const body = document.body;
+                    body.focus({ preventScroll: true });
                 });
             });
         </script>
