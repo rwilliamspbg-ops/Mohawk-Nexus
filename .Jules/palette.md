@@ -5,3 +5,7 @@
 ## 2026-07-12 - [Contrast Violations on Secondary Gradients and Screen Reader Optimization]
 **Learning:** Cyberpunk or dark-mode pages often use neon/vibrant accents which can conflict with standard text colors. The secondary action buttons here placed dark/black text against a deep purple-blue gradient, violating WCAG AA/AAA contrast guidelines. Additionally, decorative emojis in headings/badges lead to vocalized clutter in assistive technologies without proper masking.
 **Action:** Explicitly define high-contrast white text (`#ffffff`) for any interactive element layered on top of medium/dark gradients, hide decorative emojis using `aria-hidden="true"`, and implement semantic landmarks with a keyboard-focusable "Skip to Content" link.
+
+## 2026-07-13 - [Visual Parity for Multi-window Links and Keyboard-accessible Back-to-Top Tooltips]
+**Learning:** Visual parity between assistive technology (screen reader `sr-only` text) and visual presentation is essential. Landing pages with multiple repositories/external links opening in new tabs should provide unified visual feedback to avoid unexpected context switches. Additionally, hover-and-focus tooltips can be constructed with pure, accessible CSS on existing buttons without any runtime DOM or JS overhead.
+**Action:** Always combine `sr-only` descriptive screen-reader instructions with an inline, visually responsive SVG icon that transforms subtly on hover to denote external navigation, and deploy CSS-only absolute-positioned tooltips with focus-visible compatibility for keyboard-navigated discoverability.
