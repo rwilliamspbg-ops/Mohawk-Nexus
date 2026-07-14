@@ -470,6 +470,26 @@
             margin: 50px 0;
         }
 
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 20px;
+            background: var(--primary);
+            color: var(--darker);
+            padding: 10px 20px;
+            border-radius: 4px;
+            z-index: 100;
+            font-weight: bold;
+            text-decoration: none;
+            transition: top 0.2s ease;
+        }
+
+        .skip-link:focus-visible {
+            top: 20px;
+            outline: 3px solid var(--secondary);
+            outline-offset: 4px;
+        }
+
         .btn {
             display: inline-block;
             padding: 16px 45px;
@@ -492,10 +512,12 @@
         .btn-secondary {
             background: linear-gradient(90deg, var(--secondary), var(--accent));
             box-shadow: 0 0 25px rgba(0, 119, 255, 0.4);
+            color: #ffffff;
         }
 
         .btn-secondary:hover {
             box-shadow: 0 0 35px rgba(0, 119, 255, 0.7);
+            color: #ffffff;
         }
 
         /* Responsive Design */
@@ -647,7 +669,9 @@
         }
     </style>
 </head>
-<body tabindex="-1">
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Dynamic Neural Network Background -->
     <div id="neural-network">
         <div class="network-layer" id="networkLayer"></div>
@@ -655,7 +679,7 @@
 
     <div class="scrolling-wrapper">
         <!-- Hero Section -->
-        <div class="hero">
+        <header class="hero">
             <h1>Mohawk-Nexus</h1>
             <p>
                 Reimagining next-generation network infrastructure through energy-efficient, globally scalable solutions 
@@ -663,9 +687,9 @@
             </p>
             
             <div class="component-badges">
-                <span class="badge badge-security pulse-badge">🔐 Quantum-Ready Security</span>
-                <span class="badge badge-performance pulse-badge">⚡ 2.49 Mpps Throughput</span>
-                <span class="badge badge-environment pulse-badge">🌱 Energy-Efficient Architecture</span>
+                <span class="badge badge-security pulse-badge"><span aria-hidden="true">🔐</span> Quantum-Ready Security</span>
+                <span class="badge badge-performance pulse-badge"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</span>
+                <span class="badge badge-environment pulse-badge"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</span>
             </div>
 
             <div class="btn-container">
@@ -679,42 +703,43 @@
                     Federated Learning <span class="sr-only">(opens in a new tab)</span>
                 </a>
             </div>
-        </div>
+        </header>
 
-        <!-- Architecture Overview -->
-        <div class="architecture-section">
-            <h2>Trusted Three-Tier Architecture</h2>
-            
-            <div class="architecture-grid">
-                <div class="arch-card" style="border-left-color: var(--security-green);">
-                    <h3>🔒 Security Layer</h3>
-                    <p>
-                        Quantum-resistant cryptography with x25519-mlkem768-hybrid key exchange, XMSS-based TPM identity attestation, 
-                        and formal verification in Lean ensuring 5/9 Byzantine fault tolerance. All cryptographic operations are 
-                        formally verified to prevent subtle implementation bugs.
-                    </p>
-                </div>
+        <main id="main-content">
+            <!-- Architecture Overview -->
+            <section class="architecture-section">
+                <h2>Trusted Three-Tier Architecture</h2>
                 
-                <div class="arch-card" style="border-left-color: var(--performance-orange);">
-                    <h3>⚡ Performance Layer</h3>
-                    <p>
-                        Ultra-high-performance datapath achieving 2.49 Mpps hit path throughput and 2.18 Mpps miss path with zero-copy 
-                        header parsing, single-arena packet buffers, and AVX2-accelerated SIMD operations for memory-intensive workloads.
-                    </p>
+                <div class="architecture-grid">
+                    <div class="arch-card" style="border-left-color: var(--security-green);">
+                        <h3><span aria-hidden="true">🔒</span> Security Layer</h3>
+                        <p>
+                            Quantum-resistant cryptography with x25519-mlkem768-hybrid key exchange, XMSS-based TPM identity attestation,
+                            and formal verification in Lean ensuring 5/9 Byzantine fault tolerance. All cryptographic operations are
+                            formally verified to prevent subtle implementation bugs.
+                        </p>
+                    </div>
+
+                    <div class="arch-card" style="border-left-color: var(--performance-orange);">
+                        <h3><span aria-hidden="true">⚡</span> Performance Layer</h3>
+                        <p>
+                            Ultra-high-performance datapath achieving 2.49 Mpps hit path throughput and 2.18 Mpps miss path with zero-copy
+                            header parsing, single-arena packet buffers, and AVX2-accelerated SIMD operations for memory-intensive workloads.
+                        </p>
+                    </div>
+
+                    <div class="arch-card" style="border-left-color: var(--environment-blue);">
+                        <h3><span aria-hidden="true">🌱</span> Environmental Layer</h3>
+                        <p>
+                            Energy-efficient architecture leveraging Rust's ownership model to eliminate memory leaks and reduce allocation
+                            overhead. Optimized packet processing minimizes CPU cycles per operation, reducing overall power consumption.
+                        </p>
+                    </div>
                 </div>
-                
-                <div class="arch-card" style="border-left-color: var(--environment-blue);">
-                    <h3>🌱 Environmental Layer</h3>
-                    <p>
-                        Energy-efficient architecture leveraging Rust's ownership model to eliminate memory leaks and reduce allocation 
-                        overhead. Optimized packet processing minimizes CPU cycles per operation, reducing overall power consumption.
-                    </p>
-                </div>
-            </div>
-        </div>
+            </section>
 
         <!-- Performance Benchmarks -->
-        <div class="performance-section">
+        <section class="performance-section">
             <h2>Performance Benchmarks</h2>
             
             <div class="stats-grid">
@@ -752,15 +777,15 @@
             <div style="text-align: center; margin-top: 40px; color: #9ca3af;">
                 <p>All benchmarks verified with Criterion microbenchmarks and formal performance regression gates</p>
             </div>
-        </div>
+        </section>
 
         <!-- Security Features -->
-        <div class="security-section">
+        <section class="security-section">
             <h2>Quantum-Ready Security Stack</h2>
             
             <div class="security-badges-grid">
                 <div class="security-badge-card">
-                    <h4>🔐 PQC Key Exchange</h4>
+                    <h4><span aria-hidden="true">🔐</span> PQC Key Exchange</h4>
                     <p>
                         Hybrid x25519-mlkem768 key exchange provides forward security against both classical and quantum attacks. 
                         Ensures long-term cryptographic resilience for decades ahead.
@@ -768,7 +793,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4>🛡️ TPM Identity</h4>
+                    <h4><span aria-hidden="true">🛡️</span> TPM Identity</h4>
                     <p>
                         XMSS-based attestation signatures bound to trusted platform modules, ensuring hardware-rooted identity verification 
                         and supply chain security.
@@ -776,7 +801,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4>✅ Formal Verification</h4>
+                    <h4><span aria-hidden="true">✅</span> Formal Verification</h4>
                     <p>
                         Lean-based theorem proving guarantees 5/9 Byzantine fault tolerance (55.5% honest majority) and straggler 
                         resilience properties with machine-checked proofs in CI gates.
@@ -784,7 +809,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4>🔒 Zero-Copy Security</h4>
+                    <h4><span aria-hidden="true">🔒</span> Zero-Copy Security</h4>
                     <p>
                         Memory-safe Rust datapath with zero-copy header parsing eliminates buffer overflow vulnerabilities and 
                         ensures cryptographic integrity across packet boundaries.
@@ -792,7 +817,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4>🧪 Security Audit Gates</h4>
+                    <h4><span aria-hidden="true">🧪</span> Security Audit Gates</h4>
                     <p>
                         Automated security audit gates including penetration testing, dependency vulnerability scanning, and 
                         threat model validation before every release.
@@ -800,22 +825,22 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4>🔮 Quantum Migration</h4>
+                    <h4><span aria-hidden="true">🔮</span> Quantum Migration</h4>
                     <p>
                         Epoch-based PQC migration controls with dual-signature transfers for cryptographic continuity during transition 
                         from classical to post-quantum algorithms.
                     </p>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Environmental Impact -->
-        <div class="environment-section">
+        <section class="environment-section">
             <h2>Environmental Efficiency</h2>
             
             <div class="env-stats-grid">
                 <div class="env-stat-card">
-                    <h4>⚡ Memory Efficiency</h4>
+                    <h4><span aria-hidden="true">⚡</span> Memory Efficiency</h4>
                     <p>
                         Zero-copy header parsing eliminates 96-byte struct copies per packet, reducing memory bandwidth consumption 
                         by ~35% compared to traditional copy-heavy implementations.
@@ -823,7 +848,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4>🔄 Allocation Reduction</h4>
+                    <h4><span aria-hidden="true">🔄</span> Allocation Reduction</h4>
                     <p>
                         Single-arena packet buffers reduce heap allocations from thousands per second to virtually zero in hot paths, 
                         lowering GC pressure and reducing CPU cycles spent on memory management.
@@ -831,7 +856,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4>🧠 SIMD Optimization</h4>
+                    <h4><span aria-hidden="true">🧠</span> SIMD Optimization</h4>
                     <p>
                         AVX2-accelerated streaming stores unlock 12.8 GiB/s additional memory bandwidth, improving throughput per watt 
                         and reducing overall system power requirements for equivalent performance.
@@ -839,7 +864,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4>📦 BTreeMap Routing</h4>
+                    <h4><span aria-hidden="true">📦</span> BTreeMap Routing</h4>
                     <p>
                         O(log n) route table writes with no extra allocations reduce CPU utilization and enable efficient scaling 
                         without proportional power increases.
@@ -847,7 +872,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4>🌐 Multi-Tier Federation</h4>
+                    <h4><span aria-hidden="true">🌐</span> Multi-Tier Federation</h4>
                     <p>
                         Regional→Continental→Global federation hierarchy distributes load efficiently, preventing single-point 
                         bottlenecks and optimizing resource utilization across distributed infrastructure.
@@ -855,17 +880,17 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4>📊 Byzantine Resilience</h4>
+                    <h4><span aria-hidden="true">📊</span> Byzantine Resilience</h4>
                     <p>
                         Multi-Krum filtering reduces unnecessary recomputation by detecting and isolating faulty nodes, improving 
                         overall system efficiency under adverse conditions.
                     </p>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Tech Stack -->
-        <div class="tech-stack-section">
+        <section class="tech-stack-section">
             <h2>Technical Implementation</h2>
             
             <div class="tech-tags">
@@ -883,10 +908,10 @@
                 <span class="tag">#TPM-Attestation</span>
                 <span class="tag">#Multi-Tier-Federation</span>
             </div>
-        </div>
+        </section>
 
         <!-- Comparison Table -->
-        <div class="comparison-section">
+        <section class="comparison-section">
             <h2>Industry Comparison</h2>
             
             <table class="comparison-table">
@@ -903,13 +928,13 @@
                         <td>Lean Formalization + CI Gate</td>
                         <td>Not presented</td>
                         <td>Not presented</td>
-                        <td><strong style="color: var(--primary);">✅ Yes (6 formal properties)</strong></td>
+                        <td><strong style="color: var(--primary);"><span aria-hidden="true">✅</span> Yes (6 formal properties)</strong></td>
                     </tr>
                     <tr>
                         <td>Byzantine Resilience Guarantee</td>
                         <td>No published guarantee</td>
                         <td>No published guarantee</td>
-                        <td><strong style="color: var(--primary);">✅ 5/9 theorem guarantee</strong></td>
+                        <td><strong style="color: var(--primary);"><span aria-hidden="true">✅</span> 5/9 theorem guarantee</strong></td>
                     </tr>
                     <tr>
                         <td>Target Scale Envelope</td>
@@ -921,7 +946,7 @@
                         <td>PQC Enforcement (Default)</td>
                         <td>No</td>
                         <td>No</td>
-                        <td><strong style="color: var(--security-green);">✅ Hybrid x25519-mlkem768</strong></td>
+                        <td><strong style="color: var(--security-green);"><span aria-hidden="true">✅</span> Hybrid x25519-mlkem768</strong></td>
                     </tr>
                     <tr>
                         <td>Data Processing Speed</td>
@@ -933,20 +958,20 @@
                         <td>Formal Byzantine Checks</td>
                         <td>Not available</td>
                         <td>Not available</td>
-                        <td><strong style="color: var(--security-green);">✅ Fail-closed in aggregator</strong></td>
+                        <td><strong style="color: var(--security-green);"><span aria-hidden="true">✅</span> Fail-closed in aggregator</strong></td>
                     </tr>
                     <tr>
                         <td>Operational Readiness Gates</td>
                         <td>Platform-dependent</td>
                         <td>Manual validation</td>
-                        <td><strong style="color: var(--security-green);">✅ One-click readiness + chaos gates</strong></td>
+                        <td><strong style="color: var(--security-green);"><span aria-hidden="true">✅</span> One-click readiness + chaos gates</strong></td>
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </section>
 
         <!-- Call to Action -->
-        <div class="hero" style="margin-bottom: 0;">
+        <section class="hero" style="margin-bottom: 0;">
             <h2 style="font-size: 2.5rem; margin-bottom: 30px;">Ready to Deploy</h2>
             <p style="max-width: 800px; margin: 0 auto 40px;">
                 Mohawk-Nexus combines quantum-resistant security, ultra-high performance, and environmental efficiency 
@@ -961,16 +986,17 @@
                     Get Started <span class="sr-only">(opens in a new tab)</span>
                 </a>
             </div>
+        </section>
+        </main>
 
-            <div style="text-align: center; margin-top: 30px; color: #6b7280; font-size: 0.9rem;">
-                <p>
-                    <strong>Licensed under AGPL-3.0</strong> • 
-                    <a href="https://github.com/rwilliamspbg-ops" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">
-                        GitHub Sponsorship Available <span class="sr-only">(opens in a new tab)</span>
-                    </a>
-                </p>
-            </div>
-        </div>
+        <footer style="text-align: center; margin-top: 30px; color: #6b7280; font-size: 0.9rem;">
+            <p>
+                <strong>Licensed under AGPL-3.0</strong> •
+                <a href="https://github.com/rwilliamspbg-ops" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">
+                    GitHub Sponsorship Available <span class="sr-only">(opens in a new tab)</span>
+                </a>
+            </p>
+        </footer>
 
         <!-- Back to Top Button -->
         <button id="back-to-top" class="back-to-top" aria-label="Back to Top" title="Back to Top">
