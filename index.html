@@ -638,6 +638,51 @@
             transform: translateY(0);
         }
 
+        /* Tooltip style */
+        .back-to-top::after {
+            content: "Scroll to top (T)";
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(5px);
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .back-to-top:hover::after,
+        .back-to-top:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* External link icon style */
+        .external-link-icon {
+            margin-left: 6px;
+            display: inline-block;
+            vertical-align: middle;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn:hover .external-link-icon,
+        .btn-secondary:hover .external-link-icon,
+        a:hover .external-link-icon {
+            opacity: 1;
+            transform: translate(1px, -1px);
+        }
+
         /* Respect prefers-reduced-motion user preference */
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -694,13 +739,31 @@
 
             <div class="btn-container">
                 <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                    Rust Datapath <span class="sr-only">(opens in a new tab)</span>
+                    Rust Datapath
+                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span class="sr-only">(opens in a new tab)</span>
                 </a>
                 <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                    Go Control Plane <span class="sr-only">(opens in a new tab)</span>
+                    Go Control Plane
+                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span class="sr-only">(opens in a new tab)</span>
                 </a>
                 <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                    Federated Learning <span class="sr-only">(opens in a new tab)</span>
+                    Federated Learning
+                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span class="sr-only">(opens in a new tab)</span>
                 </a>
             </div>
         </header>
@@ -980,10 +1043,22 @@
             
             <div class="btn-container">
                 <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                    Explore Rust Datapath <span class="sr-only">(opens in a new tab)</span>
+                    Explore Rust Datapath
+                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span class="sr-only">(opens in a new tab)</span>
                 </a>
                 <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn">
-                    Get Started <span class="sr-only">(opens in a new tab)</span>
+                    Get Started
+                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span class="sr-only">(opens in a new tab)</span>
                 </a>
             </div>
         </section>
@@ -993,7 +1068,13 @@
             <p>
                 <strong>Licensed under AGPL-3.0</strong> •
                 <a href="https://github.com/rwilliamspbg-ops" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">
-                    GitHub Sponsorship Available <span class="sr-only">(opens in a new tab)</span>
+                    GitHub Sponsorship Available
+                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 3px;">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span class="sr-only">(opens in a new tab)</span>
                 </a>
             </p>
         </footer>
@@ -1121,6 +1202,18 @@
                     // Reset focus to the body element (or container) for screen-readers and keyboard navigation
                     const body = document.body;
                     body.focus({ preventScroll: true });
+                });
+
+                // Keyboard shortcut 'T' to scroll to top
+                window.addEventListener('keydown', function(e) {
+                    if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const activeEl = document.activeElement;
+                        const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
+                        if (!isInput) {
+                            e.preventDefault();
+                            backToTopBtn.click();
+                        }
+                    }
                 });
             });
         </script>
