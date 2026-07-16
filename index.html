@@ -34,6 +34,10 @@
             min-height: 100vh;
         }
 
+        body:focus {
+            outline: none;
+        }
+
         /* Dynamic Background with Neural Network Elements */
         #neural-network {
             position: fixed;
@@ -456,6 +460,14 @@
             border-collapse: collapse;
         }
 
+        .comparison-table tr {
+            transition: background-color 0.25s ease;
+        }
+
+        .comparison-table tbody tr:hover {
+            background-color: rgba(0, 255, 204, 0.04);
+        }
+
         .comparison-table th,
         .comparison-table td {
             padding: 20px;
@@ -608,6 +620,40 @@
         .copy-btn:focus-visible {
             outline: 2px solid var(--primary);
             outline-offset: 2px;
+        }
+
+        /* Copy Button Tooltip Style */
+        .command-container {
+            position: relative;
+        }
+
+        .copy-btn::after {
+            content: "Copy command (C)";
+            position: absolute;
+            bottom: 45px;
+            right: 16px;
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(5px);
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+            z-index: 100;
+        }
+
+        .copy-btn:hover::after,
+        .copy-btn:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         /* Responsive Design */
@@ -797,14 +843,16 @@
             .tag:hover,
             .btn:hover,
             .btn-secondary:hover,
-            .back-to-top:hover {
+            .back-to-top:hover,
+            .comparison-table tbody tr:hover {
                 transform: none !important;
                 transition: none !important;
+                background-color: transparent !important;
             }
         }
     </style>
 </head>
-<body>
+<body tabindex="-1">
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Dynamic Neural Network Background -->
@@ -862,7 +910,7 @@
                     <span class="command-text" id="setup-command">
                         <span class="command-prefix">$</span>make setup
                     </span>
-                    <button class="copy-btn" id="copy-btn" aria-label="Copy setup command to clipboard">
+                    <button class="copy-btn" id="copy-btn" aria-label="Copy setup command to clipboard (C)">
                         <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1312,14 +1360,20 @@
                     body.focus({ preventScroll: true });
                 });
 
-                // Keyboard shortcut 'T' to scroll to top
+                // Keyboard shortcut 'T' to scroll to top & 'C' to copy setup command
                 window.addEventListener('keydown', function(e) {
+                    const activeEl = document.activeElement;
+                    const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
+                    if (isInput) return;
+
                     if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey) {
-                        const activeEl = document.activeElement;
-                        const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
-                        if (!isInput) {
+                        e.preventDefault();
+                        backToTopBtn.click();
+                    } else if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const copyBtn = document.getElementById('copy-btn');
+                        if (copyBtn) {
                             e.preventDefault();
-                            backToTopBtn.click();
+                            copyBtn.click();
                         }
                     }
                 });
