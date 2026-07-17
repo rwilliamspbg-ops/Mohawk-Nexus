@@ -9,3 +9,7 @@
 ## 2026-07-13 - [Visual Parity for Multi-window Links and Keyboard-accessible Back-to-Top Tooltips]
 **Learning:** Visual parity between assistive technology (screen reader `sr-only` text) and visual presentation is essential. Landing pages with multiple repositories/external links opening in new tabs should provide unified visual feedback to avoid unexpected context switches. Additionally, hover-and-focus tooltips can be constructed with pure, accessible CSS on existing buttons without any runtime DOM or JS overhead.
 **Action:** Always combine `sr-only` descriptive screen-reader instructions with an inline, visually responsive SVG icon that transforms subtly on hover to denote external navigation, and deploy CSS-only absolute-positioned tooltips with focus-visible compatibility for keyboard-navigated discoverability.
+
+## 2026-07-14 - [Balancing Interaction Complexity Against Scope Budgets on Micro-UX Tasks]
+**Learning:** For landing pages with highly interactive but localized widgets (like clipboard-copying), trying to implement multi-step or multi-shortcut help models can quickly exceed strict micro-UX budget bounds (e.g., < 50 lines) and introduce fragile focus-trapping routines. A sleek Toast alert provides excellent feedback with a fraction of the line count and fits seamlessly into standard accessibility patterns.
+**Action:** Prioritize lightweight, self-clearing toast notifications using native `aria-live` regions over heavy modal dialogs when the user goal is simple confirmation or action feedback.
