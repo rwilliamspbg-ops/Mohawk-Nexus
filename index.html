@@ -127,6 +127,16 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: transparent;
+            border: 1px solid transparent;
+        }
+
+        .badge:hover,
+        .badge:focus-visible {
+            transform: translateY(-2px);
         }
 
         .badge-security {
@@ -135,16 +145,34 @@
             border: 1px solid var(--security-green);
         }
 
+        .badge-security:hover,
+        .badge-security:focus-visible {
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.2);
+        }
+
         .badge-performance {
             background: rgba(255, 107, 53, 0.1);
             color: var(--performance-orange);
             border: 1px solid var(--performance-orange);
         }
 
+        .badge-performance:hover,
+        .badge-performance:focus-visible {
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.4);
+            background: rgba(255, 107, 53, 0.2);
+        }
+
         .badge-environment {
             background: rgba(0, 217, 255, 0.1);
             color: var(--environment-blue);
             border: 1px solid var(--environment-blue);
+        }
+
+        .badge-environment:hover,
+        .badge-environment:focus-visible {
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+            background: rgba(0, 217, 255, 0.2);
         }
 
         /* Features Grid */
@@ -902,9 +930,9 @@
             </p>
             
             <div class="component-badges">
-                <span class="badge badge-security pulse-badge"><span aria-hidden="true">🔐</span> Quantum-Ready Security</span>
-                <span class="badge badge-performance pulse-badge"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</span>
-                <span class="badge badge-environment pulse-badge"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</span>
+                <button class="badge badge-security pulse-badge" data-target="security-section" aria-label="Jump to Quantum-Ready Security details"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
+                <button class="badge badge-performance pulse-badge" data-target="performance-section" aria-label="Jump to Performance Benchmarks details"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
+                <button class="badge badge-environment pulse-badge" data-target="environment-section" aria-label="Jump to Environmental Efficiency details"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
             </div>
 
             <div class="btn-container">
@@ -988,7 +1016,7 @@
             </section>
 
         <!-- Performance Benchmarks -->
-        <section class="performance-section">
+        <section id="performance-section" class="performance-section" tabindex="-1">
             <h2>Performance Benchmarks</h2>
             
             <div class="stats-grid">
@@ -1029,7 +1057,7 @@
         </section>
 
         <!-- Security Features -->
-        <section class="security-section">
+        <section id="security-section" class="security-section" tabindex="-1">
             <h2>Quantum-Ready Security Stack</h2>
             
             <div class="security-badges-grid">
@@ -1084,7 +1112,7 @@
         </section>
 
         <!-- Environmental Impact -->
-        <section class="environment-section">
+        <section id="environment-section" class="environment-section" tabindex="-1">
             <h2>Environmental Efficiency</h2>
             
             <div class="env-stats-grid">
@@ -1416,6 +1444,29 @@
                             copyBtn.click();
                         }
                     }
+                });
+            });
+
+            // Interactive Badge Scrolling functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const badges = document.querySelectorAll('.badge[data-target]');
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+                badges.forEach(badge => {
+                    badge.addEventListener('click', function() {
+                        const targetId = this.getAttribute('data-target');
+                        const targetEl = document.getElementById(targetId);
+
+                        if (targetEl) {
+                            targetEl.scrollIntoView({
+                                behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
+                                block: 'start'
+                            });
+
+                            // Focus the section to assist screen readers and keyboard flow
+                            targetEl.focus({ preventScroll: true });
+                        }
+                    });
                 });
             });
 
