@@ -613,6 +613,32 @@
             margin-right: 12px;
             display: flex;
             align-items: center;
+            width: 100%;
+        }
+
+        .command-select {
+            background: transparent;
+            border: none;
+            color: #d1d5db;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            width: 100%;
+            padding-right: 20px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffcc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right center;
+            background-size: 14px;
+        }
+
+        .command-select:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 4px;
+            border-radius: 4px;
         }
 
         .command-prefix {
@@ -675,6 +701,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             font-family: 'Inter', sans-serif;
             z-index: 100;
+        }
+
+        .command-select option {
+            background: rgba(13, 17, 28, 0.95);
+            color: #d1d5db;
         }
 
         .copy-btn:hover::after,
@@ -1070,10 +1101,16 @@
 
             <div class="command-widget">
                 <div class="command-container">
-                    <span class="command-text" id="setup-command">
-                        <span class="command-prefix">$</span>make setup
-                    </span>
-                    <button class="copy-btn" id="copy-btn" aria-label="Copy setup command to clipboard (C)">
+                    <div class="command-text">
+                        <span class="command-prefix" aria-hidden="true">$</span>
+                        <select id="command-select" class="command-select" aria-label="Makefile command to copy">
+                            <option value="make setup">make setup</option>
+                            <option value="make test-all">make test-all</option>
+                            <option value="make verify">make verify</option>
+                            <option value="make status">make status</option>
+                        </select>
+                    </div>
+                    <button class="copy-btn" id="copy-btn" aria-label="Copy selected command to clipboard (C)">
                         <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1429,7 +1466,7 @@
                     <kbd class="shortcuts-key">T</kbd>
                 </li>
                 <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Copy setup command</span>
+                    <span class="shortcuts-desc">Copy selected command</span>
                     <kbd class="shortcuts-key">C</kbd>
                 </li>
                 <li class="shortcuts-item">
@@ -1679,6 +1716,7 @@
             // Clipboard Copy functionality
             document.addEventListener('DOMContentLoaded', function() {
                 const copyBtn = document.getElementById('copy-btn');
+                const commandSelect = document.getElementById('command-select');
                 const feedbackEl = document.getElementById('copy-feedback');
                 const toast = document.getElementById('toast');
                 let toastTimeout = null;
@@ -1694,9 +1732,9 @@
                     }, 3000);
                 }
 
-                if (copyBtn) {
+                if (copyBtn && commandSelect) {
                     copyBtn.addEventListener('click', function() {
-                        const commandText = "make setup";
+                        const commandText = commandSelect.value;
                         navigator.clipboard.writeText(commandText).then(() => {
                             const originalHTML = copyBtn.innerHTML;
                             const originalLabel = copyBtn.getAttribute('aria-label');
@@ -1708,8 +1746,8 @@
                                 <span style="color: var(--security-green);">Copied!</span>
                             `;
                             copyBtn.setAttribute('aria-label', 'Command copied successfully');
-                            feedbackEl.textContent = 'Command make setup copied to clipboard';
-                            showToast('Command "$ make setup" copied successfully!');
+                            feedbackEl.textContent = `Command ${commandText} copied to clipboard`;
+                            showToast(`Command "$ ${commandText}" copied successfully!`);
 
                             setTimeout(() => {
                                 copyBtn.innerHTML = originalHTML;
