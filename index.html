@@ -682,7 +682,7 @@
         }
 
         .copy-btn::after {
-            content: "Copy command (C)";
+            content: attr(data-tooltip);
             position: absolute;
             bottom: 45px;
             right: 16px;
@@ -894,6 +894,66 @@
 
         .shortcuts-toggle:active {
             transform: translateY(0);
+        }
+
+        /* Keyboard Shortcuts Tooltip */
+        .shortcuts-toggle::after {
+            content: "Keyboard shortcuts (K)";
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(5px);
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .shortcuts-toggle:hover::after,
+        .shortcuts-toggle:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .shortcuts-toggle[aria-expanded="true"]::after {
+            display: none;
+        }
+
+        /* Close Shortcuts Button */
+        .close-shortcuts-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: #6b7280;
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .close-shortcuts-btn:hover,
+        .close-shortcuts-btn:focus-visible {
+            color: var(--primary);
+            outline: none;
+            transform: scale(1.1);
+        }
+
+        .close-shortcuts-btn:focus-visible {
+            outline: 2px solid var(--primary);
+            border-radius: 4px;
         }
 
         .shortcuts-panel {
@@ -1110,7 +1170,7 @@
                             <option value="make status">make status</option>
                         </select>
                     </div>
-                    <button class="copy-btn" id="copy-btn" aria-label="Copy selected command to clipboard (C)">
+                    <button class="copy-btn" id="copy-btn" data-tooltip="Copy command (C)" aria-label="Copy selected command to clipboard (C)">
                         <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1445,6 +1505,7 @@
 
         <!-- Keyboard Shortcuts Panel -->
         <div id="shortcuts-panel" class="shortcuts-panel" role="dialog" aria-modal="false" aria-label="Keyboard Shortcuts" aria-hidden="true" tabindex="-1">
+            <button id="close-shortcuts-btn" class="close-shortcuts-btn" aria-label="Close shortcuts panel">&times;</button>
             <h3>
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
@@ -1660,6 +1721,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const shortcutsBtn = document.getElementById('shortcuts-btn');
                 const shortcutsPanel = document.getElementById('shortcuts-panel');
+                const closeShortcutsBtn = document.getElementById('close-shortcuts-btn');
 
                 if (shortcutsBtn && shortcutsPanel) {
                     const togglePanel = function() {
@@ -1677,6 +1739,14 @@
                         e.stopPropagation();
                         togglePanel();
                     });
+
+                    if (closeShortcutsBtn) {
+                        closeShortcutsBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            togglePanel();
+                            shortcutsBtn.focus();
+                        });
+                    }
 
                     // Close panel when clicking outside
                     document.addEventListener('click', function(e) {
@@ -1738,6 +1808,7 @@
                         navigator.clipboard.writeText(commandText).then(() => {
                             const originalHTML = copyBtn.innerHTML;
                             const originalLabel = copyBtn.getAttribute('aria-label');
+                            const originalTooltip = copyBtn.getAttribute('data-tooltip');
 
                             copyBtn.innerHTML = `
                                 <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="var(--security-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1746,12 +1817,14 @@
                                 <span style="color: var(--security-green);">Copied!</span>
                             `;
                             copyBtn.setAttribute('aria-label', 'Command copied successfully');
+                            copyBtn.setAttribute('data-tooltip', 'Copied!');
                             feedbackEl.textContent = `Command ${commandText} copied to clipboard`;
                             showToast(`Command "$ ${commandText}" copied successfully!`);
 
                             setTimeout(() => {
                                 copyBtn.innerHTML = originalHTML;
                                 copyBtn.setAttribute('aria-label', originalLabel);
+                                copyBtn.setAttribute('data-tooltip', originalTooltip);
                                 feedbackEl.textContent = '';
                             }, 2000);
                         }).catch(err => {
