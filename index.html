@@ -599,7 +599,8 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .command-container:hover {
+        .command-container:hover,
+        .command-container:focus-within {
             border-color: rgba(0, 255, 204, 0.5);
             box-shadow: 0 4px 20px rgba(0, 255, 204, 0.15);
         }
@@ -1685,7 +1686,7 @@
                 // Keyboard shortcut 'T' to scroll to top & 'C' to copy setup command
                 window.addEventListener('keydown', function(e) {
                     const activeEl = document.activeElement;
-                    const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
+                    const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT' || activeEl.isContentEditable);
                     if (isInput) return;
 
                     if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -1803,6 +1804,18 @@
                 }
 
                 if (copyBtn && commandSelect) {
+                    // Update copy button properties depending on selected option
+                    function updateCopyBtnCues() {
+                        const commandText = commandSelect.value;
+                        copyBtn.setAttribute('aria-label', `Copy selected command "${commandText}" to clipboard (C)`);
+                        copyBtn.setAttribute('data-tooltip', `Copy "${commandText}" (C)`);
+                    }
+
+                    // Run initially to set the correct cues for the default option
+                    updateCopyBtnCues();
+
+                    commandSelect.addEventListener('change', updateCopyBtnCues);
+
                     copyBtn.addEventListener('click', function() {
                         const commandText = commandSelect.value;
                         navigator.clipboard.writeText(commandText).then(() => {
