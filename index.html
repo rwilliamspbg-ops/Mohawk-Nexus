@@ -578,9 +578,29 @@
         /* Command Copy Widget */
         .command-widget {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             margin-top: 15px;
             width: 100%;
+            gap: 12px;
+        }
+
+        .command-description {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            background: rgba(13, 17, 28, 0.6);
+            border: 1px solid rgba(0, 255, 204, 0.1);
+            border-radius: 6px;
+            padding: 6px 16px;
+            max-width: 480px;
+            width: calc(100% - 40px);
+            text-align: center;
+            transition: opacity 0.2s ease;
+            opacity: 1;
+        }
+
+        .command-description.fade {
+            opacity: 0;
         }
 
         .command-container {
@@ -1164,7 +1184,7 @@
                 <div class="command-container">
                     <div class="command-text">
                         <span class="command-prefix" aria-hidden="true">$</span>
-                        <select id="command-select" class="command-select" aria-label="Makefile command to copy">
+                        <select id="command-select" class="command-select" aria-label="Makefile command to copy" aria-describedby="command-desc">
                             <option value="make setup">make setup</option>
                             <option value="make test-all">make test-all</option>
                             <option value="make verify">make verify</option>
@@ -1179,6 +1199,7 @@
                         <span>Copy</span>
                     </button>
                 </div>
+                <p id="command-desc" class="command-description"></p>
                 <div class="sr-only" id="copy-feedback" aria-live="polite"></div>
             </div>
         </header>
@@ -1804,11 +1825,29 @@
                 }
 
                 if (copyBtn && commandSelect) {
+                    const commandDescriptions = {
+                        'make setup': 'Bootstrap and configure local development dependencies and environments.',
+                        'make test-all': 'Execute the entire test suite including Go, Rust, and TypeScript SDK verifications.',
+                        'make verify': 'Validate the post-quantum secure bridge contract, generate SDK bindings, and run smoke tests.',
+                        'make status': 'Check workspace, Kubernetes policies, and the status of system dependencies.'
+                    };
+
+                    const commandDescEl = document.getElementById('command-desc');
+
                     // Update copy button properties depending on selected option
                     function updateCopyBtnCues() {
                         const commandText = commandSelect.value;
                         copyBtn.setAttribute('aria-label', `Copy selected command "${commandText}" to clipboard (C)`);
                         copyBtn.setAttribute('data-tooltip', `Copy "${commandText}" (C)`);
+
+                        // Update description with a smooth transition
+                        if (commandDescEl && commandDescriptions[commandText]) {
+                            commandDescEl.classList.add('fade');
+                            setTimeout(() => {
+                                commandDescEl.textContent = commandDescriptions[commandText];
+                                commandDescEl.classList.remove('fade');
+                            }, 150);
+                        }
                     }
 
                     // Run initially to set the correct cues for the default option
