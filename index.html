@@ -950,6 +950,68 @@
             display: none;
         }
 
+        /* Play / Pause Toggle Button Styles */
+        .play-pause-toggle {
+            position: fixed;
+            bottom: 40px;
+            left: 105px;
+            z-index: 99;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(13, 17, 28, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+            transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .play-pause-toggle:hover,
+        .play-pause-toggle:focus-visible {
+            color: #ffffff;
+            border-color: var(--secondary);
+            box-shadow: 0 0 25px rgba(0, 119, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .play-pause-toggle:active {
+            transform: translateY(0);
+        }
+
+        .play-pause-toggle::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .play-pause-toggle:hover::after,
+        .play-pause-toggle:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
         /* Close Shortcuts Button */
         .close-shortcuts-btn {
             position: absolute;
@@ -1105,8 +1167,13 @@
 
             .toast,
             .shortcuts-panel,
-            .shortcuts-toggle {
+            .shortcuts-toggle,
+            .play-pause-toggle {
                 transition: none !important;
+            }
+
+            .play-pause-toggle {
+                display: none !important;
             }
 
             .feature-card:hover,
@@ -1119,6 +1186,7 @@
             .btn-secondary:hover,
             .back-to-top:hover,
             .shortcuts-toggle:hover,
+            .play-pause-toggle:hover,
             .comparison-table tbody tr:hover {
                 transform: none !important;
                 transition: none !important;
@@ -1557,11 +1625,26 @@
                     <kbd class="shortcuts-key">K</kbd>
                 </li>
                 <li class="shortcuts-item">
+                    <span class="shortcuts-desc">Toggle animation</span>
+                    <kbd class="shortcuts-key">P</kbd>
+                </li>
+                <li class="shortcuts-item">
                     <span class="shortcuts-desc">Close helper</span>
                     <kbd class="shortcuts-key">Esc</kbd>
                 </li>
             </ul>
         </div>
+
+        <!-- Play / Pause Button -->
+        <button id="play-pause-btn" class="play-pause-toggle" aria-label="Pause background animation (P)" aria-live="polite">
+            <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+            <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: none;">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        </button>
 
         <!-- Keyboard Shortcuts Button -->
         <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel">
@@ -1589,6 +1672,25 @@
 
         <!-- Dynamic Neural Network Background -->
         <script>
+            // Global animation play state
+            window.isAnimationPlaying = true;
+
+            // Global toast helper
+            let toastTimeout = null;
+            window.showToast = function(message) {
+                const toast = document.getElementById('toast');
+                const toastMsg = document.getElementById('toast-message');
+                if (!toast || !toastMsg) return;
+
+                toastMsg.textContent = message;
+                toast.classList.add('visible');
+
+                if (toastTimeout) clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('visible');
+                }, 3000);
+            };
+
             // Create dynamic background elements
             document.addEventListener('DOMContentLoaded', function() {
                 const networkLayer = document.getElementById('networkLayer');
@@ -1626,12 +1728,14 @@
                     const end = window.innerWidth + (Math.random() * 200) - 100;
                     
                     function animate() {
-                        start += 0.5;
-                        if (start > window.innerWidth + 300) {
-                            start = -300;
+                        if (window.isAnimationPlaying) {
+                            start += 0.5;
+                            if (start > window.innerWidth + 300) {
+                                start = -300;
+                            }
+
+                            connection.style.left = `${start}px`;
                         }
-                        
-                        connection.style.left = `${start}px`;
                         requestAnimationFrame(animate);
                     }
                     
@@ -1657,13 +1761,15 @@
                     // Add pulsing effect
                     let pulseSize = size;
                     function pulse() {
-                        pulseSize += Math.sin(Date.now()/300) * 0.5;
-                        if (pulseSize > size + 10 || pulseSize < size - 2) {
-                            setTimeout(() => {}, 500);
+                        if (window.isAnimationPlaying) {
+                            pulseSize += Math.sin(Date.now()/300) * 0.5;
+                            if (pulseSize > size + 10 || pulseSize < size - 2) {
+                                setTimeout(() => {}, 500);
+                            }
+
+                            neuron.style.width = `${pulseSize}px`;
+                            neuron.style.height = `${pulseSize}px`;
                         }
-                        
-                        neuron.style.width = `${pulseSize}px`;
-                        neuron.style.height = `${pulseSize}px`;
                         requestAnimationFrame(pulse);
                     }
                     
@@ -1673,11 +1779,44 @@
                 
                 // Add parallax effect to hero section
                 window.addEventListener('mousemove', (e) => {
+                    if (!window.isAnimationPlaying) {
+                        document.querySelector('.hero h1').style.transform = 'none';
+                        return;
+                    }
                     const x = (window.innerWidth / 2 - e.clientX) / 50;
                     const y = (window.innerHeight / 2 - e.clientY) / 50;
                     
                     document.querySelector('.hero h1').style.transform = `translate(${-x}px, ${-y}px)`;
                 });
+
+                // Play / Pause button functionality
+                const playPauseBtn = document.getElementById('play-pause-btn');
+                if (playPauseBtn) {
+                    playPauseBtn.setAttribute('data-tooltip', 'Pause background animation (P)');
+
+                    playPauseBtn.addEventListener('click', function() {
+                        window.isAnimationPlaying = !window.isAnimationPlaying;
+
+                        const iconPause = playPauseBtn.querySelector('.icon-pause');
+                        const iconPlay = playPauseBtn.querySelector('.icon-play');
+
+                        if (window.isAnimationPlaying) {
+                            document.body.classList.remove('animations-paused');
+                            playPauseBtn.setAttribute('aria-label', 'Pause background animation (P)');
+                            playPauseBtn.setAttribute('data-tooltip', 'Pause background animation (P)');
+                            if (iconPause) iconPause.style.display = 'block';
+                            if (iconPlay) iconPlay.style.display = 'none';
+                            window.showToast('Background animation resumed!');
+                        } else {
+                            document.body.classList.add('animations-paused');
+                            playPauseBtn.setAttribute('aria-label', 'Play background animation (P)');
+                            playPauseBtn.setAttribute('data-tooltip', 'Play background animation (P)');
+                            if (iconPause) iconPause.style.display = 'none';
+                            if (iconPlay) iconPlay.style.display = 'block';
+                            window.showToast('Background animation paused!');
+                        }
+                    });
+                }
             });
 
             // Back to Top functionality
@@ -1724,6 +1863,12 @@
                         if (shortcutsBtn) {
                             e.preventDefault();
                             shortcutsBtn.click();
+                        }
+                    } else if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const playPauseBtn = document.getElementById('play-pause-btn');
+                        if (playPauseBtn && window.getComputedStyle(playPauseBtn).display !== 'none') {
+                            e.preventDefault();
+                            playPauseBtn.click();
                         }
                     } else if (e.key === 'Escape') {
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
@@ -1810,19 +1955,6 @@
                 const copyBtn = document.getElementById('copy-btn');
                 const commandSelect = document.getElementById('command-select');
                 const feedbackEl = document.getElementById('copy-feedback');
-                const toast = document.getElementById('toast');
-                let toastTimeout = null;
-
-                function showToast(message) {
-                    const toastMsg = document.getElementById('toast-message');
-                    toastMsg.textContent = message;
-                    toast.classList.add('visible');
-
-                    if (toastTimeout) clearTimeout(toastTimeout);
-                    toastTimeout = setTimeout(() => {
-                        toast.classList.remove('visible');
-                    }, 3000);
-                }
 
                 if (copyBtn && commandSelect) {
                     const commandDescriptions = {
@@ -1871,7 +2003,7 @@
                             copyBtn.setAttribute('aria-label', 'Command copied successfully');
                             copyBtn.setAttribute('data-tooltip', 'Copied!');
                             feedbackEl.textContent = `Command ${commandText} copied to clipboard`;
-                            showToast(`Command "$ ${commandText}" copied successfully!`);
+                            window.showToast(`Command "$ ${commandText}" copied successfully!`);
 
                             setTimeout(() => {
                                 copyBtn.innerHTML = originalHTML;
