@@ -788,6 +788,26 @@
             animation: pulse 3s infinite;
         }
 
+        body.animations-paused .pulse-badge {
+            animation-play-state: paused !important;
+        }
+
+        /* Keyboard Hotkey Tactile Visual Feedback */
+        .key-pressed {
+            transform: scale(0.9) !important;
+            box-shadow: 0 0 12px var(--primary) !important;
+            background: rgba(0, 255, 204, 0.25) !important;
+            transition: all 0.1s ease !important;
+        }
+
+        .btn-shortcut-active {
+            transform: translateY(2px) scale(0.95) !important;
+            box-shadow: 0 0 30px var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: #ffffff !important;
+            transition: all 0.1s ease !important;
+        }
+
         /* Keyboard Focus & Screen Reader Helpers */
         :focus-visible {
             outline: 3px solid var(--primary);
@@ -1614,23 +1634,23 @@
             <ul class="shortcuts-list">
                 <li class="shortcuts-item">
                     <span class="shortcuts-desc">Scroll to top</span>
-                    <kbd class="shortcuts-key">T</kbd>
+                    <kbd class="shortcuts-key" data-key="T">T</kbd>
                 </li>
                 <li class="shortcuts-item">
                     <span class="shortcuts-desc">Copy selected command</span>
-                    <kbd class="shortcuts-key">C</kbd>
+                    <kbd class="shortcuts-key" data-key="C">C</kbd>
                 </li>
                 <li class="shortcuts-item">
                     <span class="shortcuts-desc">Toggle this helper</span>
-                    <kbd class="shortcuts-key">K</kbd>
+                    <kbd class="shortcuts-key" data-key="K">K</kbd>
                 </li>
                 <li class="shortcuts-item">
                     <span class="shortcuts-desc">Toggle animation</span>
-                    <kbd class="shortcuts-key">P</kbd>
+                    <kbd class="shortcuts-key" data-key="P">P</kbd>
                 </li>
                 <li class="shortcuts-item">
                     <span class="shortcuts-desc">Close helper</span>
-                    <kbd class="shortcuts-key">Esc</kbd>
+                    <kbd class="shortcuts-key" data-key="Esc">Esc</kbd>
                 </li>
             </ul>
         </div>
@@ -1843,6 +1863,24 @@
                     body.focus({ preventScroll: true });
                 });
 
+                // Helper to add visual feedback to key representations and buttons on keyboard interactions
+                function triggerVisualFeedback(key, buttonId) {
+                    // Flash KBD tag in shortcuts panel
+                    const kbd = document.querySelector(`.shortcuts-key[data-key="${key}"]`);
+                    if (kbd) {
+                        kbd.classList.add('key-pressed');
+                        setTimeout(() => kbd.classList.remove('key-pressed'), 150);
+                    }
+                    // Flash target button
+                    if (buttonId) {
+                        const btn = document.getElementById(buttonId);
+                        if (btn) {
+                            btn.classList.add('btn-shortcut-active');
+                            setTimeout(() => btn.classList.remove('btn-shortcut-active'), 150);
+                        }
+                    }
+                }
+
                 // Keyboard shortcut 'T' to scroll to top & 'C' to copy setup command
                 window.addEventListener('keydown', function(e) {
                     const activeEl = document.activeElement;
@@ -1851,29 +1889,34 @@
 
                     if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         e.preventDefault();
+                        triggerVisualFeedback('T', 'back-to-top');
                         backToTopBtn.click();
                     } else if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const copyBtn = document.getElementById('copy-btn');
                         if (copyBtn) {
                             e.preventDefault();
+                            triggerVisualFeedback('C', 'copy-btn');
                             copyBtn.click();
                         }
                     } else if ((e.key === 'k' || e.key === 'K') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const shortcutsBtn = document.getElementById('shortcuts-btn');
                         if (shortcutsBtn) {
                             e.preventDefault();
+                            triggerVisualFeedback('K', 'shortcuts-btn');
                             shortcutsBtn.click();
                         }
                     } else if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const playPauseBtn = document.getElementById('play-pause-btn');
                         if (playPauseBtn && window.getComputedStyle(playPauseBtn).display !== 'none') {
                             e.preventDefault();
+                            triggerVisualFeedback('P', 'play-pause-btn');
                             playPauseBtn.click();
                         }
                     } else if (e.key === 'Escape') {
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
                         if (shortcutsPanel && shortcutsPanel.classList.contains('visible')) {
                             e.preventDefault();
+                            triggerVisualFeedback('Esc', 'close-shortcuts-btn');
                             const shortcutsBtn = document.getElementById('shortcuts-btn');
                             if (shortcutsBtn) {
                                 shortcutsBtn.click();
