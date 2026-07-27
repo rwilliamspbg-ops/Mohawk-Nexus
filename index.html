@@ -474,6 +474,16 @@
             border-radius: 8px;
             border: 1px solid rgba(0, 255, 204, 0.1);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            /* Pure CSS Scroll Shadows */
+            background-image:
+                linear-gradient(to right, rgba(3, 4, 11, 0.95), rgba(3, 4, 11, 0)),
+                linear-gradient(to right, rgba(3, 4, 11, 0), rgba(3, 4, 11, 0.95)),
+                linear-gradient(to right, rgba(0, 255, 204, 0.25), rgba(3, 4, 11, 0)),
+                linear-gradient(to left, rgba(0, 255, 204, 0.25), rgba(3, 4, 11, 0));
+            background-position: left center, right center, left center, right center;
+            background-repeat: no-repeat;
+            background-size: 40px 100%, 40px 100%, 15px 100%, 15px 100%;
+            background-attachment: local, local, scroll, scroll;
         }
 
         .table-container:focus-visible {
@@ -1136,7 +1146,10 @@
 
         .btn:hover .external-link-icon,
         .btn-secondary:hover .external-link-icon,
-        a:hover .external-link-icon {
+        a:hover .external-link-icon,
+        .btn:focus-visible .external-link-icon,
+        .btn-secondary:focus-visible .external-link-icon,
+        a:focus-visible .external-link-icon {
             opacity: 1;
             transform: translate(1px, -1px);
         }
