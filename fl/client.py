@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+# Add the parent directory of fl to sys.path to enable absolute imports like from fl.common import ...
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import json
 import os
 import time

@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+# Add the parent directory of fl to sys.path to enable absolute imports like from fl.common import ...
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
-from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
 import time
 
