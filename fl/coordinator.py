@@ -12,8 +12,20 @@ except ModuleNotFoundError:
     from common import env_int, env_bool, read_config_file
 
 
+def _env_int(name, default):
+    return env_int(name, default)
+
+
+def _env_bool(name, default):
+    return env_bool(name, default)
+
+
+def _read_config_file(path):
+    return read_config_file(path)
+
+
 def _load_config():
-    file_cfg = read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
+    file_cfg = _read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
     server_cfg = file_cfg.get("server", {}) if isinstance(file_cfg.get("server", {}), dict) else {}
     metrics_cfg = file_cfg.get("metrics", {}) if isinstance(file_cfg.get("metrics", {}), dict) else {}
     profiling_cfg = file_cfg.get("profiling", {}) if isinstance(file_cfg.get("profiling", {}), dict) else {}
@@ -21,11 +33,11 @@ def _load_config():
 
     return {
         "host": os.environ.get("FL_SERVER_HOST", str(server_cfg.get("host", "0.0.0.0"))),
-        "port": env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
-        "metrics_enabled": env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
-        "metrics_port": env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
-        "profiling_enabled": env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
-        "default_profile_duration_seconds": env_int(
+        "port": _env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
+        "metrics_enabled": _env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
+        "metrics_port": _env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
+        "profiling_enabled": _env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
+        "default_profile_duration_seconds": _env_int(
             "FL_PROFILING_DEFAULT_DURATION_SECONDS",
             int(profiling_cfg.get("default_duration_seconds", 2)),
         ),
