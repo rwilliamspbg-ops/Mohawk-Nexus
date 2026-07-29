@@ -1,7 +1,11 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+import sys
+import importlib
+import urllib.request
+import urllib.error
 
-from fl.client import FLClient, load_client_from_env
+from fl.client import FLClient, load_client_from_env, _UrllibSession
 
 
 class FakeResponse:
@@ -116,6 +120,127 @@ class FLClientTests(unittest.TestCase):
         self.assertEqual(client.max_retries, 5)
         self.assertEqual(client.base_backoff_seconds, 0.2)
         self.assertEqual(client.max_backoff_seconds, 2.5)
+
+    def test_session_fallback_when_requests_missing(self):
+        import fl.client
+        with patch.dict(sys.modules, {"requests": None}):
+            importlib.reload(fl.client)
+            client = fl.client.FLClient(coord_url="http://coordinator:9000")
+            self.assertEqual(client.session.__class__.__name__, "_UrllibSession")
+        # clean up by restoring state
+        importlib.reload(fl.client)
+
+    def test_session_creation_when_requests_present(self):
+        import fl.client
+        mock_requests = MagicMock()
+        mock_session_instance = MagicMock()
+        mock_requests.Session.return_value = mock_session_instance
+
+        with patch.dict(sys.modules, {"requests": mock_requests}):
+            importlib.reload(fl.client)
+            client = fl.client.FLClient(coord_url="http://coordinator:9000")
+            self.assertEqual(client.session, mock_session_instance)
+            mock_requests.Session.assert_called_once()
+        # clean up by restoring state
+        importlib.reload(fl.client)
+
+    def test_urllib_session_success_dict(self):
+        session = _UrllibSession()
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.read.return_value = b'{"round": 3}'
+        mock_response.__enter__.return_value = mock_response
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_urlopen:
+            res = session.request("GET", "http://coordinator", timeout=5.0)
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.json(), {"round": 3})
+            mock_urlopen.assert_called_once()
+            req = mock_urlopen.call_args[0][0]
+            self.assertEqual(req.full_url, "http://coordinator")
+            self.assertEqual(req.get_method(), "GET")
+
+    def test_urllib_session_success_non_dict(self):
+        session = _UrllibSession()
+        mock_response = MagicMock()
+        mock_response.status = 201
+        mock_response.read.return_value = b'42'
+        mock_response.__enter__.return_value = mock_response
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_urlopen:
+            res = session.request("POST", "http://coordinator", timeout=5.0, json={"value": 42})
+            self.assertEqual(res.status_code, 201)
+            self.assertEqual(res.json(), {"value": 42})
+            req = mock_urlopen.call_args[0][0]
+            self.assertEqual(req.get_method(), "POST")
+            self.assertEqual(req.data, b'{"value": 42}')
+            self.assertTrue(any(k.lower() == "content-type" for k in req.headers))
+
+    def test_urllib_session_http_error_dict(self):
+        session = _UrllibSession()
+        fp = MagicMock()
+        fp.read.return_value = b'{"error": "invalid parameter"}'
+        err = urllib.error.HTTPError(
+            url="http://coordinator",
+            code=400,
+            msg="Bad Request",
+            hdrs={},
+            fp=fp
+        )
+
+        with patch("urllib.request.urlopen", side_effect=err):
+            res = session.request("GET", "http://coordinator", timeout=5.0)
+            self.assertEqual(res.status_code, 400)
+            self.assertEqual(res.json(), {"error": "invalid parameter"})
+
+    def test_urllib_session_http_error_non_dict_json(self):
+        session = _UrllibSession()
+        fp = MagicMock()
+        fp.read.return_value = b'"bad error"'
+        err = urllib.error.HTTPError(
+            url="http://coordinator",
+            code=403,
+            msg="Forbidden",
+            hdrs={},
+            fp=fp
+        )
+
+        with patch("urllib.request.urlopen", side_effect=err):
+            res = session.request("GET", "http://coordinator", timeout=5.0)
+            self.assertEqual(res.status_code, 403)
+            self.assertEqual(res.json(), {"value": "bad error"})
+
+    def test_urllib_session_http_error_invalid_json(self):
+        session = _UrllibSession()
+        fp = MagicMock()
+        fp.read.return_value = b'not json'
+        err = urllib.error.HTTPError(
+            url="http://coordinator",
+            code=500,
+            msg="Internal Error",
+            hdrs={},
+            fp=fp
+        )
+
+        with patch("urllib.request.urlopen", side_effect=err):
+            res = session.request("GET", "http://coordinator", timeout=5.0)
+            self.assertEqual(res.status_code, 500)
+            self.assertEqual(res.json(), {"error": "not json"})
+
+    def test_urllib_session_http_error_empty_fp(self):
+        session = _UrllibSession()
+        err = urllib.error.HTTPError(
+            url="http://coordinator",
+            code=502,
+            msg="Bad Gateway",
+            hdrs={},
+            fp=None
+        )
+
+        with patch("urllib.request.urlopen", side_effect=err):
+            res = session.request("GET", "http://coordinator", timeout=5.0)
+            self.assertEqual(res.status_code, 502)
+            self.assertEqual(res.json(), {})
 
 
 if __name__ == "__main__":

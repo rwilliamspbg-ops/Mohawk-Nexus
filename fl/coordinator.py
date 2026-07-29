@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-from http.server import HTTPServer
+import atexit
+from concurrent.futures import ThreadPoolExecutor
+import copy
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
 from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
+import threading
 import time
 
 try:
@@ -43,7 +47,71 @@ UPDATES = Counter('fl_updates_total', 'Total updates received')
 ROUNDS = Counter('fl_rounds_aggregated_total', 'Total rounds aggregated')
 GLOBAL = Gauge('fl_global_value', 'Last aggregated global value')
 
-class Handler(common.BaseJSONHandler):
+# In-memory state cache & lock
+_state_lock = threading.Lock()
+_STATE_CACHE = None
+_state_exists = False
+
+# ThreadPoolExecutor to handle asynchronous flushing (max_workers=1 serializes writes)
+_write_executor = ThreadPoolExecutor(max_workers=1)
+
+
+def _init_state():
+    """Load state from disk on startup if it exists, otherwise initialize empty."""
+    global _STATE_CACHE, _state_exists
+    if STATE.exists():
+        try:
+            _STATE_CACHE = json.loads(STATE.read_text())
+            _state_exists = True
+        except Exception:
+            _STATE_CACHE = {'round': 0, 'updates': []}
+            _state_exists = False
+    else:
+        _STATE_CACHE = {'round': 0, 'updates': []}
+        _state_exists = False
+
+
+# Run eager initialization
+_init_state()
+
+
+def _get_state():
+    """Retrieve the global state cache. Assumes caller holds _state_lock or thread safety is not a concern."""
+    global _STATE_CACHE
+    if _STATE_CACHE is None:
+        _init_state()
+    return _STATE_CACHE
+
+
+def _save_state_async_locked():
+    """Schedule saving the state cache to disk. Must be called while holding _state_lock."""
+    data_str = json.dumps(_STATE_CACHE)
+
+    def do_write(data):
+        try:
+            temp_path = STATE.with_suffix(".tmp")
+            temp_path.write_text(data, encoding="utf-8")
+            temp_path.replace(STATE)
+        except Exception as e:
+            print(f"Error flushing state to disk: {e}")
+
+    _write_executor.submit(do_write, data_str)
+
+
+@atexit.register
+def _cleanup():
+    _write_executor.shutdown(wait=True)
+
+
+class Handler(BaseHTTPRequestHandler):
+    def _send(self, code=200, data=None):
+        self.send_response(code)
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        if data is None:
+            data = {}
+        self.wfile.write(json.dumps(data).encode())
+
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
         path = self.path.split('?')[0]
@@ -96,10 +164,11 @@ class Handler(common.BaseJSONHandler):
                 self._send(500, {'error': str(e)})
             return
         # return current round
-        if STATE.exists():
-            content = json.loads(STATE.read_text())
-        else:
-            content = {'round': 0, 'global': 0.0}
+        with _state_lock:
+            if not _state_exists:
+                content = {'round': 0, 'global': 0.0}
+            else:
+                content = copy.deepcopy(_get_state())
         self._send(200, content)
 
     def do_POST(self):
@@ -112,21 +181,25 @@ class Handler(common.BaseJSONHandler):
             self._send(400, {'error': 'invalid json'})
             return
         # append update
-        if STATE.exists():
-            content = json.loads(STATE.read_text())
-        else:
-            content = {'round': 0, 'updates': []}
-        content.setdefault('updates', []).append(payload.get('value', 0.0))
-        UPDATES.inc()
-        # simple aggregation when 2 updates collected
-        if len(content['updates']) >= 2:
-            vals = content['updates']
-            agg = sum(vals) / len(vals)
-            content = {'round': content.get('round', 0) + 1, 'global': agg, 'updates': []}
-            ROUNDS.inc()
-            GLOBAL.set(agg)
-        STATE.write_text(json.dumps(content))
-        self._send(200, content)
+        with _state_lock:
+            content = _get_state()
+            content.setdefault('updates', []).append(payload.get('value', 0.0))
+            UPDATES.inc()
+            # simple aggregation when 2 updates collected
+            if len(content['updates']) >= 2:
+                vals = content['updates']
+                agg = sum(vals) / len(vals)
+                content = {'round': content.get('round', 0) + 1, 'global': agg, 'updates': []}
+                global _STATE_CACHE
+                _STATE_CACHE = content
+                ROUNDS.inc()
+                GLOBAL.set(agg)
+            global _state_exists
+            _state_exists = True
+            _save_state_async_locked()
+            response_content = copy.deepcopy(content)
+        self._send(200, response_content)
+
 
 def main():
     if CONFIG["metrics_enabled"]:
@@ -139,6 +212,7 @@ def main():
         CONFIG["metrics_port"] if CONFIG["metrics_enabled"] else 'disabled',
     )
     server.serve_forever()
+
 
 if __name__ == '__main__':
     main()
