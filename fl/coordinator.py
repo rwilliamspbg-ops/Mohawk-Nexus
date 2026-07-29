@@ -6,44 +6,11 @@ from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
 import time
 
-
-def _env_int(name, default):
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
-
-
-def _env_bool(name, default):
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    return raw.strip().lower() in {"1", "true", "yes", "on"}
-
-
-def _read_config_file(path):
-    if not path:
-        return {}
-    config_path = Path(path)
-    if not config_path.exists():
-        return {}
-    with config_path.open("r", encoding="utf-8") as handle:
-        if config_path.suffix in {".json"}:
-            data = json.load(handle)
-        elif config_path.suffix in {".yaml", ".yml"}:
-            import yaml
-
-            data = yaml.safe_load(handle) or {}
-        else:
-            return {}
-    return data if isinstance(data, dict) else {}
+from fl.common import env_int, env_bool, read_config_file
 
 
 def _load_config():
-    file_cfg = _read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
+    file_cfg = read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
     server_cfg = file_cfg.get("server", {}) if isinstance(file_cfg.get("server", {}), dict) else {}
     metrics_cfg = file_cfg.get("metrics", {}) if isinstance(file_cfg.get("metrics", {}), dict) else {}
     profiling_cfg = file_cfg.get("profiling", {}) if isinstance(file_cfg.get("profiling", {}), dict) else {}
@@ -51,11 +18,11 @@ def _load_config():
 
     return {
         "host": os.environ.get("FL_SERVER_HOST", str(server_cfg.get("host", "0.0.0.0"))),
-        "port": _env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
-        "metrics_enabled": _env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
-        "metrics_port": _env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
-        "profiling_enabled": _env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
-        "default_profile_duration_seconds": _env_int(
+        "port": env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
+        "metrics_enabled": env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
+        "metrics_port": env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
+        "profiling_enabled": env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
+        "default_profile_duration_seconds": env_int(
             "FL_PROFILING_DEFAULT_DURATION_SECONDS",
             int(profiling_cfg.get("default_duration_seconds", 2)),
         ),
