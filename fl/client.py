@@ -7,32 +7,10 @@ import urllib.error
 import urllib.request
 from typing import Any, Callable, Dict, Optional
 
-
-def _env_int(name: str, default: int) -> int:
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
-
-
-def _env_float(name: str, default: float) -> float:
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    try:
-        return float(raw)
-    except ValueError:
-        return default
-
-
-def _env_bool(name: str, default: bool) -> bool:
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    return raw.strip().lower() in {"1", "true", "yes", "on"}
+try:
+    from fl import common
+except ImportError:
+    import common
 
 
 class FLClient:
@@ -186,34 +164,20 @@ class _UrllibSession:
 
 def _load_file_overrides() -> Dict[str, Any]:
     path = os.environ.get("FL_CLIENT_CONFIG_FILE", "").strip()
-    if not path:
-        return {}
-    try:
-        with open(path, "r", encoding="utf-8") as handle:
-            if path.endswith(".json"):
-                data = json.load(handle)
-            elif path.endswith(".yaml") or path.endswith(".yml"):
-                import yaml
-
-                data = yaml.safe_load(handle) or {}
-            else:
-                return {}
-    except Exception:
-        return {}
-    return data if isinstance(data, dict) else {}
+    return common.read_config_file(path)
 
 
 def load_client_from_env() -> FLClient:
     cfg = _load_file_overrides()
     coord = os.environ.get("COORD_HOST", cfg.get("coord_url", "http://fl-coordinator:9000"))
 
-    get_timeout = _env_float("FL_CLIENT_GET_TIMEOUT_SECONDS", float(cfg.get("get_timeout", 5.0)))
-    post_timeout = _env_float("FL_CLIENT_POST_TIMEOUT_SECONDS", float(cfg.get("post_timeout", 5.0)))
-    retries = _env_int("FL_CLIENT_MAX_RETRIES", int(cfg.get("max_retries", 3)))
-    backoff_base = _env_float("FL_CLIENT_BASE_BACKOFF_SECONDS", float(cfg.get("base_backoff_seconds", 0.5)))
-    backoff_max = _env_float("FL_CLIENT_MAX_BACKOFF_SECONDS", float(cfg.get("max_backoff_seconds", 5.0)))
+    get_timeout = common.env_float("FL_CLIENT_GET_TIMEOUT_SECONDS", float(cfg.get("get_timeout", 5.0)))
+    post_timeout = common.env_float("FL_CLIENT_POST_TIMEOUT_SECONDS", float(cfg.get("post_timeout", 5.0)))
+    retries = common.env_int("FL_CLIENT_MAX_RETRIES", int(cfg.get("max_retries", 3)))
+    backoff_base = common.env_float("FL_CLIENT_BASE_BACKOFF_SECONDS", float(cfg.get("base_backoff_seconds", 0.5)))
+    backoff_max = common.env_float("FL_CLIENT_MAX_BACKOFF_SECONDS", float(cfg.get("max_backoff_seconds", 5.0)))
 
-    if _env_bool("FL_CLIENT_VERBOSE", True):
+    if common.env_bool("FL_CLIENT_VERBOSE", True):
         print(
             "FL client config",
             {
@@ -235,7 +199,7 @@ def load_client_from_env() -> FLClient:
 
 def main():
     client = load_client_from_env()
-    interval = _env_float("FL_CLIENT_POLL_INTERVAL_SECONDS", 5.0)
+    interval = common.env_float("FL_CLIENT_POLL_INTERVAL_SECONDS", 5.0)
     client.run_forever(interval_seconds=interval)
 
 if __name__ == '__main__':

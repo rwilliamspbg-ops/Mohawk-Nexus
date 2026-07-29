@@ -82,6 +82,9 @@ class FLCoordinatorConfigAndHandlerTests(unittest.TestCase):
         self.state_patcher = patch("fl.coordinator.STATE", new=self.temp_state_file)
         self.mock_state = self.state_patcher.start()
 
+        # Force re-initialization of coordinator state cache so it uses the patched STATE path and is isolated from other tests
+        fl.coordinator._init_state()
+
         # Save original config to restore later
         self.original_config = fl.coordinator.CONFIG.copy()
 
@@ -198,6 +201,9 @@ class FLCoordinatorConfigAndHandlerTests(unittest.TestCase):
         state_data = {"round": 3, "global": 0.75}
         self.temp_state_file.write_text(json.dumps(state_data), encoding="utf-8")
 
+        # Reload cache because we bypassed memory by writing directly to disk
+        fl.coordinator._init_state()
+
         handler = self._create_handler("/", "GET")
         handler.do_GET()
         self.assertEqual(handler.response_code, 200)
@@ -295,6 +301,9 @@ class FLCoordinatorConfigAndHandlerTests(unittest.TestCase):
         self.assertEqual(data["round"], 0)
         self.assertEqual(data["updates"], [0.5])
 
+        # Wait for async file writing to complete before assertion
+        fl.coordinator._flush_state()
+
         # Confirm written to state file
         file_data = json.loads(self.temp_state_file.read_text())
         self.assertEqual(file_data["round"], 0)
@@ -324,6 +333,9 @@ class FLCoordinatorConfigAndHandlerTests(unittest.TestCase):
         self.assertEqual(data["round"], 1)
         self.assertEqual(data["global"], 0.5)
         self.assertEqual(data.get("updates", []), [])
+
+        # Wait for async file writing to complete before assertion
+        fl.coordinator._flush_state()
 
         # Confirm state file has updated aggregation
         file_data = json.loads(self.temp_state_file.read_text())

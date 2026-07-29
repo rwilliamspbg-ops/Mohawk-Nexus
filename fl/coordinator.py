@@ -2,7 +2,7 @@
 import atexit
 from concurrent.futures import ThreadPoolExecutor
 import copy
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer
 import json
 import os
 from pathlib import Path
@@ -10,40 +10,15 @@ from prometheus_client import start_http_server, Counter, Gauge
 import threading
 import time
 
+try:
+    from fl import common
+except ImportError:
+    import common
 
-def _env_int(name, default):
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
-
-
-def _env_bool(name, default):
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    return raw.strip().lower() in {"1", "true", "yes", "on"}
-
-
-def _read_config_file(path):
-    if not path:
-        return {}
-    config_path = Path(path)
-    if not config_path.exists():
-        return {}
-    with config_path.open("r", encoding="utf-8") as handle:
-        if config_path.suffix in {".json"}:
-            data = json.load(handle)
-        elif config_path.suffix in {".yaml", ".yml"}:
-            import yaml
-
-            data = yaml.safe_load(handle) or {}
-        else:
-            return {}
-    return data if isinstance(data, dict) else {}
+# Alias functions for backward-compatibility with tests
+_env_int = common.env_int
+_env_bool = common.env_bool
+_read_config_file = common.read_config_file
 
 
 def _load_config():
@@ -128,20 +103,17 @@ def _save_state_async_locked():
     _write_executor.submit(do_write, data_str)
 
 
+def _flush_state():
+    """Wait for all pending writes to complete (primarily for tests)."""
+    _write_executor.submit(lambda: None).result()
+
+
 @atexit.register
 def _cleanup():
     _write_executor.shutdown(wait=True)
 
 
-class Handler(BaseHTTPRequestHandler):
-    def _send(self, code=200, data=None):
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.end_headers()
-        if data is None:
-            data = {}
-        self.wfile.write(json.dumps(data).encode())
-
+class Handler(common.BaseJSONHandler):
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
         path = self.path.split('?')[0]
