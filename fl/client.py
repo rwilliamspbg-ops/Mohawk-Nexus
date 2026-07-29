@@ -8,9 +8,15 @@ import urllib.request
 from typing import Any, Callable, Dict, Optional
 
 try:
+<<<<<<< HEAD
     from fl.common import env_int, env_float, env_bool, read_config_file
 except ModuleNotFoundError:
     from common import env_int, env_float, env_bool, read_config_file
+=======
+    from fl import common
+except ImportError:
+    import common
+>>>>>>> origin/main
 
 
 class FLClient:
@@ -162,10 +168,19 @@ class _UrllibSession:
             return _SimpleResponse(error.code, parsed)
 
 
+<<<<<<< HEAD
+=======
+def _load_file_overrides() -> Dict[str, Any]:
+    path = os.environ.get("FL_CLIENT_CONFIG_FILE", "").strip()
+    return common.read_config_file(path)
+
+
+>>>>>>> origin/main
 def load_client_from_env() -> FLClient:
     cfg = read_config_file(os.environ.get("FL_CLIENT_CONFIG_FILE", "").strip())
     coord = os.environ.get("COORD_HOST", cfg.get("coord_url", "http://fl-coordinator:9000"))
 
+<<<<<<< HEAD
     get_timeout = env_float("FL_CLIENT_GET_TIMEOUT_SECONDS", float(cfg.get("get_timeout", 5.0)))
     post_timeout = env_float("FL_CLIENT_POST_TIMEOUT_SECONDS", float(cfg.get("post_timeout", 5.0)))
     retries = env_int("FL_CLIENT_MAX_RETRIES", int(cfg.get("max_retries", 3)))
@@ -173,6 +188,15 @@ def load_client_from_env() -> FLClient:
     backoff_max = env_float("FL_CLIENT_MAX_BACKOFF_SECONDS", float(cfg.get("max_backoff_seconds", 5.0)))
 
     if env_bool("FL_CLIENT_VERBOSE", True):
+=======
+    get_timeout = common.env_float("FL_CLIENT_GET_TIMEOUT_SECONDS", float(cfg.get("get_timeout", 5.0)))
+    post_timeout = common.env_float("FL_CLIENT_POST_TIMEOUT_SECONDS", float(cfg.get("post_timeout", 5.0)))
+    retries = common.env_int("FL_CLIENT_MAX_RETRIES", int(cfg.get("max_retries", 3)))
+    backoff_base = common.env_float("FL_CLIENT_BASE_BACKOFF_SECONDS", float(cfg.get("base_backoff_seconds", 0.5)))
+    backoff_max = common.env_float("FL_CLIENT_MAX_BACKOFF_SECONDS", float(cfg.get("max_backoff_seconds", 5.0)))
+
+    if common.env_bool("FL_CLIENT_VERBOSE", True):
+>>>>>>> origin/main
         print(
             "FL client config",
             {
@@ -194,7 +218,11 @@ def load_client_from_env() -> FLClient:
 
 def main():
     client = load_client_from_env()
+<<<<<<< HEAD
     interval = env_float("FL_CLIENT_POLL_INTERVAL_SECONDS", 5.0)
+=======
+    interval = common.env_float("FL_CLIENT_POLL_INTERVAL_SECONDS", 5.0)
+>>>>>>> origin/main
     client.run_forever(interval_seconds=interval)
 
 if __name__ == '__main__':

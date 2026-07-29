@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
+<<<<<<< HEAD
 from http.server import BaseHTTPRequestHandler, HTTPServer
+=======
+import atexit
+from concurrent.futures import ThreadPoolExecutor
+import copy
+from http.server import HTTPServer
+>>>>>>> origin/main
 import json
 import os
 from pathlib import Path
@@ -7,6 +14,7 @@ from prometheus_client import start_http_server, Counter, Gauge
 import time
 
 try:
+<<<<<<< HEAD
     from fl.common import env_int, env_bool, read_config_file
 except ModuleNotFoundError:
     from common import env_int, env_bool, read_config_file
@@ -22,6 +30,16 @@ def _env_bool(name, default):
 
 def _read_config_file(path):
     return read_config_file(path)
+=======
+    from fl import common
+except ImportError:
+    import common
+
+# Alias functions for backward-compatibility with tests
+_env_int = common.env_int
+_env_bool = common.env_bool
+_read_config_file = common.read_config_file
+>>>>>>> origin/main
 
 
 def _load_config():
@@ -55,6 +73,7 @@ UPDATES = Counter('fl_updates_total', 'Total updates received')
 ROUNDS = Counter('fl_rounds_aggregated_total', 'Total rounds aggregated')
 GLOBAL = Gauge('fl_global_value', 'Last aggregated global value')
 
+<<<<<<< HEAD
 class Handler(BaseHTTPRequestHandler):
     def _send(self, code=200, data=None):
         self.send_response(code)
@@ -64,6 +83,70 @@ class Handler(BaseHTTPRequestHandler):
             data = {}
         self.wfile.write(json.dumps(data).encode())
 
+=======
+# In-memory state cache & lock
+_state_lock = threading.Lock()
+_STATE_CACHE = None
+_state_exists = False
+
+# ThreadPoolExecutor to handle asynchronous flushing (max_workers=1 serializes writes)
+_write_executor = ThreadPoolExecutor(max_workers=1)
+
+
+def _init_state():
+    """Load state from disk on startup if it exists, otherwise initialize empty."""
+    global _STATE_CACHE, _state_exists
+    if STATE.exists():
+        try:
+            _STATE_CACHE = json.loads(STATE.read_text())
+            _state_exists = True
+        except Exception:
+            _STATE_CACHE = {'round': 0, 'updates': []}
+            _state_exists = False
+    else:
+        _STATE_CACHE = {'round': 0, 'updates': []}
+        _state_exists = False
+
+
+# Run eager initialization
+_init_state()
+
+
+def _get_state():
+    """Retrieve the global state cache. Assumes caller holds _state_lock or thread safety is not a concern."""
+    global _STATE_CACHE
+    if _STATE_CACHE is None:
+        _init_state()
+    return _STATE_CACHE
+
+
+def _save_state_async_locked():
+    """Schedule saving the state cache to disk. Must be called while holding _state_lock."""
+    data_str = json.dumps(_STATE_CACHE)
+
+    def do_write(data):
+        try:
+            temp_path = STATE.with_suffix(".tmp")
+            temp_path.write_text(data, encoding="utf-8")
+            temp_path.replace(STATE)
+        except Exception as e:
+            print(f"Error flushing state to disk: {e}")
+
+    _write_executor.submit(do_write, data_str)
+
+
+def _flush_state():
+    """Wait for all pending writes to complete (primarily for tests)."""
+    _write_executor.submit(lambda: None).result()
+
+
+@atexit.register
+def _cleanup():
+    _write_executor.shutdown(wait=True)
+
+
+class Handler(common.BaseJSONHandler):
+>>>>>>> origin/main
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
         path = self.path.split('?')[0]
