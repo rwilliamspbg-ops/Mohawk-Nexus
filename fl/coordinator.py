@@ -1,49 +1,19 @@
 #!/usr/bin/env python3
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer
 import json
 import os
 from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
 import time
 
-
-def _env_int(name, default):
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
-
-
-def _env_bool(name, default):
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    return raw.strip().lower() in {"1", "true", "yes", "on"}
-
-
-def _read_config_file(path):
-    if not path:
-        return {}
-    config_path = Path(path)
-    if not config_path.exists():
-        return {}
-    with config_path.open("r", encoding="utf-8") as handle:
-        if config_path.suffix in {".json"}:
-            data = json.load(handle)
-        elif config_path.suffix in {".yaml", ".yml"}:
-            import yaml
-
-            data = yaml.safe_load(handle) or {}
-        else:
-            return {}
-    return data if isinstance(data, dict) else {}
+try:
+    from fl import common
+except ImportError:
+    import common
 
 
 def _load_config():
-    file_cfg = _read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
+    file_cfg = common.read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
     server_cfg = file_cfg.get("server", {}) if isinstance(file_cfg.get("server", {}), dict) else {}
     metrics_cfg = file_cfg.get("metrics", {}) if isinstance(file_cfg.get("metrics", {}), dict) else {}
     profiling_cfg = file_cfg.get("profiling", {}) if isinstance(file_cfg.get("profiling", {}), dict) else {}
@@ -51,11 +21,11 @@ def _load_config():
 
     return {
         "host": os.environ.get("FL_SERVER_HOST", str(server_cfg.get("host", "0.0.0.0"))),
-        "port": _env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
-        "metrics_enabled": _env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
-        "metrics_port": _env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
-        "profiling_enabled": _env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
-        "default_profile_duration_seconds": _env_int(
+        "port": common.env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
+        "metrics_enabled": common.env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
+        "metrics_port": common.env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
+        "profiling_enabled": common.env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
+        "default_profile_duration_seconds": common.env_int(
             "FL_PROFILING_DEFAULT_DURATION_SECONDS",
             int(profiling_cfg.get("default_duration_seconds", 2)),
         ),
@@ -73,15 +43,7 @@ UPDATES = Counter('fl_updates_total', 'Total updates received')
 ROUNDS = Counter('fl_rounds_aggregated_total', 'Total rounds aggregated')
 GLOBAL = Gauge('fl_global_value', 'Last aggregated global value')
 
-class Handler(BaseHTTPRequestHandler):
-    def _send(self, code=200, data=None):
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.end_headers()
-        if data is None:
-            data = {}
-        self.wfile.write(json.dumps(data).encode())
-
+class Handler(common.BaseJSONHandler):
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
         path = self.path.split('?')[0]
