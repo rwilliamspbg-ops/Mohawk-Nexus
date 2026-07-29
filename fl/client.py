@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-import sys
-from pathlib import Path
-
-# Add the parent directory of fl to sys.path to enable absolute imports like from fl.common import ...
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import json
 import os
 import time
@@ -13,7 +7,10 @@ import urllib.error
 import urllib.request
 from typing import Any, Callable, Dict, Optional
 
-from fl.common import env_int, env_float, env_bool, read_config_file
+try:
+    from fl.common import env_int, env_float, env_bool, read_config_file
+except ModuleNotFoundError:
+    from common import env_int, env_float, env_bool, read_config_file
 
 
 class FLClient:
