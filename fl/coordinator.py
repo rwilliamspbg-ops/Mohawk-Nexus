@@ -1,36 +1,16 @@
 #!/usr/bin/env python3
-<<<<<<< HEAD
-from http.server import BaseHTTPRequestHandler, HTTPServer
-=======
 import atexit
 from concurrent.futures import ThreadPoolExecutor
 import copy
 from http.server import HTTPServer
->>>>>>> origin/main
 import json
 import os
 from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
+import threading
 import time
 
 try:
-<<<<<<< HEAD
-    from fl.common import env_int, env_bool, read_config_file
-except ModuleNotFoundError:
-    from common import env_int, env_bool, read_config_file
-
-
-def _env_int(name, default):
-    return env_int(name, default)
-
-
-def _env_bool(name, default):
-    return env_bool(name, default)
-
-
-def _read_config_file(path):
-    return read_config_file(path)
-=======
     from fl import common
 except ImportError:
     import common
@@ -39,7 +19,6 @@ except ImportError:
 _env_int = common.env_int
 _env_bool = common.env_bool
 _read_config_file = common.read_config_file
->>>>>>> origin/main
 
 
 def _load_config():
@@ -73,17 +52,6 @@ UPDATES = Counter('fl_updates_total', 'Total updates received')
 ROUNDS = Counter('fl_rounds_aggregated_total', 'Total rounds aggregated')
 GLOBAL = Gauge('fl_global_value', 'Last aggregated global value')
 
-<<<<<<< HEAD
-class Handler(BaseHTTPRequestHandler):
-    def _send(self, code=200, data=None):
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.end_headers()
-        if data is None:
-            data = {}
-        self.wfile.write(json.dumps(data).encode())
-
-=======
 # In-memory state cache & lock
 _state_lock = threading.Lock()
 _STATE_CACHE = None
@@ -146,7 +114,6 @@ def _cleanup():
 
 
 class Handler(common.BaseJSONHandler):
->>>>>>> origin/main
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
         path = self.path.split('?')[0]
@@ -199,10 +166,11 @@ class Handler(common.BaseJSONHandler):
                 self._send(500, {'error': str(e)})
             return
         # return current round
-        if STATE.exists():
-            content = json.loads(STATE.read_text())
-        else:
-            content = {'round': 0, 'global': 0.0}
+        with _state_lock:
+            if not _state_exists:
+                content = {'round': 0, 'global': 0.0}
+            else:
+                content = copy.deepcopy(_get_state())
         self._send(200, content)
 
     def do_POST(self):
@@ -215,21 +183,25 @@ class Handler(common.BaseJSONHandler):
             self._send(400, {'error': 'invalid json'})
             return
         # append update
-        if STATE.exists():
-            content = json.loads(STATE.read_text())
-        else:
-            content = {'round': 0, 'updates': []}
-        content.setdefault('updates', []).append(payload.get('value', 0.0))
-        UPDATES.inc()
-        # simple aggregation when 2 updates collected
-        if len(content['updates']) >= 2:
-            vals = content['updates']
-            agg = sum(vals) / len(vals)
-            content = {'round': content.get('round', 0) + 1, 'global': agg, 'updates': []}
-            ROUNDS.inc()
-            GLOBAL.set(agg)
-        STATE.write_text(json.dumps(content))
-        self._send(200, content)
+        with _state_lock:
+            content = _get_state()
+            content.setdefault('updates', []).append(payload.get('value', 0.0))
+            UPDATES.inc()
+            # simple aggregation when 2 updates collected
+            if len(content['updates']) >= 2:
+                vals = content['updates']
+                agg = sum(vals) / len(vals)
+                content = {'round': content.get('round', 0) + 1, 'global': agg, 'updates': []}
+                global _STATE_CACHE
+                _STATE_CACHE = content
+                ROUNDS.inc()
+                GLOBAL.set(agg)
+            global _state_exists
+            _state_exists = True
+            _save_state_async_locked()
+            response_content = copy.deepcopy(content)
+        self._send(200, response_content)
+
 
 def main():
     if CONFIG["metrics_enabled"]:
@@ -242,6 +214,7 @@ def main():
         CONFIG["metrics_port"] if CONFIG["metrics_enabled"] else 'disabled',
     )
     server.serve_forever()
+
 
 if __name__ == '__main__':
     main()
