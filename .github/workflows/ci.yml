@@ -24,7 +24,7 @@ jobs:
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests prometheus_client pyyaml pyinstrument
 
       - name: Run Python unit tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
