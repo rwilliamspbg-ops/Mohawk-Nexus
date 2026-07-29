@@ -120,6 +120,7 @@
         }
 
         .badge {
+            position: relative;
             padding: 10px 25px;
             border-radius: 50px;
             font-size: 0.9rem;
@@ -137,6 +138,36 @@
         .badge:hover,
         .badge:focus-visible {
             transform: translateY(-2px);
+        }
+
+        /* Badge Tooltip Style */
+        .badge::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            z-index: 100;
+        }
+
+        .badge:hover::after,
+        .badge:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
         }
 
         .badge-security {
@@ -1246,9 +1277,9 @@
             </p>
             
             <div class="component-badges">
-                <button class="badge badge-security pulse-badge" data-target="security-section" aria-label="Jump to Quantum-Ready Security details"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
-                <button class="badge badge-performance pulse-badge" data-target="performance-section" aria-label="Jump to Performance Benchmarks details"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
-                <button class="badge badge-environment pulse-badge" data-target="environment-section" aria-label="Jump to Environmental Efficiency details"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
+                <button id="badge-security" class="badge badge-security pulse-badge" data-target="security-section" data-tooltip="Jump to Security (S)" aria-label="Jump to Quantum-Ready Security details (S)"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
+                <button id="badge-performance" class="badge badge-performance pulse-badge" data-target="performance-section" data-tooltip="Jump to Benchmarks (B)" aria-label="Jump to Performance Benchmarks details (B)"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
+                <button id="badge-environment" class="badge badge-environment pulse-badge" data-target="environment-section" data-tooltip="Jump to Environment (E)" aria-label="Jump to Environmental Efficiency details (E)"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
             </div>
 
             <div class="btn-container">
@@ -1654,6 +1685,18 @@
                     <kbd class="shortcuts-key" data-key="C">C</kbd>
                 </li>
                 <li class="shortcuts-item">
+                    <span class="shortcuts-desc">Jump to Security</span>
+                    <kbd class="shortcuts-key" data-key="S">S</kbd>
+                </li>
+                <li class="shortcuts-item">
+                    <span class="shortcuts-desc">Jump to Benchmarks</span>
+                    <kbd class="shortcuts-key" data-key="B">B</kbd>
+                </li>
+                <li class="shortcuts-item">
+                    <span class="shortcuts-desc">Jump to Environment</span>
+                    <kbd class="shortcuts-key" data-key="E">E</kbd>
+                </li>
+                <li class="shortcuts-item">
                     <span class="shortcuts-desc">Toggle this helper</span>
                     <kbd class="shortcuts-key" data-key="K">K</kbd>
                 </li>
@@ -1910,6 +1953,27 @@
                             e.preventDefault();
                             triggerVisualFeedback('C', 'copy-btn');
                             copyBtn.click();
+                        }
+                    } else if ((e.key === 's' || e.key === 'S') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const badge = document.getElementById('badge-security');
+                        if (badge) {
+                            e.preventDefault();
+                            triggerVisualFeedback('S', 'badge-security');
+                            badge.click();
+                        }
+                    } else if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const badge = document.getElementById('badge-performance');
+                        if (badge) {
+                            e.preventDefault();
+                            triggerVisualFeedback('B', 'badge-performance');
+                            badge.click();
+                        }
+                    } else if ((e.key === 'e' || e.key === 'E') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const badge = document.getElementById('badge-environment');
+                        if (badge) {
+                            e.preventDefault();
+                            triggerVisualFeedback('E', 'badge-environment');
+                            badge.click();
                         }
                     } else if ((e.key === 'k' || e.key === 'K') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const shortcutsBtn = document.getElementById('shortcuts-btn');
