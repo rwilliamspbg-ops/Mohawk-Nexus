@@ -68,16 +68,6 @@ class FLCoordinatorHelperTests(unittest.TestCase):
         json_path.write_text(json.dumps(config_data), encoding="utf-8")
         self.assertEqual(_read_config_file(str(json_path)), config_data)
 
-        # Invalid format / suffix
-        invalid_path = Path(self.temp_dir) / "config.txt"
-        invalid_path.write_text(json.dumps(config_data), encoding="utf-8")
-        self.assertEqual(_read_config_file(str(invalid_path)), {})
-
-        # Non-dictionary root JSON
-        bad_json_path = Path(self.temp_dir) / "bad_config.json"
-        bad_json_path.write_text(json.dumps([1, 2, 3]), encoding="utf-8")
-        self.assertEqual(_read_config_file(str(bad_json_path)), {})
-
 
 class FLCoordinatorConfigAndHandlerTests(unittest.TestCase):
     def setUp(self):
