@@ -2,7 +2,7 @@
 import atexit
 from concurrent.futures import ThreadPoolExecutor
 import copy
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer
 import json
 import os
 from pathlib import Path
@@ -15,9 +15,14 @@ try:
 except ImportError:
     import common
 
+# Alias functions for backward-compatibility with tests
+_env_int = common.env_int
+_env_bool = common.env_bool
+_read_config_file = common.read_config_file
+
 
 def _load_config():
-    file_cfg = common.read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
+    file_cfg = _read_config_file(os.environ.get("FL_CONFIG_FILE", ""))
     server_cfg = file_cfg.get("server", {}) if isinstance(file_cfg.get("server", {}), dict) else {}
     metrics_cfg = file_cfg.get("metrics", {}) if isinstance(file_cfg.get("metrics", {}), dict) else {}
     profiling_cfg = file_cfg.get("profiling", {}) if isinstance(file_cfg.get("profiling", {}), dict) else {}
@@ -25,11 +30,11 @@ def _load_config():
 
     return {
         "host": os.environ.get("FL_SERVER_HOST", str(server_cfg.get("host", "0.0.0.0"))),
-        "port": common.env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
-        "metrics_enabled": common.env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
-        "metrics_port": common.env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
-        "profiling_enabled": common.env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
-        "default_profile_duration_seconds": common.env_int(
+        "port": _env_int("FL_SERVER_PORT", int(server_cfg.get("port", 9000))),
+        "metrics_enabled": _env_bool("FL_METRICS_ENABLED", bool(metrics_cfg.get("enabled", True))),
+        "metrics_port": _env_int("FL_METRICS_PORT", int(metrics_cfg.get("port", 9001))),
+        "profiling_enabled": _env_bool("FL_PROFILING_ENABLED", bool(profiling_cfg.get("enabled", True))),
+        "default_profile_duration_seconds": _env_int(
             "FL_PROFILING_DEFAULT_DURATION_SECONDS",
             int(profiling_cfg.get("default_duration_seconds", 2)),
         ),
@@ -98,20 +103,17 @@ def _save_state_async_locked():
     _write_executor.submit(do_write, data_str)
 
 
+def _flush_state():
+    """Wait for all pending writes to complete (primarily for tests)."""
+    _write_executor.submit(lambda: None).result()
+
+
 @atexit.register
 def _cleanup():
     _write_executor.shutdown(wait=True)
 
 
-class Handler(BaseHTTPRequestHandler):
-    def _send(self, code=200, data=None):
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.end_headers()
-        if data is None:
-            data = {}
-        self.wfile.write(json.dumps(data).encode())
-
+class Handler(common.BaseJSONHandler):
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
         path = self.path.split('?')[0]
