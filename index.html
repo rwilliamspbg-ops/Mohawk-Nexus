@@ -182,6 +182,11 @@
             background: rgba(0, 255, 136, 0.2);
         }
 
+        .badge-security:focus-visible {
+            outline: 3px solid var(--security-green);
+            outline-offset: 4px;
+        }
+
         .badge-performance {
             background: rgba(255, 107, 53, 0.1);
             color: var(--performance-orange);
@@ -194,6 +199,11 @@
             background: rgba(255, 107, 53, 0.2);
         }
 
+        .badge-performance:focus-visible {
+            outline: 3px solid var(--performance-orange);
+            outline-offset: 4px;
+        }
+
         .badge-environment {
             background: rgba(0, 217, 255, 0.1);
             color: var(--environment-blue);
@@ -204,6 +214,11 @@
         .badge-environment:focus-visible {
             box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
             background: rgba(0, 217, 255, 0.2);
+        }
+
+        .badge-environment:focus-visible {
+            outline: 3px solid var(--environment-blue);
+            outline-offset: 4px;
         }
 
         /* Features Grid */
@@ -252,6 +267,14 @@
             background: linear-gradient(135deg, rgba(0, 255, 204, 0.05), rgba(0, 119, 255, 0.05));
             border-radius: 20px;
             border: 1px solid rgba(0, 255, 204, 0.2);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .performance-section:focus-visible,
+        .performance-section:focus {
+            outline: none;
+            border-color: var(--performance-orange);
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.35);
         }
 
         .performance-section h2 {
@@ -311,6 +334,14 @@
             background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 119, 255, 0.05));
             border-radius: 20px;
             border: 1px solid rgba(0, 255, 136, 0.2);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .security-section:focus-visible,
+        .security-section:focus {
+            outline: none;
+            border-color: var(--security-green);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.35);
         }
 
         .security-section h2 {
@@ -359,6 +390,14 @@
             background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(0, 119, 255, 0.05));
             border-radius: 20px;
             border: 1px solid rgba(0, 217, 255, 0.2);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .environment-section:focus-visible,
+        .environment-section:focus {
+            outline: none;
+            border-color: var(--environment-blue);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.35);
         }
 
         .environment-section h2 {
