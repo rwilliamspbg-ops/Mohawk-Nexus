@@ -889,6 +889,11 @@
         }
 
         /* Keyboard Focus & Screen Reader Helpers */
+        #main-content:focus,
+        #main-content:focus-visible {
+            outline: none;
+        }
+
         :focus-visible {
             outline: 3px solid var(--primary);
             outline-offset: 4px;
@@ -1252,6 +1257,25 @@
             opacity: 1;
         }
 
+        /* Scroll Progress Indicator */
+        #scroll-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(3, 4, 11, 0.5);
+            z-index: 1001;
+        }
+
+        #scroll-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            box-shadow: 0 0 8px var(--primary);
+            transition: width 0.1s ease-out;
+        }
+
         /* Respect prefers-reduced-motion user preference */
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -1299,6 +1323,11 @@
     </style>
 </head>
 <body tabindex="-1">
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress-container" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Page scroll progress">
+        <div id="scroll-progress-bar"></div>
+    </div>
+
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Dynamic Neural Network Background -->
@@ -1375,7 +1404,7 @@
             </div>
         </header>
 
-        <main id="main-content">
+        <main id="main-content" tabindex="-1">
             <!-- Architecture Overview -->
             <section class="architecture-section">
                 <h2>Trusted Three-Tier Architecture</h2>
@@ -1944,6 +1973,18 @@
                         backToTopBtn.classList.add('visible');
                     } else {
                         backToTopBtn.classList.remove('visible');
+                    }
+
+                    // Scroll progress bar update
+                    const scrollProgressContainer = document.getElementById('scroll-progress-container');
+                    const scrollProgressBar = document.getElementById('scroll-progress-bar');
+                    if (scrollProgressBar && scrollProgressContainer) {
+                        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+                        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+                        const roundedScrolled = Math.round(scrolled);
+                        scrollProgressBar.style.width = scrolled + "%";
+                        scrollProgressContainer.setAttribute('aria-valuenow', roundedScrolled);
                     }
                 });
 
