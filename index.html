@@ -1144,6 +1144,11 @@
             border-radius: 4px;
         }
 
+        .shortcuts-panel:focus,
+        .shortcuts-panel:focus-visible {
+            outline: none;
+        }
+
         .shortcuts-panel {
             position: fixed;
             bottom: 105px;
@@ -1817,7 +1822,10 @@
         <!-- Dynamic Neural Network Background -->
         <script>
             // Global animation play state
-            window.isAnimationPlaying = true;
+            window.isAnimationPlaying = localStorage.getItem('mohawk-animation-playing') !== 'false';
+            if (!window.isAnimationPlaying) {
+                document.body.classList.add('animations-paused');
+            }
 
             // Global toast helper
             let toastTimeout = null;
@@ -1936,13 +1944,25 @@
                 // Play / Pause button functionality
                 const playPauseBtn = document.getElementById('play-pause-btn');
                 if (playPauseBtn) {
-                    playPauseBtn.setAttribute('data-tooltip', 'Pause background animation (P)');
+                    const iconPause = playPauseBtn.querySelector('.icon-pause');
+                    const iconPlay = playPauseBtn.querySelector('.icon-play');
+
+                    // Initialize button state dynamically based on persisted setting
+                    if (window.isAnimationPlaying) {
+                        playPauseBtn.setAttribute('aria-label', 'Pause background animation (P)');
+                        playPauseBtn.setAttribute('data-tooltip', 'Pause background animation (P)');
+                        if (iconPause) iconPause.style.display = 'block';
+                        if (iconPlay) iconPlay.style.display = 'none';
+                    } else {
+                        playPauseBtn.setAttribute('aria-label', 'Play background animation (P)');
+                        playPauseBtn.setAttribute('data-tooltip', 'Play background animation (P)');
+                        if (iconPause) iconPause.style.display = 'none';
+                        if (iconPlay) iconPlay.style.display = 'block';
+                    }
 
                     playPauseBtn.addEventListener('click', function() {
                         window.isAnimationPlaying = !window.isAnimationPlaying;
-
-                        const iconPause = playPauseBtn.querySelector('.icon-pause');
-                        const iconPlay = playPauseBtn.querySelector('.icon-play');
+                        localStorage.setItem('mohawk-animation-playing', window.isAnimationPlaying);
 
                         if (window.isAnimationPlaying) {
                             document.body.classList.remove('animations-paused');
