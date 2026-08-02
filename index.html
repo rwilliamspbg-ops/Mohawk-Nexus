@@ -187,6 +187,15 @@
             outline-offset: 4px;
         }
 
+        .badge-security::after {
+            border-color: var(--security-green) !important;
+        }
+
+        .badge-security.btn-shortcut-active {
+            box-shadow: 0 0 30px var(--security-green) !important;
+            border-color: var(--security-green) !important;
+        }
+
         .badge-performance {
             background: rgba(255, 107, 53, 0.1);
             color: var(--performance-orange);
@@ -204,6 +213,15 @@
             outline-offset: 4px;
         }
 
+        .badge-performance::after {
+            border-color: var(--performance-orange) !important;
+        }
+
+        .badge-performance.btn-shortcut-active {
+            box-shadow: 0 0 30px var(--performance-orange) !important;
+            border-color: var(--performance-orange) !important;
+        }
+
         .badge-environment {
             background: rgba(0, 217, 255, 0.1);
             color: var(--environment-blue);
@@ -219,6 +237,15 @@
         .badge-environment:focus-visible {
             outline: 3px solid var(--environment-blue);
             outline-offset: 4px;
+        }
+
+        .badge-environment::after {
+            border-color: var(--environment-blue) !important;
+        }
+
+        .badge-environment.btn-shortcut-active {
+            box-shadow: 0 0 30px var(--environment-blue) !important;
+            border-color: var(--environment-blue) !important;
         }
 
         /* Features Grid */
@@ -1197,6 +1224,14 @@
             justify-content: space-between;
             align-items: center;
             font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .shortcuts-item:hover {
+            background-color: rgba(0, 255, 204, 0.08);
+            transform: translateX(4px);
         }
 
         .shortcuts-key {
@@ -1209,6 +1244,14 @@
             font-weight: bold;
             font-size: 0.8rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .shortcuts-item:hover .shortcuts-key {
+            transform: scale(1.15);
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
+            background: rgba(0, 255, 204, 0.2);
+            border-color: var(--primary);
         }
 
         .shortcuts-desc {
