@@ -545,7 +545,6 @@
 
         .tag:hover {
             background: rgba(0, 119, 255, 0.2);
-            transform: translateY(-3px);
         }
 
         /* Comparison Table */
@@ -610,15 +609,16 @@
             border-bottom: 1px solid rgba(0, 255, 204, 0.1);
         }
 
-        .comparison-table th {
+        .comparison-table thead th {
             background: rgba(0, 255, 204, 0.1);
             color: var(--primary);
             font-size: 1.1rem;
         }
 
-        .comparison-table td:first-child {
+        .comparison-table tbody th[scope="row"] {
             font-weight: 600;
             color: #d1d5db;
+            text-align: left;
         }
 
         .comparison-table tr:last-child td,
@@ -982,6 +982,14 @@
             transform: translateY(-3px);
         }
 
+        .back-to-top:focus-visible {
+            color: #ffffff;
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--dark-bg), 0 0 0 7px var(--secondary), 0 0 25px rgba(0, 119, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
         .back-to-top:active {
             transform: translateY(0);
         }
@@ -1037,11 +1045,18 @@
             transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .shortcuts-toggle:hover,
-        .shortcuts-toggle:focus-visible {
+        .shortcuts-toggle:hover {
             color: #ffffff;
             border-color: var(--secondary);
             box-shadow: 0 0 25px rgba(0, 119, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .shortcuts-toggle:focus-visible {
+            color: #ffffff;
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--dark-bg), 0 0 0 7px var(--secondary), 0 0 25px rgba(0, 119, 255, 0.6);
             transform: translateY(-3px);
         }
 
@@ -1104,11 +1119,18 @@
             transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .play-pause-toggle:hover,
-        .play-pause-toggle:focus-visible {
+        .play-pause-toggle:hover {
             color: #ffffff;
             border-color: var(--secondary);
             box-shadow: 0 0 25px rgba(0, 119, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .play-pause-toggle:focus-visible {
+            color: #ffffff;
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--dark-bg), 0 0 0 7px var(--secondary), 0 0 25px rgba(0, 119, 255, 0.6);
             transform: translateY(-3px);
         }
 
@@ -1665,51 +1687,51 @@
                 <table class="comparison-table">
                     <thead>
                     <tr>
-                        <th>Feature</th>
-                        <th>NVIDIA FLARE</th>
-                        <th>PySyft</th>
-                        <th><strong>Sovereign-Mohawk</strong></th>
+                        <th scope="col">Feature</th>
+                        <th scope="col">NVIDIA FLARE</th>
+                        <th scope="col">PySyft</th>
+                        <th scope="col"><strong>Sovereign-Mohawk</strong></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Lean Formalization + CI Gate</td>
+                        <th scope="row">Lean Formalization + CI Gate</th>
                         <td>Not presented</td>
                         <td>Not presented</td>
                         <td><strong style="color: var(--primary);"><span aria-hidden="true">✅</span> Yes (6 formal properties)</strong></td>
                     </tr>
                     <tr>
-                        <td>Byzantine Resilience Guarantee</td>
+                        <th scope="row">Byzantine Resilience Guarantee</th>
                         <td>No published guarantee</td>
                         <td>No published guarantee</td>
                         <td><strong style="color: var(--primary);"><span aria-hidden="true">✅</span> 5/9 theorem guarantee</strong></td>
                     </tr>
                     <tr>
-                        <td>Target Scale Envelope</td>
+                        <th scope="row">Target Scale Envelope</th>
                         <td>Enterprise deployments</td>
                         <td>Research workflows</td>
                         <td><strong style="color: var(--primary);">10M-node architecture</strong></td>
                     </tr>
                     <tr>
-                        <td>PQC Enforcement (Default)</td>
+                        <th scope="row">PQC Enforcement (Default)</th>
                         <td>No</td>
                         <td>No</td>
                         <td><strong style="color: var(--security-green);"><span aria-hidden="true">✅</span> Hybrid x25519-mlkem768</strong></td>
                     </tr>
                     <tr>
-                        <td>Data Processing Speed</td>
+                        <th scope="row">Data Processing Speed</th>
                         <td>Standard</td>
                         <td>Research-focused</td>
                         <td><strong style="color: var(--performance-orange);">2.49 Mpps (2× faster)</strong></td>
                     </tr>
                     <tr>
-                        <td>Formal Byzantine Checks</td>
+                        <th scope="row">Formal Byzantine Checks</th>
                         <td>Not available</td>
                         <td>Not available</td>
                         <td><strong style="color: var(--security-green);"><span aria-hidden="true">✅</span> Fail-closed in aggregator</strong></td>
                     </tr>
                     <tr>
-                        <td>Operational Readiness Gates</td>
+                        <th scope="row">Operational Readiness Gates</th>
                         <td>Platform-dependent</td>
                         <td>Manual validation</td>
                         <td><strong style="color: var(--security-green);"><span aria-hidden="true">✅</span> One-click readiness + chaos gates</strong></td>
