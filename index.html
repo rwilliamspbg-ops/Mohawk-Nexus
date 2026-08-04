@@ -1249,11 +1249,23 @@
             padding: 4px 8px;
             border-radius: 6px;
             transition: background-color 0.2s ease, transform 0.2s ease;
+            background: transparent;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
         }
 
-        .shortcuts-item:hover {
+        .shortcuts-item:hover,
+        .shortcuts-item:focus-visible {
             background-color: rgba(0, 255, 204, 0.08);
             transform: translateX(4px);
+            outline: none;
+        }
+
+        .shortcuts-item:focus-visible {
+            box-shadow: inset 0 0 0 1.5px var(--primary);
         }
 
         .shortcuts-key {
@@ -1269,7 +1281,8 @@
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .shortcuts-item:hover .shortcuts-key {
+        .shortcuts-item:hover .shortcuts-key,
+        .shortcuts-item:focus-visible .shortcuts-key {
             transform: scale(1.15);
             box-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
             background: rgba(0, 255, 204, 0.2);
@@ -1814,37 +1827,53 @@
                 Keyboard Shortcuts
             </h3>
             <ul class="shortcuts-list">
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Scroll to top</span>
-                    <kbd class="shortcuts-key" data-key="T">T</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="T" aria-label="Scroll to top (T)">
+                        <span class="shortcuts-desc">Scroll to top</span>
+                        <kbd class="shortcuts-key" data-key="T">T</kbd>
+                    </button>
                 </li>
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Copy selected command</span>
-                    <kbd class="shortcuts-key" data-key="C">C</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="C" aria-label="Copy selected command (C)">
+                        <span class="shortcuts-desc">Copy selected command</span>
+                        <kbd class="shortcuts-key" data-key="C">C</kbd>
+                    </button>
                 </li>
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Jump to Security</span>
-                    <kbd class="shortcuts-key" data-key="S">S</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="S" aria-label="Jump to Security (S)">
+                        <span class="shortcuts-desc">Jump to Security</span>
+                        <kbd class="shortcuts-key" data-key="S">S</kbd>
+                    </button>
                 </li>
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Jump to Benchmarks</span>
-                    <kbd class="shortcuts-key" data-key="B">B</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="B" aria-label="Jump to Benchmarks (B)">
+                        <span class="shortcuts-desc">Jump to Benchmarks</span>
+                        <kbd class="shortcuts-key" data-key="B">B</kbd>
+                    </button>
                 </li>
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Jump to Environment</span>
-                    <kbd class="shortcuts-key" data-key="E">E</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="E" aria-label="Jump to Environment (E)">
+                        <span class="shortcuts-desc">Jump to Environment</span>
+                        <kbd class="shortcuts-key" data-key="E">E</kbd>
+                    </button>
                 </li>
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Toggle this helper</span>
-                    <kbd class="shortcuts-key" data-key="K">K</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="K" aria-label="Toggle this helper (K)">
+                        <span class="shortcuts-desc">Toggle this helper</span>
+                        <kbd class="shortcuts-key" data-key="K">K</kbd>
+                    </button>
                 </li>
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Toggle animation</span>
-                    <kbd class="shortcuts-key" data-key="P">P</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="P" aria-label="Toggle animation (P)">
+                        <span class="shortcuts-desc">Toggle animation</span>
+                        <kbd class="shortcuts-key" data-key="P">P</kbd>
+                    </button>
                 </li>
-                <li class="shortcuts-item">
-                    <span class="shortcuts-desc">Close helper</span>
-                    <kbd class="shortcuts-key" data-key="Esc">Esc</kbd>
+                <li>
+                    <button class="shortcuts-item" data-action="Esc" aria-label="Close helper (Esc)">
+                        <span class="shortcuts-desc">Close helper</span>
+                        <kbd class="shortcuts-key" data-key="Esc">Esc</kbd>
+                    </button>
                 </li>
             </ul>
         </div>
@@ -2208,6 +2237,39 @@
                                 togglePanel();
                             }
                         }
+                    });
+
+                    // Add click listeners to inner interactive items
+                    const items = shortcutsPanel.querySelectorAll('.shortcuts-item');
+                    items.forEach(item => {
+                        item.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const action = this.getAttribute('data-action');
+                            if (action === 'T') {
+                                const btn = document.getElementById('back-to-top');
+                                if (btn) btn.click();
+                            } else if (action === 'C') {
+                                const btn = document.getElementById('copy-btn');
+                                if (btn) btn.click();
+                            } else if (action === 'S') {
+                                const btn = document.getElementById('badge-security');
+                                if (btn) btn.click();
+                            } else if (action === 'B') {
+                                const btn = document.getElementById('badge-performance');
+                                if (btn) btn.click();
+                            } else if (action === 'E') {
+                                const btn = document.getElementById('badge-environment');
+                                if (btn) btn.click();
+                            } else if (action === 'K') {
+                                shortcutsBtn.click();
+                                shortcutsBtn.focus();
+                            } else if (action === 'P') {
+                                const btn = document.getElementById('play-pause-btn');
+                                if (btn && window.getComputedStyle(btn).display !== 'none') btn.click();
+                            } else if (action === 'Esc') {
+                                if (closeShortcutsBtn) closeShortcutsBtn.click();
+                            }
+                        });
                     });
                 }
             });
