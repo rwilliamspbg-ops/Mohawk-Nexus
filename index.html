@@ -177,7 +177,8 @@
         }
 
         .badge-security:hover,
-        .badge-security:focus-visible {
+        .badge-security:focus-visible,
+        .badge-security.active {
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
             background: rgba(0, 255, 136, 0.2);
         }
@@ -203,7 +204,8 @@
         }
 
         .badge-performance:hover,
-        .badge-performance:focus-visible {
+        .badge-performance:focus-visible,
+        .badge-performance.active {
             box-shadow: 0 0 15px rgba(255, 107, 53, 0.4);
             background: rgba(255, 107, 53, 0.2);
         }
@@ -229,7 +231,8 @@
         }
 
         .badge-environment:hover,
-        .badge-environment:focus-visible {
+        .badge-environment:focus-visible,
+        .badge-environment.active {
             box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
             background: rgba(0, 217, 255, 0.2);
         }
@@ -2274,7 +2277,7 @@
                 }
             });
 
-            // Interactive Badge Scrolling functionality
+            // Interactive Badge Scrolling functionality & Scroll Spy
             document.addEventListener('DOMContentLoaded', function() {
                 const badges = document.querySelectorAll('.badge[data-target]');
                 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -2295,6 +2298,45 @@
                         }
                     });
                 });
+
+                // Scroll Spy with IntersectionObserver
+                if ('IntersectionObserver' in window && !prefersReducedMotion.matches) {
+                    const sections = Array.from(badges).map(badge => document.getElementById(badge.getAttribute('data-target'))).filter(Boolean);
+
+                    const observerOptions = {
+                        root: null,
+                        rootMargin: '-20% 0px -60% 0px',
+                        threshold: 0
+                    };
+
+                    const observer = new IntersectionObserver(entries => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                badges.forEach(badge => {
+                                    if (badge.getAttribute('data-target') === entry.target.id) {
+                                        badge.classList.add('active');
+                                        badge.setAttribute('aria-current', 'true');
+                                    } else {
+                                        badge.classList.remove('active');
+                                        badge.removeAttribute('aria-current');
+                                    }
+                                });
+                            }
+                        });
+                    }, observerOptions);
+
+                    sections.forEach(section => observer.observe(section));
+
+                    // Clear active status if scrolled to the top
+                    window.addEventListener('scroll', function() {
+                        if (window.scrollY < 200) {
+                            badges.forEach(badge => {
+                                badge.classList.remove('active');
+                                badge.removeAttribute('aria-current');
+                            });
+                        }
+                    });
+                }
             });
 
             // Clipboard Copy functionality
