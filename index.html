@@ -796,15 +796,23 @@
             flex-shrink: 0;
         }
 
-        .copy-btn:hover {
+        .copy-btn:hover:not(:disabled) {
             background: rgba(0, 119, 255, 0.25);
             border-color: var(--primary);
             color: var(--primary);
         }
 
-        .copy-btn:focus-visible {
+        .copy-btn:focus-visible:not(:disabled) {
             outline: 2px solid var(--primary);
             outline-offset: 2px;
+        }
+
+        .copy-btn:disabled {
+            color: var(--security-green);
+            border-color: rgba(0, 255, 136, 0.3);
+            background: rgba(0, 255, 136, 0.05);
+            cursor: not-allowed;
+            opacity: 0.8;
         }
 
         /* Copy Button Tooltip Style */
@@ -839,8 +847,8 @@
             color: #d1d5db;
         }
 
-        .copy-btn:hover::after,
-        .copy-btn:focus-visible::after {
+        .copy-btn:hover:not(:disabled)::after,
+        .copy-btn:focus-visible:not(:disabled)::after {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -2383,6 +2391,7 @@
                             const originalLabel = copyBtn.getAttribute('aria-label');
                             const originalTooltip = copyBtn.getAttribute('data-tooltip');
 
+                            copyBtn.disabled = true;
                             copyBtn.innerHTML = `
                                 <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="var(--security-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -2395,6 +2404,7 @@
                             window.showToast(`Command "$ ${commandText}" copied successfully!`);
 
                             setTimeout(() => {
+                                copyBtn.disabled = false;
                                 copyBtn.innerHTML = originalHTML;
                                 copyBtn.setAttribute('aria-label', originalLabel);
                                 copyBtn.setAttribute('data-tooltip', originalTooltip);
