@@ -735,6 +735,16 @@
             box-shadow: 0 4px 20px rgba(0, 255, 204, 0.15);
         }
 
+        .command-container.command-success {
+            border-color: var(--security-green) !important;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4) !important;
+        }
+
+        .command-container.btn-shortcut-active {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4) !important;
+        }
+
         .command-text {
             color: #d1d5db;
             text-align: left;
@@ -1829,7 +1839,7 @@
 
         <!-- Keyboard Shortcuts Panel -->
         <div id="shortcuts-panel" class="shortcuts-panel" role="dialog" aria-modal="false" aria-label="Keyboard Shortcuts" aria-hidden="true" tabindex="-1">
-            <button id="close-shortcuts-btn" class="close-shortcuts-btn" aria-label="Close shortcuts panel">&times;</button>
+            <button id="close-shortcuts-btn" class="close-shortcuts-btn" type="button" aria-label="Close shortcuts panel"><span aria-hidden="true">&times;</span></button>
             <h3>
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
@@ -1850,6 +1860,12 @@
                     <button class="shortcuts-item" data-action="T" aria-label="Scroll to top (T)">
                         <span class="shortcuts-desc">Scroll to top</span>
                         <kbd class="shortcuts-key" data-key="T">T</kbd>
+                    </button>
+                </li>
+                <li>
+                    <button class="shortcuts-item" data-action="M" aria-label="Focus Makefile command dropdown (M)">
+                        <span class="shortcuts-desc">Focus command dropdown</span>
+                        <kbd class="shortcuts-key" data-key="M">M</kbd>
                     </button>
                 </li>
                 <li>
@@ -2142,10 +2158,18 @@
                     }
                     // Flash target button
                     if (buttonId) {
-                        const btn = document.getElementById(buttonId);
-                        if (btn) {
-                            btn.classList.add('btn-shortcut-active');
-                            setTimeout(() => btn.classList.remove('btn-shortcut-active'), 150);
+                        if (buttonId === 'command-select') {
+                            const container = document.querySelector('.command-container');
+                            if (container) {
+                                container.classList.add('btn-shortcut-active');
+                                setTimeout(() => container.classList.remove('btn-shortcut-active'), 150);
+                            }
+                        } else {
+                            const btn = document.getElementById(buttonId);
+                            if (btn) {
+                                btn.classList.add('btn-shortcut-active');
+                                setTimeout(() => btn.classList.remove('btn-shortcut-active'), 150);
+                            }
                         }
                     }
                 }
@@ -2156,7 +2180,17 @@
                     const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT' || activeEl.isContentEditable);
                     if (isInput) return;
 
-                    if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                    if ((e.key === 'm' || e.key === 'M') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const selectEl = document.getElementById('command-select');
+                        if (selectEl) {
+                            e.preventDefault();
+                            if (typeof window.closeShortcutsPanel === 'function') {
+                                window.closeShortcutsPanel();
+                            }
+                            triggerVisualFeedback('M', 'command-select');
+                            selectEl.focus();
+                        }
+                    } else if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         e.preventDefault();
                         if (typeof window.closeShortcutsPanel === 'function') {
                             window.closeShortcutsPanel();
@@ -2291,6 +2325,13 @@
                                 closePanel();
                                 const btn = document.getElementById('back-to-top');
                                 if (btn) btn.click();
+                            } else if (action === 'M') {
+                                closePanel();
+                                const selectEl = document.getElementById('command-select');
+                                if (selectEl) {
+                                    triggerVisualFeedback('M', 'command-select');
+                                    selectEl.focus();
+                                }
                             } else if (action === 'C') {
                                 const btn = document.getElementById('copy-btn');
                                 if (btn) btn.click();
@@ -2429,8 +2470,12 @@
                             const originalHTML = copyBtn.innerHTML;
                             const originalLabel = copyBtn.getAttribute('aria-label');
                             const originalTooltip = copyBtn.getAttribute('data-tooltip');
+                            const container = document.querySelector('.command-container');
 
                             copyBtn.disabled = true;
+                            if (container) {
+                                container.classList.add('command-success');
+                            }
                             copyBtn.innerHTML = `
                                 <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="var(--security-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -2444,6 +2489,9 @@
 
                             setTimeout(() => {
                                 copyBtn.disabled = false;
+                                if (container) {
+                                    container.classList.remove('command-success');
+                                }
                                 copyBtn.innerHTML = originalHTML;
                                 copyBtn.setAttribute('aria-label', originalLabel);
                                 copyBtn.setAttribute('data-tooltip', originalTooltip);
