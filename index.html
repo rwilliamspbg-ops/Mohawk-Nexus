@@ -2442,10 +2442,28 @@
                     };
 
                     const commandDescEl = document.getElementById('command-desc');
+                    let copyTimeout = null;
+                    const originalHTML = copyBtn.innerHTML;
+
+                    function resetCopyState() {
+                        if (copyTimeout) {
+                            clearTimeout(copyTimeout);
+                            copyTimeout = null;
+                        }
+                        copyBtn.disabled = false;
+                        const container = document.querySelector('.command-container');
+                        if (container) {
+                            container.classList.remove('command-success');
+                        }
+                        copyBtn.innerHTML = originalHTML;
+                        feedbackEl.textContent = '';
+                    }
 
                     // Update copy button properties depending on selected option
                     function updateCopyBtnCues() {
                         const commandText = commandSelect.value;
+                        resetCopyState();
+
                         copyBtn.setAttribute('aria-label', `Copy selected command "${commandText}" to clipboard (C)`);
                         copyBtn.setAttribute('data-tooltip', `Copy "${commandText}" (C)`);
 
@@ -2466,10 +2484,11 @@
 
                     copyBtn.addEventListener('click', function() {
                         const commandText = commandSelect.value;
+                        if (copyTimeout) {
+                            clearTimeout(copyTimeout);
+                        }
+
                         navigator.clipboard.writeText(commandText).then(() => {
-                            const originalHTML = copyBtn.innerHTML;
-                            const originalLabel = copyBtn.getAttribute('aria-label');
-                            const originalTooltip = copyBtn.getAttribute('data-tooltip');
                             const container = document.querySelector('.command-container');
 
                             copyBtn.disabled = true;
@@ -2487,15 +2506,11 @@
                             feedbackEl.textContent = `Command ${commandText} copied to clipboard`;
                             window.showToast(`Command "$ ${commandText}" copied successfully!`);
 
-                            setTimeout(() => {
-                                copyBtn.disabled = false;
-                                if (container) {
-                                    container.classList.remove('command-success');
-                                }
-                                copyBtn.innerHTML = originalHTML;
-                                copyBtn.setAttribute('aria-label', originalLabel);
-                                copyBtn.setAttribute('data-tooltip', originalTooltip);
-                                feedbackEl.textContent = '';
+                            copyTimeout = setTimeout(() => {
+                                resetCopyState();
+                                const currentText = commandSelect.value;
+                                copyBtn.setAttribute('aria-label', `Copy selected command "${currentText}" to clipboard (C)`);
+                                copyBtn.setAttribute('data-tooltip', `Copy "${currentText}" (C)`);
                             }, 2000);
                         }).catch(err => {
                             console.error('Failed to copy command: ', err);
