@@ -1025,7 +1025,7 @@
 
         /* Tooltip style */
         .back-to-top::after {
-            content: "Scroll to top (T)";
+            content: attr(data-tooltip);
             position: absolute;
             bottom: 60px;
             right: 0;
@@ -1941,7 +1941,7 @@
         </button>
 
         <!-- Back to Top Button -->
-        <button id="back-to-top" class="back-to-top" aria-label="Back to Top">
+        <button id="back-to-top" class="back-to-top" aria-label="Back to Top" data-tooltip="Scroll to top (T)">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="19" x2="12" y2="5"></line>
                 <polyline points="5 12 12 5 19 12"></polyline>
@@ -2134,6 +2134,12 @@
                         const roundedScrolled = Math.round(scrolled);
                         scrollProgressBar.style.width = scrolled + "%";
                         scrollProgressContainer.setAttribute('aria-valuenow', roundedScrolled);
+
+                        // Update back-to-top dynamic cues with scroll progress
+                        if (backToTopBtn) {
+                            backToTopBtn.setAttribute('data-tooltip', `Scroll to top (T) • ${roundedScrolled}%`);
+                            backToTopBtn.setAttribute('aria-label', `Back to Top (${roundedScrolled}% scrolled)`);
+                        }
                     }
                 });
 
