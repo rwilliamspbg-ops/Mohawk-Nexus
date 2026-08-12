@@ -656,6 +656,7 @@
         }
 
         .btn {
+            position: relative;
             display: inline-block;
             padding: 16px 45px;
             font-size: 1.1rem;
@@ -690,6 +691,41 @@
             outline-offset: 4px;
             box-shadow: 0 0 25px var(--accent);
             transform: translateY(-3px);
+        }
+
+        /* Button Tooltips Style */
+        .btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 65px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 100;
+        }
+
+        .btn-secondary[data-tooltip]::after {
+            border-color: var(--accent) !important;
+        }
+
+        .btn[data-tooltip]:hover::after,
+        .btn[data-tooltip]:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
         }
 
         /* Command Copy Widget */
@@ -940,6 +976,11 @@
                 left: 16px;
                 width: calc(100% - 32px);
                 max-width: 280px;
+            }
+
+            /* Suppress button tooltips on mobile viewports for clean UI layout */
+            .btn[data-tooltip]::after {
+                display: none !important;
             }
         }
 
@@ -1492,7 +1533,7 @@
             </div>
 
             <div class="btn-container">
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Rust Datapath repository on GitHub">
                     Rust Datapath
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1501,7 +1542,7 @@
                     </svg>
                     <span class="sr-only">(opens in a new tab)</span>
                 </a>
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Go Control Plane repository on GitHub">
                     Go Control Plane
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1510,7 +1551,7 @@
                     </svg>
                     <span class="sr-only">(opens in a new tab)</span>
                 </a>
-                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Federated Learning repository on GitHub">
                     Federated Learning
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1821,7 +1862,7 @@
             </p>
             
             <div class="btn-container">
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Rust Datapath repository on GitHub">
                     Explore Rust Datapath
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1830,7 +1871,7 @@
                     </svg>
                     <span class="sr-only">(opens in a new tab)</span>
                 </a>
-                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn">
+                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn" data-tooltip="View Federated Learning repository on GitHub">
                     Get Started
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
