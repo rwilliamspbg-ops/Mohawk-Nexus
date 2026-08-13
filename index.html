@@ -141,7 +141,7 @@
         }
 
         /* Badge Tooltip Style */
-        .badge::after {
+        .badge[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
             bottom: 45px;
@@ -163,8 +163,8 @@
             z-index: 100;
         }
 
-        .badge:hover::after,
-        .badge:focus-visible::after {
+        .badge[data-tooltip]:hover::after,
+        .badge[data-tooltip]:focus-visible::after {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
@@ -188,7 +188,7 @@
             outline-offset: 4px;
         }
 
-        .badge-security::after {
+        .badge-security[data-tooltip]::after {
             border-color: var(--security-green) !important;
         }
 
@@ -215,7 +215,7 @@
             outline-offset: 4px;
         }
 
-        .badge-performance::after {
+        .badge-performance[data-tooltip]::after {
             border-color: var(--performance-orange) !important;
         }
 
@@ -242,7 +242,7 @@
             outline-offset: 4px;
         }
 
-        .badge-environment::after {
+        .badge-environment[data-tooltip]::after {
             border-color: var(--environment-blue) !important;
         }
 
@@ -881,7 +881,7 @@
             position: relative;
         }
 
-        .copy-btn::after {
+        .copy-btn[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
             bottom: 45px;
@@ -908,8 +908,8 @@
             color: #d1d5db;
         }
 
-        .copy-btn:hover:not(:disabled)::after,
-        .copy-btn:focus-visible:not(:disabled)::after {
+        .copy-btn[data-tooltip]:hover:not(:disabled)::after,
+        .copy-btn[data-tooltip]:focus-visible:not(:disabled)::after {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -1094,7 +1094,7 @@
         }
 
         /* Tooltip style */
-        .back-to-top::after {
+        .back-to-top[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
             bottom: 60px;
@@ -1115,8 +1115,8 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .back-to-top:hover::after,
-        .back-to-top:focus-visible::after {
+        .back-to-top[data-tooltip]:hover::after,
+        .back-to-top[data-tooltip]:focus-visible::after {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -1164,8 +1164,8 @@
         }
 
         /* Keyboard Shortcuts Tooltip */
-        .shortcuts-toggle::after {
-            content: "Keyboard shortcuts (K)";
+        .shortcuts-toggle[data-tooltip]::after {
+            content: attr(data-tooltip);
             position: absolute;
             bottom: 60px;
             left: 0;
@@ -1185,14 +1185,14 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .shortcuts-toggle:hover::after,
-        .shortcuts-toggle:focus-visible::after {
+        .shortcuts-toggle[data-tooltip]:hover::after,
+        .shortcuts-toggle[data-tooltip]:focus-visible::after {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
 
-        .shortcuts-toggle[aria-expanded="true"]::after {
+        .shortcuts-toggle[data-tooltip][aria-expanded="true"]::after {
             display: none;
         }
 
@@ -1237,7 +1237,7 @@
             transform: translateY(0);
         }
 
-        .play-pause-toggle::after {
+        .play-pause-toggle[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
             bottom: 60px;
@@ -1258,8 +1258,8 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .play-pause-toggle:hover::after,
-        .play-pause-toggle:focus-visible::after {
+        .play-pause-toggle[data-tooltip]:hover::after,
+        .play-pause-toggle[data-tooltip]:focus-visible::after {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
@@ -1995,7 +1995,7 @@
         </button>
 
         <!-- Keyboard Shortcuts Button -->
-        <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel">
+        <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel" data-tooltip="Keyboard shortcuts (K)">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
                 <line x1="6" y1="8" x2="6.01" y2="8"></line>
