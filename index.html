@@ -629,6 +629,84 @@
             border-bottom: none;
         }
 
+        /* Anchor Link Buttons inside h2 elements */
+        h2 {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .anchor-link-btn {
+            background: transparent;
+            border: none;
+            color: currentColor;
+            -webkit-text-fill-color: currentColor;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s ease, background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+        }
+
+        h2:hover .anchor-link-btn,
+        .anchor-link-btn:focus-visible {
+            opacity: 1;
+        }
+
+        .anchor-link-btn:hover,
+        .anchor-link-btn:focus-visible {
+            background-color: rgba(0, 255, 204, 0.1);
+            transform: scale(1.1);
+        }
+
+        .anchor-link-btn:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .anchor-link-btn svg {
+            stroke: currentColor;
+            display: block;
+        }
+
+        /* Tooltip style for anchor buttons */
+        .anchor-link-btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            -webkit-text-fill-color: var(--light-text);
+            z-index: 100;
+        }
+
+        .anchor-link-btn[data-tooltip]:hover::after,
+        .anchor-link-btn[data-tooltip]:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
         /* Buttons */
         .btn-container {
             text-align: center;
@@ -1588,8 +1666,16 @@
 
         <main id="main-content" tabindex="-1">
             <!-- Architecture Overview -->
-            <section class="architecture-section">
-                <h2>Trusted Three-Tier Architecture</h2>
+            <section id="architecture-section" class="architecture-section" tabindex="-1">
+                <h2>
+                    Trusted Three-Tier Architecture
+                    <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Trusted Three-Tier Architecture section" data-anchor="architecture-section">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </button>
+                </h2>
                 
                 <div class="architecture-grid">
                     <div class="arch-card" style="border-left-color: var(--security-green);">
@@ -1621,7 +1707,15 @@
 
         <!-- Performance Benchmarks -->
         <section id="performance-section" class="performance-section" tabindex="-1">
-            <h2>Performance Benchmarks</h2>
+            <h2>
+                Performance Benchmarks
+                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Performance Benchmarks section" data-anchor="performance-section">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                </button>
+            </h2>
             
             <div class="stats-grid">
                 <div class="stat-card highlight">
@@ -1662,7 +1756,15 @@
 
         <!-- Security Features -->
         <section id="security-section" class="security-section" tabindex="-1">
-            <h2>Quantum-Ready Security Stack</h2>
+            <h2>
+                Quantum-Ready Security Stack
+                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Quantum-Ready Security Stack section" data-anchor="security-section">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                </button>
+            </h2>
             
             <div class="security-badges-grid">
                 <div class="security-badge-card">
@@ -1717,7 +1819,15 @@
 
         <!-- Environmental Impact -->
         <section id="environment-section" class="environment-section" tabindex="-1">
-            <h2>Environmental Efficiency</h2>
+            <h2>
+                Environmental Efficiency
+                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Environmental Efficiency section" data-anchor="environment-section">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                </button>
+            </h2>
             
             <div class="env-stats-grid">
                 <div class="env-stat-card">
@@ -1792,8 +1902,16 @@
         </section>
 
         <!-- Comparison Table -->
-        <section class="comparison-section">
-            <h2>Industry Comparison</h2>
+        <section id="comparison-section" class="comparison-section" tabindex="-1">
+            <h2>
+                Industry Comparison
+                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Industry Comparison section" data-anchor="comparison-section">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                </button>
+            </h2>
             
             <div class="table-container" tabindex="0" role="region" aria-label="Industry comparison table">
                 <table class="comparison-table">
@@ -2593,6 +2711,49 @@
                         });
                     });
                 }
+            });
+
+            // Section Anchor Link Copy functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const anchorBtns = document.querySelectorAll('.anchor-link-btn');
+                anchorBtns.forEach(btn => {
+                    let timeout = null;
+                    const originalHTML = btn.innerHTML;
+                    const originalTooltip = btn.getAttribute('data-tooltip') || 'Copy link';
+
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const anchorId = btn.getAttribute('data-anchor');
+                        if (!anchorId) return;
+
+                        const sectionLink = window.location.href.split('#')[0] + '#' + anchorId;
+
+                        navigator.clipboard.writeText(sectionLink).then(() => {
+                            // Update hash smoothly without jumping
+                            history.pushState(null, null, '#' + anchorId);
+
+                            // Disable during success feedback
+                            btn.disabled = true;
+                            btn.setAttribute('data-tooltip', 'Copied!');
+                            btn.innerHTML = `
+                                <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--security-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            `;
+
+                            window.showToast('Section link copied successfully!');
+
+                            if (timeout) clearTimeout(timeout);
+                            timeout = setTimeout(() => {
+                                btn.disabled = false;
+                                btn.setAttribute('data-tooltip', originalTooltip);
+                                btn.innerHTML = originalHTML;
+                            }, 2000);
+                        }).catch(err => {
+                            console.error('Failed to copy section link: ', err);
+                        });
+                    });
+                });
             });
         </script>
     </div>
