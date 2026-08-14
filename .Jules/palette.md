@@ -81,3 +81,7 @@
 ## 2026-08-12 - [CSS-Only Action Button Tooltips with Strict Attribute Scoping]
 **Learning:** Deploying absolute-positioned CSS-only hover and focus-visible tooltips using pseudo-elements (like `.btn::after`) can cause accidental, empty styled boxes to render on any component sharing the `.btn` class that lacks the corresponding tooltip data attribute. Scoping selectors strictly with attribute qualifiers (e.g., `.btn[data-tooltip]::after`) ensures that only elements carrying active visual metadata render tooltips, preventing rendering bugs and state leakages.
 **Action:** Always qualify pseudo-element hover/focus tooltip rules with explicit attribute selectors like `[data-tooltip]` to strictly isolate visual decorations.
+
+## 2026-08-14 - [Section-Specific Anchor Link Copying with Non-Jumping State Synchronizations]
+**Learning:** Adding anchor link triggers inside multi-themed headers significantly improves sharing and spatial citation across complex landing pages. However, updating the browser location via `window.location.hash` directly can trigger abrupt page jumping that disorients the user. Utilizing the History API (`history.pushState`) to silently append the hashtag parameters while asynchronously copying clean full URLs to the clipboard preserves user scroll contexts smoothly.
+**Action:** Use `history.pushState(null, null, '#' + anchorId)` instead of standard location assignments to safely update navigation hashes during programmatic clipboard copying actions, avoiding disruptive layout jumps.
