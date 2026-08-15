@@ -1370,6 +1370,36 @@
             border-radius: 4px;
         }
 
+        .close-shortcuts-btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -35px;
+            right: 0;
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(5px);
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 100;
+        }
+
+        .close-shortcuts-btn[data-tooltip]:hover::after,
+        .close-shortcuts-btn[data-tooltip]:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
         .shortcuts-panel:focus,
         .shortcuts-panel:focus-visible {
             outline: none;
@@ -1659,7 +1689,7 @@
                         <span>Copy</span>
                     </button>
                 </div>
-                <p id="command-desc" class="command-description"></p>
+                <p id="command-desc" class="command-description" aria-live="polite"></p>
                 <div class="sr-only" id="copy-feedback" aria-live="polite"></div>
             </div>
         </header>
@@ -2027,7 +2057,7 @@
 
         <!-- Keyboard Shortcuts Panel -->
         <div id="shortcuts-panel" class="shortcuts-panel" role="dialog" aria-modal="false" aria-label="Keyboard Shortcuts" aria-hidden="true" tabindex="-1">
-            <button id="close-shortcuts-btn" class="close-shortcuts-btn" type="button" aria-label="Close shortcuts panel"><span aria-hidden="true">&times;</span></button>
+            <button id="close-shortcuts-btn" class="close-shortcuts-btn" type="button" aria-label="Close shortcuts panel" data-tooltip="Close (Esc)"><span aria-hidden="true">&times;</span></button>
             <h3>
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
