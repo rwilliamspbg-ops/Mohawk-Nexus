@@ -476,6 +476,18 @@
             background: rgba(10, 15, 30, 0.7);
             border-radius: 20px;
             border: 1px solid rgba(0, 255, 204, 0.2);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .architecture-section:focus-visible,
+        .architecture-section:focus,
+        .comparison-section:focus-visible,
+        .comparison-section:focus,
+        .tech-stack-section:focus-visible,
+        .tech-stack-section:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.35);
         }
 
         .architecture-section h2 {
@@ -520,6 +532,10 @@
         .tech-stack-section {
             text-align: center;
             margin: 60px 0;
+            padding: 40px 20px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
         .tech-stack-section h2 {
@@ -1911,8 +1927,16 @@
         </section>
 
         <!-- Tech Stack -->
-        <section class="tech-stack-section">
-            <h2>Technical Implementation</h2>
+        <section id="tech-stack-section" class="tech-stack-section" tabindex="-1">
+            <h2>
+                Technical Implementation
+                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Technical Implementation section" data-anchor="tech-stack-section">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                </button>
+            </h2>
             
             <div class="tech-tags">
                 <span class="tag">#Rust</span>
