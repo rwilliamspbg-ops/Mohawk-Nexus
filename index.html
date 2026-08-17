@@ -716,8 +716,8 @@
             z-index: 100;
         }
 
-        .anchor-link-btn[data-tooltip]:hover::after,
-        .anchor-link-btn[data-tooltip]:focus-visible::after {
+        .anchor-link-btn[data-tooltip]:hover:not(:disabled)::after,
+        .anchor-link-btn[data-tooltip]:focus-visible:not(:disabled)::after {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
@@ -1712,8 +1712,8 @@
 
         <main id="main-content" tabindex="-1">
             <!-- Architecture Overview -->
-            <section id="architecture-section" class="architecture-section" tabindex="-1">
-                <h2>
+            <section id="architecture-section" class="architecture-section" tabindex="-1" aria-labelledby="arch-heading">
+                <h2 id="arch-heading">
                     Trusted Three-Tier Architecture
                     <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Trusted Three-Tier Architecture section" data-anchor="architecture-section">
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1752,8 +1752,8 @@
             </section>
 
         <!-- Performance Benchmarks -->
-        <section id="performance-section" class="performance-section" tabindex="-1">
-            <h2>
+        <section id="performance-section" class="performance-section" tabindex="-1" aria-labelledby="perf-heading">
+            <h2 id="perf-heading">
                 Performance Benchmarks
                 <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Performance Benchmarks section" data-anchor="performance-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1801,8 +1801,8 @@
         </section>
 
         <!-- Security Features -->
-        <section id="security-section" class="security-section" tabindex="-1">
-            <h2>
+        <section id="security-section" class="security-section" tabindex="-1" aria-labelledby="sec-heading">
+            <h2 id="sec-heading">
                 Quantum-Ready Security Stack
                 <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Quantum-Ready Security Stack section" data-anchor="security-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1864,8 +1864,8 @@
         </section>
 
         <!-- Environmental Impact -->
-        <section id="environment-section" class="environment-section" tabindex="-1">
-            <h2>
+        <section id="environment-section" class="environment-section" tabindex="-1" aria-labelledby="env-heading">
+            <h2 id="env-heading">
                 Environmental Efficiency
                 <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Environmental Efficiency section" data-anchor="environment-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1927,8 +1927,8 @@
         </section>
 
         <!-- Tech Stack -->
-        <section id="tech-stack-section" class="tech-stack-section" tabindex="-1">
-            <h2>
+        <section id="tech-stack-section" class="tech-stack-section" tabindex="-1" aria-labelledby="tech-heading">
+            <h2 id="tech-heading">
                 Technical Implementation
                 <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Technical Implementation section" data-anchor="tech-stack-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1956,8 +1956,8 @@
         </section>
 
         <!-- Comparison Table -->
-        <section id="comparison-section" class="comparison-section" tabindex="-1">
-            <h2>
+        <section id="comparison-section" class="comparison-section" tabindex="-1" aria-labelledby="comp-heading">
+            <h2 id="comp-heading">
                 Industry Comparison
                 <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Industry Comparison section" data-anchor="comparison-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
