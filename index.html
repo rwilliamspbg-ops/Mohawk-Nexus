@@ -1967,7 +1967,8 @@
                 </button>
             </h2>
             
-            <div class="table-container" tabindex="0" role="region" aria-label="Industry comparison table">
+            <p id="table-scroll-hint" class="sr-only">Use left and right arrow keys to scroll table content horizontally.</p>
+            <div class="table-container" tabindex="0" role="region" aria-label="Industry comparison table" aria-describedby="table-scroll-hint">
                 <table class="comparison-table">
                     <thead>
                     <tr>
@@ -2553,12 +2554,20 @@
                         });
                     }
 
-                    // Close panel when clicking outside
+                    // Close panel when clicking or focusing outside
                     document.addEventListener('click', function(e) {
                         if (shortcutsPanel.classList.contains('visible')) {
                             const isClickInside = shortcutsPanel.contains(e.target) || shortcutsBtn.contains(e.target);
                             if (!isClickInside) {
                                 togglePanel();
+                            }
+                        }
+                    });
+
+                    shortcutsPanel.addEventListener('focusout', function(e) {
+                        if (shortcutsPanel.classList.contains('visible')) {
+                            if (e.relatedTarget && !shortcutsPanel.contains(e.relatedTarget) && !shortcutsBtn.contains(e.relatedTarget)) {
+                                closePanel();
                             }
                         }
                     });
@@ -2774,6 +2783,7 @@
                     let timeout = null;
                     const originalHTML = btn.innerHTML;
                     const originalTooltip = btn.getAttribute('data-tooltip') || 'Copy link';
+                    const originalAriaLabel = btn.getAttribute('aria-label') || 'Copy section link';
 
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
@@ -2789,6 +2799,7 @@
                             // Disable during success feedback
                             btn.disabled = true;
                             btn.setAttribute('data-tooltip', 'Copied!');
+                            btn.setAttribute('aria-label', 'Section link copied to clipboard');
                             btn.innerHTML = `
                                 <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--security-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -2801,6 +2812,7 @@
                             timeout = setTimeout(() => {
                                 btn.disabled = false;
                                 btn.setAttribute('data-tooltip', originalTooltip);
+                                btn.setAttribute('aria-label', originalAriaLabel);
                                 btn.innerHTML = originalHTML;
                             }, 2000);
                         }).catch(err => {
