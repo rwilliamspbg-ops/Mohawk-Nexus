@@ -2580,6 +2580,7 @@
                             const action = this.getAttribute('data-action');
                             if (action === 'T') {
                                 closePanel();
+                                triggerVisualFeedback('T', 'back-to-top');
                                 const btn = document.getElementById('back-to-top');
                                 if (btn) btn.click();
                             } else if (action === 'M') {
@@ -2590,26 +2591,34 @@
                                     selectEl.focus();
                                 }
                             } else if (action === 'C') {
+                                triggerVisualFeedback('C', 'copy-btn');
                                 const btn = document.getElementById('copy-btn');
                                 if (btn) btn.click();
                             } else if (action === 'S') {
                                 closePanel();
+                                triggerVisualFeedback('S', 'badge-security');
                                 const btn = document.getElementById('badge-security');
                                 if (btn) btn.click();
                             } else if (action === 'B') {
                                 closePanel();
+                                triggerVisualFeedback('B', 'badge-performance');
                                 const btn = document.getElementById('badge-performance');
                                 if (btn) btn.click();
                             } else if (action === 'E') {
                                 closePanel();
+                                triggerVisualFeedback('E', 'badge-environment');
                                 const btn = document.getElementById('badge-environment');
                                 if (btn) btn.click();
                             } else if (action === 'K') {
+                                triggerVisualFeedback('K', 'shortcuts-btn');
                                 shortcutsBtn.click();
                                 shortcutsBtn.focus();
                             } else if (action === 'P') {
                                 const btn = document.getElementById('play-pause-btn');
-                                if (btn && window.getComputedStyle(btn).display !== 'none') btn.click();
+                                if (btn && window.getComputedStyle(btn).display !== 'none') {
+                                    triggerVisualFeedback('P', 'play-pause-btn');
+                                    btn.click();
+                                }
                             } else if (action === 'Esc') {
                                 if (closeShortcutsBtn) closeShortcutsBtn.click();
                             }
@@ -2771,6 +2780,7 @@
                             }, 2000);
                         }).catch(err => {
                             console.error('Failed to copy command: ', err);
+                            window.showToast('Unable to copy command to clipboard');
                         });
                     });
                 }
@@ -2828,6 +2838,7 @@
                             }, 2000);
                         }).catch(err => {
                             console.error('Failed to copy section link: ', err);
+                            window.showToast('Unable to copy section link');
                         });
                     });
                 });
