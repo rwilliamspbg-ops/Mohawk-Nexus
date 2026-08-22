@@ -2526,7 +2526,11 @@
                         shortcutsPanel.classList.toggle('visible');
 
                         if (!isExpanded) {
-                            shortcutsPanel.focus();
+                            if (closeShortcutsBtn) {
+                                closeShortcutsBtn.focus();
+                            } else {
+                                shortcutsPanel.focus();
+                            }
                         }
                     };
 
