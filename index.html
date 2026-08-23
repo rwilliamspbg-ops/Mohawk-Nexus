@@ -1072,6 +1072,12 @@
                 max-width: 280px;
             }
 
+            .toast {
+                bottom: 76px;
+                right: 16px;
+                max-width: calc(100% - 32px);
+            }
+
             /* Suppress button tooltips on mobile viewports for clean UI layout */
             .btn[data-tooltip]::after {
                 display: none !important;
@@ -1538,8 +1544,8 @@
         /* Toast Notification Styling */
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 105px;
+            right: 40px;
             background: rgba(13, 17, 28, 0.95);
             border: 2px solid var(--primary);
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
@@ -1554,8 +1560,15 @@
             font-weight: 600;
             transform: translateY(100px);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            pointer-events: auto;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toast:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 0 25px rgba(0, 119, 255, 0.6);
         }
 
         .toast.visible {
@@ -2214,6 +2227,17 @@
                     toast.classList.remove('visible');
                 }, 3000);
             };
+
+            // Allow instant dismiss of toast on click
+            document.addEventListener('DOMContentLoaded', function() {
+                const toastEl = document.getElementById('toast');
+                if (toastEl) {
+                    toastEl.addEventListener('click', function() {
+                        toastEl.classList.remove('visible');
+                        if (toastTimeout) clearTimeout(toastTimeout);
+                    });
+                }
+            });
 
             // Create dynamic background elements
             document.addEventListener('DOMContentLoaded', function() {
