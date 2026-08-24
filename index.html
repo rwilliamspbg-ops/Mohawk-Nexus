@@ -150,6 +150,7 @@
             background: rgba(13, 17, 28, 0.95);
             border: 1px solid var(--primary);
             color: var(--light-text);
+            -webkit-text-fill-color: var(--light-text);
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -701,6 +702,7 @@
             background: rgba(13, 17, 28, 0.95);
             border: 1px solid var(--primary);
             color: var(--light-text);
+            -webkit-text-fill-color: var(--light-text) !important;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -1560,8 +1562,9 @@
             font-weight: 600;
             transform: translateY(100px);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-            pointer-events: auto;
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, border-color 0.2s ease, box-shadow 0.2s ease, visibility 0.3s;
             cursor: pointer;
             user-select: none;
         }
@@ -1574,6 +1577,37 @@
         .toast.visible {
             transform: translateY(0);
             opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .toast[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -35px;
+            right: 0;
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(5px);
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 1001;
+        }
+
+        .toast[data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         /* Scroll Progress Indicator */
@@ -2086,7 +2120,7 @@
         </footer>
 
         <!-- Toast Notification -->
-        <div id="toast" class="toast" role="status" aria-live="polite">
+        <div id="toast" class="toast" role="status" aria-live="polite" data-tooltip="Click or press Esc to dismiss">
             <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
@@ -2214,6 +2248,8 @@
 
             // Global toast helper
             let toastTimeout = null;
+            let toastRemaining = 3000;
+            let toastStartTime = 0;
             window.showToast = function(message) {
                 const toast = document.getElementById('toast');
                 const toastMsg = document.getElementById('toast-message');
@@ -2223,18 +2259,35 @@
                 toast.classList.add('visible');
 
                 if (toastTimeout) clearTimeout(toastTimeout);
+                toastRemaining = 3000;
+                toastStartTime = Date.now();
                 toastTimeout = setTimeout(() => {
                     toast.classList.remove('visible');
-                }, 3000);
+                }, toastRemaining);
             };
 
-            // Allow instant dismiss of toast on click
+            // Allow instant dismiss of toast on click & pause countdown on hover
             document.addEventListener('DOMContentLoaded', function() {
                 const toastEl = document.getElementById('toast');
                 if (toastEl) {
                     toastEl.addEventListener('click', function() {
                         toastEl.classList.remove('visible');
                         if (toastTimeout) clearTimeout(toastTimeout);
+                    });
+                    toastEl.addEventListener('mouseenter', function() {
+                        if (toastEl.classList.contains('visible') && toastTimeout) {
+                            clearTimeout(toastTimeout);
+                            toastRemaining -= (Date.now() - toastStartTime);
+                            if (toastRemaining < 500) toastRemaining = 500;
+                        }
+                    });
+                    toastEl.addEventListener('mouseleave', function() {
+                        if (toastEl.classList.contains('visible')) {
+                            toastStartTime = Date.now();
+                            toastTimeout = setTimeout(() => {
+                                toastEl.classList.remove('visible');
+                            }, toastRemaining);
+                        }
                     });
                 }
             });
@@ -2401,6 +2454,7 @@
                         const roundedScrolled = Math.round(scrolled);
                         scrollProgressBar.style.width = scrolled + "%";
                         scrollProgressContainer.setAttribute('aria-valuenow', roundedScrolled);
+                        scrollProgressContainer.setAttribute('aria-valuetext', `${roundedScrolled}% scrolled`);
 
                         // Update back-to-top dynamic cues with scroll progress
                         if (backToTopBtn) {
@@ -2523,6 +2577,7 @@
                         }
                     } else if (e.key === 'Escape') {
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
+                        const toastEl = document.getElementById('toast');
                         if (shortcutsPanel && shortcutsPanel.classList.contains('visible')) {
                             e.preventDefault();
                             triggerVisualFeedback('Esc', 'close-shortcuts-btn');
@@ -2531,6 +2586,10 @@
                                 shortcutsBtn.click();
                                 shortcutsBtn.focus();
                             }
+                        } else if (toastEl && toastEl.classList.contains('visible')) {
+                            e.preventDefault();
+                            toastEl.classList.remove('visible');
+                            if (toastTimeout) clearTimeout(toastTimeout);
                         }
                     }
                 });
