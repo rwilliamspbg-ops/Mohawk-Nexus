@@ -2609,11 +2609,13 @@
                         shortcutsPanel.classList.toggle('visible');
 
                         if (!isExpanded) {
-                            if (closeShortcutsBtn) {
-                                closeShortcutsBtn.focus();
-                            } else {
-                                shortcutsPanel.focus();
-                            }
+                            setTimeout(function() {
+                                if (closeShortcutsBtn) {
+                                    closeShortcutsBtn.focus();
+                                } else {
+                                    shortcutsPanel.focus();
+                                }
+                            }, 50);
                         }
                     };
 
@@ -2647,6 +2649,24 @@
                             const isClickInside = shortcutsPanel.contains(e.target) || shortcutsBtn.contains(e.target);
                             if (!isClickInside) {
                                 togglePanel();
+                            }
+                        }
+                    });
+
+                    shortcutsPanel.addEventListener('keydown', function(e) {
+                        if (e.key === 'Tab' && shortcutsPanel.classList.contains('visible')) {
+                            const focusableEls = shortcutsPanel.querySelectorAll('button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+                            if (focusableEls.length > 0) {
+                                const firstEl = focusableEls[0];
+                                const lastEl = focusableEls[focusableEls.length - 1];
+
+                                if (e.shiftKey && document.activeElement === firstEl) {
+                                    e.preventDefault();
+                                    lastEl.focus();
+                                } else if (!e.shiftKey && document.activeElement === lastEl) {
+                                    e.preventDefault();
+                                    firstEl.focus();
+                                }
                             }
                         }
                     });
