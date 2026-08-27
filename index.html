@@ -2183,9 +2183,9 @@
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="K" aria-label="Toggle this helper (K)">
+                    <button class="shortcuts-item" data-action="K" aria-label="Toggle this helper (K / ?)">
                         <span class="shortcuts-desc">Toggle this helper</span>
-                        <kbd class="shortcuts-key" data-key="K">K</kbd>
+                        <kbd class="shortcuts-key" data-key="K">K / ?</kbd>
                     </button>
                 </li>
                 <li>
@@ -2215,7 +2215,7 @@
         </button>
 
         <!-- Keyboard Shortcuts Button -->
-        <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel" data-tooltip="Keyboard shortcuts (K)">
+        <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel" data-tooltip="Keyboard shortcuts (K / ?)">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
                 <line x1="6" y1="8" x2="6.01" y2="8"></line>
@@ -2561,7 +2561,7 @@
                             triggerVisualFeedback('E', 'badge-environment');
                             badge.click();
                         }
-                    } else if ((e.key === 'k' || e.key === 'K') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                    } else if ((e.key === 'k' || e.key === 'K' || e.key === '?') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const shortcutsBtn = document.getElementById('shortcuts-btn');
                         if (shortcutsBtn) {
                             e.preventDefault();
