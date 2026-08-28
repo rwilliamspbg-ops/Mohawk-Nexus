@@ -2437,7 +2437,7 @@
                 const backToTopBtn = document.getElementById('back-to-top');
                 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-                window.addEventListener('scroll', function() {
+                function updateScrollProgress() {
                     if (window.scrollY > 400) {
                         backToTopBtn.classList.add('visible');
                     } else {
@@ -2462,7 +2462,10 @@
                             backToTopBtn.setAttribute('aria-label', `Back to Top (${roundedScrolled}% scrolled)`);
                         }
                     }
-                });
+                }
+
+                window.addEventListener('scroll', updateScrollProgress);
+                updateScrollProgress();
 
                 backToTopBtn.addEventListener('click', function() {
                     window.scrollTo({
