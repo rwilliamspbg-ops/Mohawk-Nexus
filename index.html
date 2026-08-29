@@ -2752,6 +2752,11 @@
                         }
 
                         if (targetEl) {
+                            // Silently synchronize location hash without page jump
+                            if (history && history.pushState) {
+                                history.pushState(null, null, '#' + targetId);
+                            }
+
                             targetEl.scrollIntoView({
                                 behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
                                 block: 'start'
