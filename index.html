@@ -2901,18 +2901,39 @@
                 }
             });
 
-            // Section Anchor Link Copy functionality
+            // Section Anchor Link Copy functionality & History Navigation
             document.addEventListener('DOMContentLoaded', function() {
-                // Focus target section if page loaded with location hash (deep-linking)
-                if (window.location.hash) {
-                    const targetId = window.location.hash.substring(1);
-                    const targetEl = document.getElementById(targetId);
-                    if (targetEl && targetEl.hasAttribute('tabindex')) {
-                        setTimeout(() => {
-                            targetEl.focus({ preventScroll: true });
-                        }, 100);
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+                function handleHashNavigation() {
+                    if (window.location.hash) {
+                        const targetId = window.location.hash.substring(1);
+                        const targetEl = document.getElementById(targetId);
+                        if (targetEl) {
+                            targetEl.scrollIntoView({
+                                behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
+                                block: 'start'
+                            });
+                            if (targetEl.hasAttribute('tabindex')) {
+                                targetEl.focus({ preventScroll: true });
+                            }
+                        }
+                    } else {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: prefersReducedMotion.matches ? 'auto' : 'smooth'
+                        });
+                        document.body.focus({ preventScroll: true });
                     }
                 }
+
+                // Focus target section if page loaded with location hash (deep-linking)
+                if (window.location.hash) {
+                    setTimeout(handleHashNavigation, 100);
+                }
+
+                // Handle browser back/forward history navigation
+                window.addEventListener('popstate', handleHashNavigation);
 
                 const anchorBtns = document.querySelectorAll('.anchor-link-btn');
                 anchorBtns.forEach(btn => {
