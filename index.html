@@ -718,8 +718,8 @@
             z-index: 100;
         }
 
-        .anchor-link-btn[data-tooltip]:hover:not(:disabled)::after,
-        .anchor-link-btn[data-tooltip]:focus-visible:not(:disabled)::after {
+        .anchor-link-btn[data-tooltip]:hover:not([aria-disabled="true"]):not(:disabled)::after,
+        .anchor-link-btn[data-tooltip]:focus-visible:not([aria-disabled="true"]):not(:disabled)::after {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
@@ -953,18 +953,19 @@
             flex-shrink: 0;
         }
 
-        .copy-btn:hover:not(:disabled) {
+        .copy-btn:hover:not([aria-disabled="true"]):not(:disabled) {
             background: rgba(0, 119, 255, 0.25);
             border-color: var(--primary);
             color: var(--primary);
         }
 
-        .copy-btn:focus-visible:not(:disabled) {
+        .copy-btn:focus-visible:not([aria-disabled="true"]):not(:disabled) {
             outline: 2px solid var(--primary);
             outline-offset: 2px;
         }
 
-        .copy-btn:disabled {
+        .copy-btn:disabled,
+        .copy-btn[aria-disabled="true"] {
             color: var(--security-green);
             border-color: rgba(0, 255, 136, 0.3);
             background: rgba(0, 255, 136, 0.05);
@@ -1004,8 +1005,8 @@
             color: #d1d5db;
         }
 
-        .copy-btn[data-tooltip]:hover:not(:disabled)::after,
-        .copy-btn[data-tooltip]:focus-visible:not(:disabled)::after {
+        .copy-btn[data-tooltip]:hover:not([aria-disabled="true"]):not(:disabled)::after,
+        .copy-btn[data-tooltip]:focus-visible:not([aria-disabled="true"]):not(:disabled)::after {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -2831,7 +2832,7 @@
                             clearTimeout(copyTimeout);
                             copyTimeout = null;
                         }
-                        copyBtn.disabled = false;
+                        copyBtn.removeAttribute('aria-disabled');
                         const container = document.querySelector('.command-container');
                         if (container) {
                             container.classList.remove('command-success');
@@ -2864,6 +2865,7 @@
                     commandSelect.addEventListener('change', updateCopyBtnCues);
 
                     copyBtn.addEventListener('click', function() {
+                        if (copyBtn.getAttribute('aria-disabled') === 'true') return;
                         const commandText = commandSelect.value;
                         if (copyTimeout) {
                             clearTimeout(copyTimeout);
@@ -2872,7 +2874,7 @@
                         navigator.clipboard.writeText(commandText).then(() => {
                             const container = document.querySelector('.command-container');
 
-                            copyBtn.disabled = true;
+                            copyBtn.setAttribute('aria-disabled', 'true');
                             if (container) {
                                 container.classList.add('command-success');
                             }
@@ -2944,6 +2946,7 @@
 
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
+                        if (btn.getAttribute('aria-disabled') === 'true') return;
                         const anchorId = btn.getAttribute('data-anchor');
                         if (!anchorId) return;
 
@@ -2954,7 +2957,7 @@
                             history.pushState(null, null, '#' + anchorId);
 
                             // Disable during success feedback
-                            btn.disabled = true;
+                            btn.setAttribute('aria-disabled', 'true');
                             btn.setAttribute('data-tooltip', 'Copied!');
                             btn.setAttribute('aria-label', 'Section link copied to clipboard');
                             btn.innerHTML = `
@@ -2967,7 +2970,7 @@
 
                             if (timeout) clearTimeout(timeout);
                             timeout = setTimeout(() => {
-                                btn.disabled = false;
+                                btn.removeAttribute('aria-disabled');
                                 btn.setAttribute('data-tooltip', originalTooltip);
                                 btn.setAttribute('aria-label', originalAriaLabel);
                                 btn.innerHTML = originalHTML;
