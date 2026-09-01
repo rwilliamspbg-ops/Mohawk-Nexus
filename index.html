@@ -1582,6 +1582,20 @@
             pointer-events: auto;
         }
 
+        .toast.toast-error {
+            border-color: var(--performance-orange);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .toast.toast-error:hover {
+            border-color: #ff8c66;
+            box-shadow: 0 0 25px rgba(255, 107, 53, 0.6);
+        }
+
+        .toast.toast-error[data-tooltip]::after {
+            border-color: var(--performance-orange) !important;
+        }
+
         .toast[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -2122,8 +2136,13 @@
 
         <!-- Toast Notification -->
         <div id="toast" class="toast" role="status" aria-live="polite" data-tooltip="Click or press Esc to dismiss">
-            <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <svg id="toast-icon-success" aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <svg id="toast-icon-error" aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--performance-orange)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
             <span id="toast-message">Command copied to clipboard!</span>
         </div>
@@ -2251,12 +2270,23 @@
             let toastTimeout = null;
             let toastRemaining = 3000;
             let toastStartTime = 0;
-            window.showToast = function(message) {
+            window.showToast = function(message, type = 'success') {
                 const toast = document.getElementById('toast');
                 const toastMsg = document.getElementById('toast-message');
+                const iconSuccess = document.getElementById('toast-icon-success');
+                const iconError = document.getElementById('toast-icon-error');
                 if (!toast || !toastMsg) return;
 
                 toastMsg.textContent = message;
+                if (type === 'error') {
+                    toast.classList.add('toast-error');
+                    if (iconSuccess) iconSuccess.style.display = 'none';
+                    if (iconError) iconError.style.display = 'block';
+                } else {
+                    toast.classList.remove('toast-error');
+                    if (iconSuccess) iconSuccess.style.display = 'block';
+                    if (iconError) iconError.style.display = 'none';
+                }
                 toast.classList.add('visible');
 
                 if (toastTimeout) clearTimeout(toastTimeout);
@@ -2897,7 +2927,7 @@
                             }, 2000);
                         }).catch(err => {
                             console.error('Failed to copy command: ', err);
-                            window.showToast('Unable to copy command to clipboard');
+                            window.showToast('Unable to copy command to clipboard', 'error');
                         });
                     });
                 }
@@ -2977,7 +3007,7 @@
                             }, 2000);
                         }).catch(err => {
                             console.error('Failed to copy section link: ', err);
-                            window.showToast('Unable to copy section link');
+                            window.showToast('Unable to copy section link', 'error');
                         });
                     });
                 });
