@@ -1081,8 +1081,8 @@
                 max-width: calc(100% - 32px);
             }
 
-            /* Suppress button tooltips on mobile viewports for clean UI layout */
-            .btn[data-tooltip]::after {
+            /* Suppress pseudo-element tooltips on mobile viewports for clean UI layout */
+            [data-tooltip]::after {
                 display: none !important;
             }
         }
