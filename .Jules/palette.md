@@ -117,3 +117,7 @@
 ## 2026-09-02 - [Universal Mobile Pseudo-Element Tooltip Suppression]
 **Learning:** Suppressing pseudo-element tooltips on mobile viewports using narrow element selectors (such as `.btn[data-tooltip]::after`) leaves other tooltipped elements (such as badges, section anchor buttons, and floating controls) rendering hover tooltips on touch interactions, which can get stuck on screen or obstruct UI content on narrow viewports. Broadening the suppression selector to `[data-tooltip]::after` inside `@media (max-width: 600px)` guarantees clean layout presentation across all interactive controls on mobile without affecting desktop experience.
 **Action:** Use `[data-tooltip]::after { display: none !important; }` in mobile media queries to universally suppress pseudo-element tooltips across all interactive components on touch devices.
+
+## 2026-09-05 - [Footer External Link Focus Harmonization and Custom Tooltip Guidance]
+**Learning:** Secondary or footer links often get overlooked during theme and focus styling, leaving them to fall back on browser-default focus outlines and unstyled hover states. Applying a dedicated link class (`.footer-link`) with theme-harmonized `:focus-visible` outlines, text-shadow glows, and pseudo-element tooltips (`[data-tooltip]`) ensures consistent visual hierarchy and accessibility across all page links.
+**Action:** Always verify that footer or auxiliary external links inherit the design system's focus rings and tooltip guidance to maintain full accessibility and interaction parity.

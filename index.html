@@ -1544,6 +1544,58 @@
             transform: translate(1px, -1px);
         }
 
+        /* Footer Link & Tooltip Styling */
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            position: relative;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .footer-link:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+        }
+
+        .footer-link[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 100;
+        }
+
+        .footer-link[data-tooltip]:hover::after,
+        .footer-link[data-tooltip]:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
         /* Toast Notification Styling */
         .toast {
             position: fixed;
@@ -2122,9 +2174,9 @@
         <footer style="text-align: center; margin-top: 30px; color: #6b7280; font-size: 0.9rem;">
             <p>
                 <strong>Licensed under AGPL-3.0</strong> •
-                <a href="https://github.com/rwilliamspbg-ops" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">
+                <a href="https://github.com/rwilliamspbg-ops" target="_blank" rel="noopener noreferrer" class="footer-link" data-tooltip="View GitHub profile">
                     GitHub Sponsorship Available
-                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 3px;">
+                    <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 3px;">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                         <polyline points="15 3 21 3 21 9"></polyline>
                         <line x1="10" y1="14" x2="21" y2="3"></line>
