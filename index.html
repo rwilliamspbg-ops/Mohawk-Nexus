@@ -140,6 +140,10 @@
             transform: translateY(-2px);
         }
 
+        .badge:active {
+            transform: translateY(0) scale(0.97);
+        }
+
         /* Badge Tooltip Style */
         .badge[data-tooltip]::after {
             content: attr(data-tooltip);
@@ -682,6 +686,10 @@
             transform: scale(1.1);
         }
 
+        .anchor-link-btn:active {
+            transform: scale(0.95);
+        }
+
         .anchor-link-btn:focus-visible {
             outline: 2px solid var(--primary);
             outline-offset: 2px;
@@ -771,6 +779,11 @@
             transform: translateY(-3px);
         }
 
+        .btn:active {
+            transform: translateY(-1px) scale(0.98);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        }
+
         .btn-secondary {
             background: linear-gradient(90deg, var(--secondary), var(--accent));
             box-shadow: 0 0 25px rgba(0, 119, 255, 0.4);
@@ -780,6 +793,11 @@
         .btn-secondary:hover {
             box-shadow: 0 0 35px rgba(0, 119, 255, 0.7);
             color: #ffffff;
+        }
+
+        .btn-secondary:active {
+            transform: translateY(-1px) scale(0.98);
+            box-shadow: 0 0 15px rgba(0, 119, 255, 0.3);
         }
 
         .btn-secondary:focus-visible {
@@ -957,6 +975,10 @@
             background: rgba(0, 119, 255, 0.25);
             border-color: var(--primary);
             color: var(--primary);
+        }
+
+        .copy-btn:active:not([aria-disabled="true"]):not(:disabled) {
+            transform: scale(0.95);
         }
 
         .copy-btn:focus-visible:not([aria-disabled="true"]):not(:disabled) {
@@ -1390,6 +1412,10 @@
             transform: scale(1.1);
         }
 
+        .close-shortcuts-btn:active {
+            transform: scale(0.95);
+        }
+
         .close-shortcuts-btn:focus-visible {
             outline: 2px solid var(--primary);
             border-radius: 4px;
@@ -1494,6 +1520,10 @@
             background-color: rgba(0, 255, 204, 0.08);
             transform: translateX(4px);
             outline: none;
+        }
+
+        .shortcuts-item:active {
+            transform: translateX(2px) scale(0.98);
         }
 
         .shortcuts-item:focus-visible {
