@@ -912,6 +912,37 @@
             display: flex;
             align-items: center;
             width: 100%;
+            position: relative;
+        }
+
+        .command-text[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 100;
+        }
+
+        .command-text[data-tooltip]:hover::after,
+        .command-text[data-tooltip]:focus-within::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
         }
 
         .command-select {
@@ -1832,7 +1863,7 @@
 
             <div class="command-widget">
                 <div class="command-container">
-                    <div class="command-text">
+                    <div class="command-text" data-tooltip="Select command (M)">
                         <span class="command-prefix" aria-hidden="true">$</span>
                         <select id="command-select" class="command-select" aria-label="Makefile command to copy" aria-describedby="command-desc">
                             <option value="make setup">make setup</option>
@@ -2644,6 +2675,9 @@
                         const copyBtn = document.getElementById('copy-btn');
                         if (copyBtn) {
                             e.preventDefault();
+                            if (typeof window.closeShortcutsPanel === 'function') {
+                                window.closeShortcutsPanel();
+                            }
                             triggerVisualFeedback('C', 'copy-btn');
                             copyBtn.click();
                         }
@@ -2814,6 +2848,7 @@
                                     selectEl.focus();
                                 }
                             } else if (action === 'C') {
+                                closePanel();
                                 triggerVisualFeedback('C', 'copy-btn');
                                 const btn = document.getElementById('copy-btn');
                                 if (btn) btn.click();
