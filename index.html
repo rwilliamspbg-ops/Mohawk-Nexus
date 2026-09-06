@@ -2337,7 +2337,7 @@
         </div>
 
         <!-- Play / Pause Button -->
-        <button id="play-pause-btn" class="play-pause-toggle" aria-label="Pause background animation (P)" aria-live="polite" data-tooltip="Pause background animation (P)">
+        <button id="play-pause-btn" class="play-pause-toggle" aria-pressed="true" aria-label="Pause background animation (P)" aria-live="polite" data-tooltip="Pause background animation (P)">
             <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
@@ -2542,11 +2542,13 @@
 
                     // Initialize button state dynamically based on persisted setting
                     if (window.isAnimationPlaying) {
+                        playPauseBtn.setAttribute('aria-pressed', 'true');
                         playPauseBtn.setAttribute('aria-label', 'Pause background animation (P)');
                         playPauseBtn.setAttribute('data-tooltip', 'Pause background animation (P)');
                         if (iconPause) iconPause.style.display = 'block';
                         if (iconPlay) iconPlay.style.display = 'none';
                     } else {
+                        playPauseBtn.setAttribute('aria-pressed', 'false');
                         playPauseBtn.setAttribute('aria-label', 'Play background animation (P)');
                         playPauseBtn.setAttribute('data-tooltip', 'Play background animation (P)');
                         if (iconPause) iconPause.style.display = 'none';
@@ -2559,6 +2561,7 @@
 
                         if (window.isAnimationPlaying) {
                             document.body.classList.remove('animations-paused');
+                            playPauseBtn.setAttribute('aria-pressed', 'true');
                             playPauseBtn.setAttribute('aria-label', 'Pause background animation (P)');
                             playPauseBtn.setAttribute('data-tooltip', 'Pause background animation (P)');
                             if (iconPause) iconPause.style.display = 'block';
@@ -2566,6 +2569,7 @@
                             window.showToast('Background animation resumed!');
                         } else {
                             document.body.classList.add('animations-paused');
+                            playPauseBtn.setAttribute('aria-pressed', 'false');
                             playPauseBtn.setAttribute('aria-label', 'Play background animation (P)');
                             playPauseBtn.setAttribute('data-tooltip', 'Play background animation (P)');
                             if (iconPause) iconPause.style.display = 'none';
@@ -2771,9 +2775,13 @@
 
                     const closePanel = function() {
                         if (shortcutsPanel.classList.contains('visible')) {
+                            const focusWasInside = shortcutsPanel.contains(document.activeElement);
                             shortcutsBtn.setAttribute('aria-expanded', 'false');
                             shortcutsPanel.setAttribute('aria-hidden', 'true');
                             shortcutsPanel.classList.remove('visible');
+                            if (focusWasInside) {
+                                shortcutsBtn.focus();
+                            }
                         }
                     };
 
