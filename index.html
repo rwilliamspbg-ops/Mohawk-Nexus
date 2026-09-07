@@ -2760,6 +2760,7 @@
                         const isExpanded = shortcutsBtn.getAttribute('aria-expanded') === 'true';
                         shortcutsBtn.setAttribute('aria-expanded', !isExpanded);
                         shortcutsPanel.setAttribute('aria-hidden', isExpanded);
+                        shortcutsPanel.setAttribute('aria-modal', !isExpanded);
                         shortcutsPanel.classList.toggle('visible');
 
                         if (!isExpanded) {
@@ -2778,6 +2779,7 @@
                             const focusWasInside = shortcutsPanel.contains(document.activeElement);
                             shortcutsBtn.setAttribute('aria-expanded', 'false');
                             shortcutsPanel.setAttribute('aria-hidden', 'true');
+                            shortcutsPanel.setAttribute('aria-modal', 'false');
                             shortcutsPanel.classList.remove('visible');
                             if (focusWasInside) {
                                 shortcutsBtn.focus();
