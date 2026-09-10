@@ -594,6 +594,7 @@
             border-radius: 8px;
             border: 1px solid rgba(0, 255, 204, 0.1);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
             /* Pure CSS Scroll Shadows */
             background-image:
                 linear-gradient(to right, rgba(3, 4, 11, 0.95), rgba(3, 4, 11, 0)),
@@ -611,6 +612,36 @@
             outline-offset: 4px;
             border-color: var(--primary);
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+
+        .table-container[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -35px;
+            right: 12px;
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(5px);
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 100;
+        }
+
+        .table-container[data-tooltip]:hover::after,
+        .table-container[data-tooltip]:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         .comparison-table {
@@ -2143,7 +2174,7 @@
             </h2>
             
             <p id="table-scroll-hint" class="sr-only">Use left and right arrow keys to scroll table content horizontally.</p>
-            <div class="table-container" tabindex="0" role="region" aria-label="Industry comparison table" aria-describedby="table-scroll-hint">
+            <div class="table-container" tabindex="0" role="region" aria-label="Industry comparison table" aria-describedby="table-scroll-hint" data-tooltip="Scroll table with ← / → arrow keys">
                 <table class="comparison-table">
                     <thead>
                     <tr>
@@ -3138,6 +3169,24 @@
                         });
                     });
                 });
+            });
+
+            // Horizontal keyboard arrow navigation for comparison table container
+            document.addEventListener('DOMContentLoaded', function() {
+                const tableContainer = document.querySelector('.table-container');
+                if (tableContainer) {
+                    tableContainer.addEventListener('keydown', function(e) {
+                        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                            const scrollAmount = e.key === 'ArrowRight' ? 120 : -120;
+                            e.preventDefault();
+                            tableContainer.scrollBy({
+                                left: scrollAmount,
+                                behavior: prefersReducedMotion ? 'auto' : 'smooth'
+                            });
+                        }
+                    });
+                }
             });
         </script>
     </div>
