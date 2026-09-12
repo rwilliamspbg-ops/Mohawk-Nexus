@@ -133,3 +133,7 @@
 ## 2026-09-10 - [Horizontal Keyboard Navigation for Focusable Table Containers]
 **Learning:** Screen reader `aria-describedby` hints that instruct users to "Use left and right arrow keys to scroll table content horizontally" are not natively handled by browsers like Chromium when keyboard focus is placed on generic focusable `<div>` wrappers with `overflow-x: auto`. Without an explicit JS `keydown` listener intercepting `ArrowLeft` and `ArrowRight`, pressing horizontal arrow keys fails to scroll the table.
 **Action:** Attach explicit `keydown` listeners for `ArrowLeft` and `ArrowRight` on focusable scrollable table wrappers to call `scrollBy()` smoothly (respecting `prefers-reduced-motion`) and prevent page scroll conflicts, paired with clear `data-tooltip` hover/focus-visible guidance.
+
+## 2026-09-12 - [Aligning ARIA Labels with Visible Button Content for WCAG 2.5.3 Compliance]
+**Learning:** Assigning an `aria-label` to an interactive button that omits or differs from the element's visible text (e.g. `aria-label="Jump to Environmental Efficiency details (E)"` on a button displaying "Energy-Efficient Architecture") violates WCAG 2.5.3 (Label in Name). Speech recognition users who dictate the visible label on screen will experience activation failures because the accessible name calculation does not match their spoken command.
+**Action:** Always ensure any explicit `aria-label` attribute on interactive controls incorporates the exact visual text string presented on the button or element.
