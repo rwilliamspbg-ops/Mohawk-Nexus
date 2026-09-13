@@ -1857,13 +1857,13 @@
             </p>
             
             <div class="component-badges">
-                <button id="badge-security" class="badge badge-security pulse-badge" data-target="security-section" data-tooltip="Jump to Security (S)" aria-label="Jump to Quantum-Ready Security details (S)"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
-                <button id="badge-performance" class="badge badge-performance pulse-badge" data-target="performance-section" data-tooltip="Jump to Benchmarks (B)" aria-label="Jump to 2.49 Mpps Throughput details (B)"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
-                <button id="badge-environment" class="badge badge-environment pulse-badge" data-target="environment-section" data-tooltip="Jump to Environment (E)" aria-label="Jump to Environmental Efficiency details (E)"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
+                <button id="badge-security" class="badge badge-security pulse-badge" data-target="security-section" data-tooltip="Jump to Security (S)" aria-label="Jump to Quantum-Ready Security details (S)" aria-keyshortcuts="s S"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
+                <button id="badge-performance" class="badge badge-performance pulse-badge" data-target="performance-section" data-tooltip="Jump to Benchmarks (B)" aria-label="Jump to 2.49 Mpps Throughput details (B)" aria-keyshortcuts="b B"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
+                <button id="badge-environment" class="badge badge-environment pulse-badge" data-target="environment-section" data-tooltip="Jump to Environment (E)" aria-label="Jump to Environmental Efficiency details (E)" aria-keyshortcuts="e E"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
             </div>
 
             <div class="btn-container">
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Rust Datapath repository on GitHub">
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP-Rust" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Rust Datapath repository on GitHub" aria-label="Rust Datapath - View Rust Datapath repository on GitHub (opens in a new tab)">
                     Rust Datapath
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1872,7 +1872,7 @@
                     </svg>
                     <span class="sr-only">(opens in a new tab)</span>
                 </a>
-                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Go Control Plane repository on GitHub">
+                <a href="https://github.com/rwilliamspbg-ops/SMIP-MWP" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Go Control Plane repository on GitHub" aria-label="Go Control Plane - View Go Control Plane repository on GitHub (opens in a new tab)">
                     Go Control Plane
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1881,7 +1881,7 @@
                     </svg>
                     <span class="sr-only">(opens in a new tab)</span>
                 </a>
-                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Federated Learning repository on GitHub">
+                <a href="https://github.com/rwilliamspbg-ops/Sovereign-Mohawk-Proto" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-tooltip="View Federated Learning repository on GitHub" aria-label="Federated Learning - View Federated Learning repository on GitHub (opens in a new tab)">
                     Federated Learning
                     <svg class="external-link-icon" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1903,7 +1903,7 @@
                             <option value="make status">make status</option>
                         </select>
                     </div>
-                    <button class="copy-btn" id="copy-btn" data-tooltip="Copy command (C)" aria-label="Copy selected command to clipboard (C)">
+                    <button class="copy-btn" id="copy-btn" data-tooltip="Copy command (C)" aria-label="Copy selected command to clipboard (C)" aria-keyshortcuts="c C">
                         <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -2368,7 +2368,7 @@
         </div>
 
         <!-- Play / Pause Button -->
-        <button id="play-pause-btn" class="play-pause-toggle" aria-pressed="true" aria-label="Pause background animation (P)" aria-live="polite" data-tooltip="Pause background animation (P)">
+        <button id="play-pause-btn" class="play-pause-toggle" aria-pressed="true" aria-label="Pause background animation (P)" aria-live="polite" data-tooltip="Pause background animation (P)" aria-keyshortcuts="p P">
             <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
@@ -2379,7 +2379,7 @@
         </button>
 
         <!-- Keyboard Shortcuts Button -->
-        <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel" data-tooltip="Keyboard shortcuts (K / ?)">
+        <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel" data-tooltip="Keyboard shortcuts (K / ?)" aria-keyshortcuts="k K ?">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
                 <line x1="6" y1="8" x2="6.01" y2="8"></line>
@@ -2395,7 +2395,7 @@
         </button>
 
         <!-- Back to Top Button -->
-        <button id="back-to-top" class="back-to-top" aria-label="Back to Top" data-tooltip="Scroll to top (T)">
+        <button id="back-to-top" class="back-to-top" aria-label="Back to Top" data-tooltip="Scroll to top (T)" aria-keyshortcuts="t T">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="12" y1="19" x2="12" y2="5"></line>
                 <polyline points="5 12 12 5 19 12"></polyline>
