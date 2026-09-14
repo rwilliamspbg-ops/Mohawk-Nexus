@@ -3144,6 +3144,16 @@
                             // Update hash smoothly without jumping
                             history.pushState(null, null, '#' + anchorId);
 
+                            // Trigger visual feedback glow on button
+                            btn.classList.add('btn-shortcut-active');
+                            setTimeout(() => btn.classList.remove('btn-shortcut-active'), 200);
+
+                            // Announce to screen readers via aria-live feedback region
+                            const feedbackEl = document.getElementById('copy-feedback');
+                            if (feedbackEl) {
+                                feedbackEl.textContent = 'Section link copied to clipboard';
+                            }
+
                             // Disable during success feedback
                             btn.setAttribute('aria-disabled', 'true');
                             btn.setAttribute('data-tooltip', 'Copied!');
