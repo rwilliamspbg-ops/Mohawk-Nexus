@@ -407,7 +407,7 @@
             box-shadow: 0 10px 30px rgba(0, 255, 136, 0.15);
         }
 
-        .security-badge-card h4 {
+        .security-badge-card h3 {
             color: var(--security-green);
             font-size: 1.3rem;
             margin-bottom: 12px;
@@ -463,7 +463,7 @@
             box-shadow: 0 10px 30px rgba(0, 217, 255, 0.15);
         }
 
-        .env-stat-card h4 {
+        .env-stat-card h3 {
             color: var(--environment-blue);
             font-size: 1.3rem;
             margin-bottom: 12px;
@@ -1126,8 +1126,8 @@
             }
 
             .stat-card h3,
-            .security-badge-card h4,
-            .env-stat-card h4,
+            .security-badge-card h3,
+            .env-stat-card h3,
             .arch-card h3 {
                 font-size: 1.4rem;
             }
@@ -2020,7 +2020,7 @@
             
             <div class="security-badges-grid">
                 <div class="security-badge-card">
-                    <h4><span aria-hidden="true">🔐</span> PQC Key Exchange</h4>
+                    <h3><span aria-hidden="true">🔐</span> PQC Key Exchange</h3>
                     <p>
                         Hybrid x25519-mlkem768 key exchange provides forward security against both classical and quantum attacks. 
                         Ensures long-term cryptographic resilience for decades ahead.
@@ -2028,7 +2028,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4><span aria-hidden="true">🛡️</span> TPM Identity</h4>
+                    <h3><span aria-hidden="true">🛡️</span> TPM Identity</h3>
                     <p>
                         XMSS-based attestation signatures bound to trusted platform modules, ensuring hardware-rooted identity verification 
                         and supply chain security.
@@ -2036,7 +2036,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4><span aria-hidden="true">✅</span> Formal Verification</h4>
+                    <h3><span aria-hidden="true">✅</span> Formal Verification</h3>
                     <p>
                         Lean-based theorem proving guarantees 5/9 Byzantine fault tolerance (55.5% honest majority) and straggler 
                         resilience properties with machine-checked proofs in CI gates.
@@ -2044,7 +2044,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4><span aria-hidden="true">🔒</span> Zero-Copy Security</h4>
+                    <h3><span aria-hidden="true">🔒</span> Zero-Copy Security</h3>
                     <p>
                         Memory-safe Rust datapath with zero-copy header parsing eliminates buffer overflow vulnerabilities and 
                         ensures cryptographic integrity across packet boundaries.
@@ -2052,7 +2052,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4><span aria-hidden="true">🧪</span> Security Audit Gates</h4>
+                    <h3><span aria-hidden="true">🧪</span> Security Audit Gates</h3>
                     <p>
                         Automated security audit gates including penetration testing, dependency vulnerability scanning, and 
                         threat model validation before every release.
@@ -2060,7 +2060,7 @@
                 </div>
                 
                 <div class="security-badge-card">
-                    <h4><span aria-hidden="true">🔮</span> Quantum Migration</h4>
+                    <h3><span aria-hidden="true">🔮</span> Quantum Migration</h3>
                     <p>
                         Epoch-based PQC migration controls with dual-signature transfers for cryptographic continuity during transition 
                         from classical to post-quantum algorithms.
@@ -2083,7 +2083,7 @@
             
             <div class="env-stats-grid">
                 <div class="env-stat-card">
-                    <h4><span aria-hidden="true">⚡</span> Memory Efficiency</h4>
+                    <h3><span aria-hidden="true">⚡</span> Memory Efficiency</h3>
                     <p>
                         Zero-copy header parsing eliminates 96-byte struct copies per packet, reducing memory bandwidth consumption 
                         by ~35% compared to traditional copy-heavy implementations.
@@ -2091,7 +2091,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4><span aria-hidden="true">🔄</span> Allocation Reduction</h4>
+                    <h3><span aria-hidden="true">🔄</span> Allocation Reduction</h3>
                     <p>
                         Single-arena packet buffers reduce heap allocations from thousands per second to virtually zero in hot paths, 
                         lowering GC pressure and reducing CPU cycles spent on memory management.
@@ -2099,7 +2099,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4><span aria-hidden="true">🧠</span> SIMD Optimization</h4>
+                    <h3><span aria-hidden="true">🧠</span> SIMD Optimization</h3>
                     <p>
                         AVX2-accelerated streaming stores unlock 12.8 GiB/s additional memory bandwidth, improving throughput per watt 
                         and reducing overall system power requirements for equivalent performance.
@@ -2107,7 +2107,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4><span aria-hidden="true">📦</span> BTreeMap Routing</h4>
+                    <h3><span aria-hidden="true">📦</span> BTreeMap Routing</h3>
                     <p>
                         O(log n) route table writes with no extra allocations reduce CPU utilization and enable efficient scaling 
                         without proportional power increases.
@@ -2115,7 +2115,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4><span aria-hidden="true">🌐</span> Multi-Tier Federation</h4>
+                    <h3><span aria-hidden="true">🌐</span> Multi-Tier Federation</h3>
                     <p>
                         Regional→Continental→Global federation hierarchy distributes load efficiently, preventing single-point 
                         bottlenecks and optimizing resource utilization across distributed infrastructure.
@@ -2123,7 +2123,7 @@
                 </div>
                 
                 <div class="env-stat-card">
-                    <h4><span aria-hidden="true">📊</span> Byzantine Resilience</h4>
+                    <h3><span aria-hidden="true">📊</span> Byzantine Resilience</h3>
                     <p>
                         Multi-Krum filtering reduces unnecessary recomputation by detecting and isolating faulty nodes, improving 
                         overall system efficiency under adverse conditions.

@@ -137,3 +137,7 @@
 ## 2026-09-12 - [Aligning ARIA Labels with Visible Button Content for WCAG 2.5.3 Compliance]
 **Learning:** Assigning an `aria-label` to an interactive button that omits or differs from the element's visible text (e.g. `aria-label="Jump to Environmental Efficiency details (E)"` on a button displaying "Energy-Efficient Architecture") violates WCAG 2.5.3 (Label in Name). Speech recognition users who dictate the visible label on screen will experience activation failures because the accessible name calculation does not match their spoken command.
 **Action:** Always ensure any explicit `aria-label` attribute on interactive controls incorporates the exact visual text string presented on the button or element.
+
+## 2026-09-16 - [Enforcing Strict Heading Hierarchy for Assistive Screen Reader Navigation]
+**Learning:** Skipping heading levels (such as jumping directly from `<h2>` section titles to `<h4>` card headings) breaks sequential heading navigation in screen readers (like NVDA/JAWS/VoiceOver). Updating card headings to `<h3>` preserves a logical `<h1>` -> `<h2>` -> `<h3>` outline while matching CSS selectors.
+**Action:** Always verify that card components placed inside `<h2>` sections use `<h3>` headings, and update both HTML elements and CSS selectors symmetrically.
