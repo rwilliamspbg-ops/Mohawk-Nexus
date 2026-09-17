@@ -2829,8 +2829,7 @@
                     if (closeShortcutsBtn) {
                         closeShortcutsBtn.addEventListener('click', function(e) {
                             e.stopPropagation();
-                            togglePanel();
-                            shortcutsBtn.focus();
+                            closePanel();
                         });
                     }
 
@@ -2839,7 +2838,7 @@
                         if (shortcutsPanel.classList.contains('visible')) {
                             const isClickInside = shortcutsPanel.contains(e.target) || shortcutsBtn.contains(e.target);
                             if (!isClickInside) {
-                                togglePanel();
+                                closePanel();
                             }
                         }
                     });
