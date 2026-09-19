@@ -2789,12 +2789,14 @@
                 if (shortcutsBtn && shortcutsPanel) {
                     const togglePanel = function() {
                         const isExpanded = shortcutsBtn.getAttribute('aria-expanded') === 'true';
-                        shortcutsBtn.setAttribute('aria-expanded', !isExpanded);
-                        shortcutsPanel.setAttribute('aria-hidden', isExpanded);
-                        shortcutsPanel.setAttribute('aria-modal', !isExpanded);
-                        shortcutsPanel.classList.toggle('visible');
+                        if (isExpanded) {
+                            closePanel();
+                        } else {
+                            shortcutsBtn.setAttribute('aria-expanded', 'true');
+                            shortcutsPanel.setAttribute('aria-hidden', 'false');
+                            shortcutsPanel.setAttribute('aria-modal', 'true');
+                            shortcutsPanel.classList.add('visible');
 
-                        if (!isExpanded) {
                             setTimeout(function() {
                                 if (closeShortcutsBtn) {
                                     closeShortcutsBtn.focus();
