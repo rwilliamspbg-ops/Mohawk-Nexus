@@ -1857,9 +1857,9 @@
             </p>
             
             <div class="component-badges">
-                <button id="badge-security" class="badge badge-security pulse-badge" data-target="security-section" data-tooltip="Jump to Security (S)" aria-label="Jump to Quantum-Ready Security details (S)"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
-                <button id="badge-performance" class="badge badge-performance pulse-badge" data-target="performance-section" data-tooltip="Jump to Benchmarks (B)" aria-label="Jump to 2.49 Mpps Throughput details (B)"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
-                <button id="badge-environment" class="badge badge-environment pulse-badge" data-target="environment-section" data-tooltip="Jump to Environment (E)" aria-label="Jump to Energy-Efficient Architecture details (E)"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
+                <button id="badge-security" class="badge badge-security pulse-badge" data-target="security-section" data-tooltip="Jump to Security (S)" aria-label="Jump to Quantum-Ready Security details (S)" aria-keyshortcuts="s S"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
+                <button id="badge-performance" class="badge badge-performance pulse-badge" data-target="performance-section" data-tooltip="Jump to Benchmarks (B)" aria-label="Jump to 2.49 Mpps Throughput details (B)" aria-keyshortcuts="b B"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
+                <button id="badge-environment" class="badge badge-environment pulse-badge" data-target="environment-section" data-tooltip="Jump to Environment (E)" aria-label="Jump to Energy-Efficient Architecture details (E)" aria-keyshortcuts="e E"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
             </div>
 
             <div class="btn-container">
@@ -1911,7 +1911,7 @@
                         <span>Copy</span>
                     </button>
                 </div>
-                <p id="command-desc" class="command-description" aria-live="polite"></p>
+                <p id="command-desc" class="command-description" aria-live="polite">Bootstrap and configure local development dependencies and environments.</p>
                 <div class="sr-only" id="copy-feedback" aria-live="polite"></div>
             </div>
         </header>
@@ -3031,7 +3031,7 @@
                     }
 
                     // Update copy button properties depending on selected option
-                    function updateCopyBtnCues() {
+                    function updateCopyBtnCues(isInitialLoad = false) {
                         const commandText = commandSelect.value;
                         resetCopyState();
 
@@ -3040,16 +3040,20 @@
 
                         // Update description with a smooth transition
                         if (commandDescEl && commandDescriptions[commandText]) {
-                            commandDescEl.classList.add('fade');
-                            setTimeout(() => {
+                            if (isInitialLoad) {
                                 commandDescEl.textContent = commandDescriptions[commandText];
-                                commandDescEl.classList.remove('fade');
-                            }, 150);
+                            } else {
+                                commandDescEl.classList.add('fade');
+                                setTimeout(() => {
+                                    commandDescEl.textContent = commandDescriptions[commandText];
+                                    commandDescEl.classList.remove('fade');
+                                }, 150);
+                            }
                         }
                     }
 
                     // Run initially to set the correct cues for the default option
-                    updateCopyBtnCues();
+                    updateCopyBtnCues(true);
 
                     commandSelect.addEventListener('change', updateCopyBtnCues);
 
@@ -3182,17 +3186,29 @@
                 });
             });
 
-            // Horizontal keyboard arrow navigation for comparison table container
+            // Horizontal keyboard arrow and Home/End navigation for comparison table container
             document.addEventListener('DOMContentLoaded', function() {
                 const tableContainer = document.querySelector('.table-container');
                 if (tableContainer) {
                     tableContainer.addEventListener('keydown', function(e) {
+                        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-                            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                             const scrollAmount = e.key === 'ArrowRight' ? 120 : -120;
                             e.preventDefault();
                             tableContainer.scrollBy({
                                 left: scrollAmount,
+                                behavior: prefersReducedMotion ? 'auto' : 'smooth'
+                            });
+                        } else if (e.key === 'Home') {
+                            e.preventDefault();
+                            tableContainer.scrollTo({
+                                left: 0,
+                                behavior: prefersReducedMotion ? 'auto' : 'smooth'
+                            });
+                        } else if (e.key === 'End') {
+                            e.preventDefault();
+                            tableContainer.scrollTo({
+                                left: tableContainer.scrollWidth,
                                 behavior: prefersReducedMotion ? 'auto' : 'smooth'
                             });
                         }
