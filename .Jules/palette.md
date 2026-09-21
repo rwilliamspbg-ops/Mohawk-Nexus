@@ -141,3 +141,7 @@
 ## 2026-09-16 - [Enforcing Strict Heading Hierarchy for Assistive Screen Reader Navigation]
 **Learning:** Skipping heading levels (such as jumping directly from `<h2>` section titles to `<h4>` card headings) breaks sequential heading navigation in screen readers (like NVDA/JAWS/VoiceOver). Updating card headings to `<h3>` preserves a logical `<h1>` -> `<h2>` -> `<h3>` outline while matching CSS selectors.
 **Action:** Always verify that card components placed inside `<h2>` sections use `<h3>` headings, and update both HTML elements and CSS selectors symmetrically.
+
+## 2026-09-21 - [Tactile Toast Animation Refreshes & Dropdown Enter-Key Execution]
+**Learning:** When toast notifications or status alerts are re-triggered or updated while already visible, modifying inner DOM text without a subtle entrance/bounce animation can cause users to miss consecutive notifications because the alert container appears static. Forcing a CSS animation restart (via DOM reflow `void toast.offsetWidth` and applying a `.toast-pop` keyframe class) delivers immediate tactile visual feedback on rapid consecutive triggers while respecting `prefers-reduced-motion`. Additionally, enabling `Enter` key execution on dropdown `<select>` controls when focused eliminates extra tab navigation steps for keyboard users.
+**Action:** Always trigger a subtle CSS animation pulse when updating visible toast alerts, and support direct `Enter` key action execution on focused interactive dropdowns.

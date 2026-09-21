@@ -1740,6 +1740,16 @@
             border-color: var(--performance-orange) !important;
         }
 
+        @keyframes toastPop {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-4px) scale(1.04); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .toast.toast-pop {
+            animation: toastPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
         .toast[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -1894,9 +1904,9 @@
 
             <div class="command-widget">
                 <div class="command-container">
-                    <div class="command-text" data-tooltip="Select command (M) • ↑/↓ to switch">
+                    <div class="command-text" data-tooltip="Select command (M) • ↑/↓ to switch • Enter to copy">
                         <span class="command-prefix" aria-hidden="true">$</span>
-                        <select id="command-select" class="command-select" aria-label="Makefile command to copy (Use Up/Down arrow keys to change selection)" aria-keyshortcuts="ArrowUp ArrowDown" aria-describedby="command-desc">
+                        <select id="command-select" class="command-select" aria-label="Makefile command to copy (Use Up/Down arrow keys to change selection, Enter to copy)" aria-keyshortcuts="ArrowUp ArrowDown" aria-describedby="command-desc">
                             <option value="make setup">make setup</option>
                             <option value="make test-all">make test-all</option>
                             <option value="make verify">make verify</option>
@@ -2431,6 +2441,9 @@
                     if (iconSuccess) iconSuccess.style.display = 'block';
                     if (iconError) iconError.style.display = 'none';
                 }
+                toast.classList.remove('toast-pop');
+                void toast.offsetWidth;
+                toast.classList.add('toast-pop');
                 toast.classList.add('visible');
 
                 if (toastTimeout) clearTimeout(toastTimeout);
@@ -2438,6 +2451,7 @@
                 toastStartTime = Date.now();
                 toastTimeout = setTimeout(() => {
                     toast.classList.remove('visible');
+                    toast.classList.remove('toast-pop');
                 }, toastRemaining);
             };
 
@@ -3056,6 +3070,13 @@
                     updateCopyBtnCues(true);
 
                     commandSelect.addEventListener('change', updateCopyBtnCues);
+
+                    commandSelect.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            copyBtn.click();
+                        }
+                    });
 
                     copyBtn.addEventListener('click', function() {
                         if (copyBtn.getAttribute('aria-disabled') === 'true') return;
