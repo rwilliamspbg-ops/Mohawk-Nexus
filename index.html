@@ -3174,23 +3174,33 @@
                             btn.classList.add('btn-shortcut-active');
                             setTimeout(() => btn.classList.remove('btn-shortcut-active'), 200);
 
+                            // Extract section title for personalized feedback
+                            let sectionTitle = '';
+                            const headingEl = btn.closest('h2');
+                            if (headingEl) {
+                                const clone = headingEl.cloneNode(true);
+                                const btnInClone = clone.querySelector('.anchor-link-btn');
+                                if (btnInClone) btnInClone.remove();
+                                sectionTitle = clone.textContent.trim();
+                            }
+
                             // Announce to screen readers via aria-live feedback region
                             const feedbackEl = document.getElementById('copy-feedback');
                             if (feedbackEl) {
-                                feedbackEl.textContent = 'Section link copied to clipboard';
+                                feedbackEl.textContent = sectionTitle ? `Link to ${sectionTitle} copied to clipboard` : 'Section link copied to clipboard';
                             }
 
                             // Disable during success feedback
                             btn.setAttribute('aria-disabled', 'true');
                             btn.setAttribute('data-tooltip', 'Copied!');
-                            btn.setAttribute('aria-label', 'Section link copied to clipboard');
+                            btn.setAttribute('aria-label', sectionTitle ? `Link to ${sectionTitle} copied to clipboard` : 'Section link copied to clipboard');
                             btn.innerHTML = `
                                 <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--security-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                             `;
 
-                            window.showToast('Section link copied successfully!');
+                            window.showToast(sectionTitle ? `Link to "${sectionTitle}" copied successfully!` : 'Section link copied successfully!');
 
                             if (timeout) clearTimeout(timeout);
                             timeout = setTimeout(() => {
