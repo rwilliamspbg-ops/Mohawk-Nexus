@@ -2339,6 +2339,12 @@
                     </button>
                 </li>
                 <li>
+                    <button class="shortcuts-item" data-action="A" aria-label="Jump to Architecture (A)">
+                        <span class="shortcuts-desc">Jump to Architecture</span>
+                        <kbd class="shortcuts-key" data-key="A">A</kbd>
+                    </button>
+                </li>
+                <li>
                     <button class="shortcuts-item" data-action="S" aria-label="Jump to Security (S)">
                         <span class="shortcuts-desc">Jump to Security</span>
                         <kbd class="shortcuts-key" data-key="S">S</kbd>
@@ -2656,6 +2662,7 @@
                         }
                     }
                 }
+                window.triggerVisualFeedback = triggerVisualFeedback;
 
                 window.addEventListener('scroll', updateScrollProgress);
                 updateScrollProgress();
@@ -2729,6 +2736,25 @@
                             }
                             triggerVisualFeedback('C', 'copy-btn');
                             copyBtn.click();
+                        }
+                    } else if ((e.key === 'a' || e.key === 'A') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const targetEl = document.getElementById('architecture-section');
+                        if (targetEl) {
+                            e.preventDefault();
+                            if (typeof window.closeShortcutsPanel === 'function') {
+                                window.closeShortcutsPanel();
+                            }
+                            if (typeof window.triggerVisualFeedback === 'function') {
+                                window.triggerVisualFeedback('A', null);
+                            }
+                            if (history && history.pushState) {
+                                history.pushState(null, null, '#architecture-section');
+                            }
+                            targetEl.scrollIntoView({
+                                behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                                block: 'start'
+                            });
+                            targetEl.focus({ preventScroll: true });
                         }
                     } else if ((e.key === 's' || e.key === 'S') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const badge = document.getElementById('badge-security');
@@ -2908,6 +2934,23 @@
                                 triggerVisualFeedback('C', 'copy-btn');
                                 const btn = document.getElementById('copy-btn');
                                 if (btn) btn.click();
+                            } else if (action === 'A') {
+                                closePanel();
+                                if (typeof window.triggerVisualFeedback === 'function') {
+                                    window.triggerVisualFeedback('A', null);
+                                }
+                                const targetEl = document.getElementById('architecture-section');
+                                if (targetEl) {
+                                    if (history && history.pushState) {
+                                        history.pushState(null, null, '#architecture-section');
+                                    }
+                                    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                                    targetEl.scrollIntoView({
+                                        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                                        block: 'start'
+                                    });
+                                    targetEl.focus({ preventScroll: true });
+                                }
                             } else if (action === 'S') {
                                 closePanel();
                                 triggerVisualFeedback('S', 'badge-security');
