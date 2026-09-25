@@ -1383,6 +1383,13 @@
             display: none;
         }
 
+        .shortcuts-toggle[aria-expanded="true"] {
+            color: #ffffff;
+            border-color: var(--secondary);
+            background: rgba(0, 119, 255, 0.25);
+            box-shadow: 0 0 20px rgba(0, 119, 255, 0.5);
+        }
+
         /* Play / Pause Toggle Button Styles */
         .play-pause-toggle {
             position: fixed;
@@ -1450,6 +1457,13 @@
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
+        }
+
+        .play-pause-toggle[aria-pressed="false"] {
+            color: #ffffff;
+            border-color: var(--performance-orange);
+            background: rgba(255, 107, 53, 0.2);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
         }
 
         /* Close Shortcuts Button */
