@@ -149,3 +149,7 @@
 ## 2026-09-23 - [Context-Aware Feedback for Deep-Link Section Copy Actions]
 **Learning:** Generic clipboard feedback (such as "Section link copied") lacks spatial reassurance when users copy section anchors across long or complex pages. Extracting the section title directly from heading containers to construct context-aware notifications (e.g. `Link to "Trusted Three-Tier Architecture" copied successfully!`) reinforces user spatial orientation and enriches `aria-live` screen reader announcements.
 **Action:** Extract section heading text when handling section anchor copy triggers to provide explicit, context-aware notification titles in toasts and screen reader live regions.
+
+## 2026-09-25 - [ARIA State-Driven Visual Indicators for Floating Controls]
+**Learning:** When floating toggle controls (like helper modals or animation controls) change state, relying solely on inner icon changes or screen-reader announcements leaves the floating triggers visually indistinct to sighted users. Binding state styling directly to ARIA attributes (`.shortcuts-toggle[aria-expanded="true"]` and `.play-pause-toggle[aria-pressed="false"]`) using theme-conforming neon borders, background tinting, and glowing shadows creates an intuitive visual feedback loop that stays strictly synchronized with assistive accessibility states.
+**Action:** Always style active toggle states directly on WAI-ARIA attribute selectors (`[aria-expanded="true"]` / `[aria-pressed="false"]`) for persistent floating controls using theme-conforming glowing borders and background tints.
