@@ -2258,7 +2258,15 @@
 
         <!-- Call to Action -->
         <section id="cta-section" class="hero" style="margin-bottom: 0;" tabindex="-1" aria-labelledby="cta-heading">
-            <h2 id="cta-heading" style="font-size: 2.5rem; margin-bottom: 30px;">Ready to Deploy</h2>
+            <h2 id="cta-heading" style="font-size: 2.5rem; margin-bottom: 30px;">
+                Ready to Deploy
+                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Ready to Deploy section" data-anchor="cta-section">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                </button>
+            </h2>
             <p style="max-width: 800px; margin: 0 auto 40px;">
                 Mohawk-Nexus combines quantum-resistant security, ultra-high performance, and environmental efficiency 
                 in a single, formally-verified architecture ready for production deployment.
@@ -2374,6 +2382,12 @@
                     <button class="shortcuts-item" data-action="E" aria-label="Jump to Environment (E)">
                         <span class="shortcuts-desc">Jump to Environment</span>
                         <kbd class="shortcuts-key" data-key="E">E</kbd>
+                    </button>
+                </li>
+                <li>
+                    <button class="shortcuts-item" data-action="D" aria-label="Jump to Deployment (D)">
+                        <span class="shortcuts-desc">Jump to Deployment</span>
+                        <kbd class="shortcuts-key" data-key="D">D</kbd>
                     </button>
                 </li>
                 <li>
@@ -2800,6 +2814,21 @@
                             triggerVisualFeedback('E', 'badge-environment');
                             badge.click();
                         }
+                    } else if ((e.key === 'd' || e.key === 'D') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const ctaSec = document.getElementById('cta-section');
+                        if (ctaSec) {
+                            e.preventDefault();
+                            if (typeof window.closeShortcutsPanel === 'function') {
+                                window.closeShortcutsPanel();
+                            }
+                            triggerVisualFeedback('D', 'cta-section');
+                            if (window.location.hash !== '#cta-section') {
+                                history.pushState(null, null, '#cta-section');
+                            }
+                            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                            ctaSec.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+                            ctaSec.focus({ preventScroll: true });
+                        }
                     } else if ((e.key === 'k' || e.key === 'K' || e.key === '?') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const shortcutsBtn = document.getElementById('shortcuts-btn');
                         if (shortcutsBtn) {
@@ -2980,6 +3009,18 @@
                                 triggerVisualFeedback('E', 'badge-environment');
                                 const btn = document.getElementById('badge-environment');
                                 if (btn) btn.click();
+                            } else if (action === 'D') {
+                                closePanel();
+                                triggerVisualFeedback('D', 'cta-section');
+                                const ctaSec = document.getElementById('cta-section');
+                                if (ctaSec) {
+                                    if (window.location.hash !== '#cta-section') {
+                                        history.pushState(null, null, '#cta-section');
+                                    }
+                                    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                                    ctaSec.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+                                    ctaSec.focus({ preventScroll: true });
+                                }
                             } else if (action === 'K') {
                                 triggerVisualFeedback('K', 'shortcuts-btn');
                                 shortcutsBtn.click();
