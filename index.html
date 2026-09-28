@@ -2385,6 +2385,12 @@
                     </button>
                 </li>
                 <li>
+                    <button class="shortcuts-item" data-action="I" aria-label="Jump to Industry Comparison (I)">
+                        <span class="shortcuts-desc">Jump to Industry Comparison</span>
+                        <kbd class="shortcuts-key" data-key="I">I</kbd>
+                    </button>
+                </li>
+                <li>
                     <button class="shortcuts-item" data-action="D" aria-label="Jump to Deployment (D)">
                         <span class="shortcuts-desc">Jump to Deployment</span>
                         <kbd class="shortcuts-key" data-key="D">D</kbd>
@@ -2814,6 +2820,21 @@
                             triggerVisualFeedback('E', 'badge-environment');
                             badge.click();
                         }
+                    } else if ((e.key === 'i' || e.key === 'I') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const compSec = document.getElementById('comparison-section');
+                        if (compSec) {
+                            e.preventDefault();
+                            if (typeof window.closeShortcutsPanel === 'function') {
+                                window.closeShortcutsPanel();
+                            }
+                            triggerVisualFeedback('I', 'comparison-section');
+                            if (window.location.hash !== '#comparison-section') {
+                                history.pushState(null, null, '#comparison-section');
+                            }
+                            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                            compSec.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+                            compSec.focus({ preventScroll: true });
+                        }
                     } else if ((e.key === 'd' || e.key === 'D') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const ctaSec = document.getElementById('cta-section');
                         if (ctaSec) {
@@ -3009,6 +3030,18 @@
                                 triggerVisualFeedback('E', 'badge-environment');
                                 const btn = document.getElementById('badge-environment');
                                 if (btn) btn.click();
+                            } else if (action === 'I') {
+                                closePanel();
+                                triggerVisualFeedback('I', 'comparison-section');
+                                const compSec = document.getElementById('comparison-section');
+                                if (compSec) {
+                                    if (window.location.hash !== '#comparison-section') {
+                                        history.pushState(null, null, '#comparison-section');
+                                    }
+                                    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                                    compSec.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+                                    compSec.focus({ preventScroll: true });
+                                }
                             } else if (action === 'D') {
                                 closePanel();
                                 triggerVisualFeedback('D', 'cta-section');
