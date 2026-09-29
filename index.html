@@ -2385,6 +2385,12 @@
                     </button>
                 </li>
                 <li>
+                    <button class="shortcuts-item" data-action="X" aria-label="Jump to Tech Stack (X)">
+                        <span class="shortcuts-desc">Jump to Tech Stack</span>
+                        <kbd class="shortcuts-key" data-key="X">X</kbd>
+                    </button>
+                </li>
+                <li>
                     <button class="shortcuts-item" data-action="I" aria-label="Jump to Industry Comparison (I)">
                         <span class="shortcuts-desc">Jump to Industry Comparison</span>
                         <kbd class="shortcuts-key" data-key="I">I</kbd>
@@ -2820,6 +2826,21 @@
                             triggerVisualFeedback('E', 'badge-environment');
                             badge.click();
                         }
+                    } else if ((e.key === 'x' || e.key === 'X') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                        const techSec = document.getElementById('tech-stack-section');
+                        if (techSec) {
+                            e.preventDefault();
+                            if (typeof window.closeShortcutsPanel === 'function') {
+                                window.closeShortcutsPanel();
+                            }
+                            triggerVisualFeedback('X', 'tech-stack-section');
+                            if (window.location.hash !== '#tech-stack-section') {
+                                history.pushState(null, null, '#tech-stack-section');
+                            }
+                            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                            techSec.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+                            techSec.focus({ preventScroll: true });
+                        }
                     } else if ((e.key === 'i' || e.key === 'I') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const compSec = document.getElementById('comparison-section');
                         if (compSec) {
@@ -3030,6 +3051,18 @@
                                 triggerVisualFeedback('E', 'badge-environment');
                                 const btn = document.getElementById('badge-environment');
                                 if (btn) btn.click();
+                            } else if (action === 'X') {
+                                closePanel();
+                                const techSec = document.getElementById('tech-stack-section');
+                                if (techSec) {
+                                    triggerVisualFeedback('X', 'tech-stack-section');
+                                    if (window.location.hash !== '#tech-stack-section') {
+                                        history.pushState(null, null, '#tech-stack-section');
+                                    }
+                                    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                                    techSec.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+                                    techSec.focus({ preventScroll: true });
+                                }
                             } else if (action === 'I') {
                                 closePanel();
                                 triggerVisualFeedback('I', 'comparison-section');
