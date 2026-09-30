@@ -2735,7 +2735,11 @@
                                 setTimeout(() => container.classList.remove('btn-shortcut-active'), 150);
                             }
                         } else {
-                            const btn = document.getElementById(buttonId);
+                            let btn = document.getElementById(buttonId);
+                            if (btn && btn.tagName === 'SECTION') {
+                                const anchorBtn = btn.querySelector('.anchor-link-btn');
+                                if (anchorBtn) btn = anchorBtn;
+                            }
                             if (btn) {
                                 btn.classList.add('btn-shortcut-active');
                                 setTimeout(() => btn.classList.remove('btn-shortcut-active'), 150);
@@ -2785,7 +2789,7 @@
                                 window.closeShortcutsPanel();
                             }
                             if (typeof window.triggerVisualFeedback === 'function') {
-                                window.triggerVisualFeedback('A', null);
+                                window.triggerVisualFeedback('A', 'architecture-section');
                             }
                             if (history && history.pushState) {
                                 history.pushState(null, null, '#architecture-section');
@@ -3022,7 +3026,7 @@
                             } else if (action === 'A') {
                                 closePanel();
                                 if (typeof window.triggerVisualFeedback === 'function') {
-                                    window.triggerVisualFeedback('A', null);
+                                    window.triggerVisualFeedback('A', 'architecture-section');
                                 }
                                 const targetEl = document.getElementById('architecture-section');
                                 if (targetEl) {
