@@ -157,3 +157,7 @@
 ## 2026-09-30 - [Targeting Shortcut Visual Feedback to Section Anchor Buttons]
 **Learning:** Passing top-level section container IDs (e.g. `#tech-stack-section`) to visual shortcut feedback functions that apply momentary scaling transitions (`transform: translateY(2px) scale(0.95)`) causes jarring, full-viewport layout reflows and content shifts during keyboard hotkey navigation. Redirecting shortcut visual feedback flashes specifically to section heading anchor buttons (`.anchor-link-btn`) preserves tactile hotkey confirmation while avoiding layout distortion.
 **Action:** Always verify that shortcut feedback helpers inspect target element tags and reroute visual flash transitions to inner control buttons when container elements are targeted.
+
+## 2026-10-01 - [Preserving Contextual Focus on Overlay Dismissal Handlers]
+**Learning:** When modal overlays or helper panels (such as `#shortcuts-panel`) are dismissed via global hotkeys (like `Escape`), unconditionally shifting DOM focus to the overlay's trigger button overrides intelligent focus-preservation logic (e.g. `closePanel` checking `focusWasInside`). If the user was focused on an in-page control (like a dropdown selector or table) when pressing `Escape`, forced focus redirection steals focus and disorients keyboard users.
+**Action:** Ensure global key listeners for overlay dismissal delegate panel teardown directly to close methods without appending hardcoded focus calls, preserving active page focus when focus did not originate inside the overlay.
