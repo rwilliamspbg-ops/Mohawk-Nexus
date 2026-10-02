@@ -489,7 +489,9 @@
         .comparison-section:focus-visible,
         .comparison-section:focus,
         .tech-stack-section:focus-visible,
-        .tech-stack-section:focus {
+        .tech-stack-section:focus,
+        .cta-section:focus-visible,
+        .cta-section:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.35);
@@ -2257,7 +2259,7 @@
         </section>
 
         <!-- Call to Action -->
-        <section id="cta-section" class="hero" style="margin-bottom: 0;" tabindex="-1" aria-labelledby="cta-heading">
+        <section id="cta-section" class="cta-section hero" style="margin-bottom: 0; transition: border-color 0.4s ease, box-shadow 0.4s ease; border-radius: 20px; border: 1px solid transparent;" tabindex="-1" aria-labelledby="cta-heading">
             <h2 id="cta-heading" style="font-size: 2.5rem; margin-bottom: 30px;">
                 Ready to Deploy
                 <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Ready to Deploy section" data-anchor="cta-section">
