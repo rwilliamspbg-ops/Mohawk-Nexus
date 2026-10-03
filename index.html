@@ -34,7 +34,8 @@
             min-height: 100vh;
         }
 
-        body:focus {
+        body:focus,
+        main:focus {
             outline: none;
         }
 
@@ -3299,9 +3300,10 @@
                                 behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
                                 block: 'start'
                             });
-                            if (targetEl.hasAttribute('tabindex')) {
-                                targetEl.focus({ preventScroll: true });
+                            if (!targetEl.hasAttribute('tabindex') && !/^(a|button|input|select|textarea)$/i.test(targetEl.tagName)) {
+                                targetEl.setAttribute('tabindex', '-1');
                             }
+                            targetEl.focus({ preventScroll: true });
                         }
                     } else {
                         window.scrollTo({
@@ -3317,8 +3319,9 @@
                     setTimeout(handleHashNavigation, 100);
                 }
 
-                // Handle browser back/forward history navigation
+                // Handle browser back/forward history navigation & native hash fragment changes
                 window.addEventListener('popstate', handleHashNavigation);
+                window.addEventListener('hashchange', handleHashNavigation);
 
                 const anchorBtns = document.querySelectorAll('.anchor-link-btn');
                 anchorBtns.forEach(btn => {
