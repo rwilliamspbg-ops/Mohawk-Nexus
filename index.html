@@ -1884,9 +1884,9 @@
             </p>
             
             <div class="component-badges">
-                <button id="badge-security" class="badge badge-security pulse-badge" data-target="security-section" data-tooltip="Jump to Security (S)" aria-label="Quantum-Ready Security - Jump to details (S)" aria-keyshortcuts="s S"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
-                <button id="badge-performance" class="badge badge-performance pulse-badge" data-target="performance-section" data-tooltip="Jump to Benchmarks (B)" aria-label="2.49 Mpps Throughput - Jump to details (B)" aria-keyshortcuts="b B"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
-                <button id="badge-environment" class="badge badge-environment pulse-badge" data-target="environment-section" data-tooltip="Jump to Environment (E)" aria-label="Energy-Efficient Architecture - Jump to details (E)" aria-keyshortcuts="e E"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
+                <button type="button" id="badge-security" class="badge badge-security pulse-badge" data-target="security-section" data-tooltip="Jump to Security (S)" aria-label="Quantum-Ready Security - Jump to details (S)" aria-keyshortcuts="s S"><span aria-hidden="true">🔐</span> Quantum-Ready Security</button>
+                <button type="button" id="badge-performance" class="badge badge-performance pulse-badge" data-target="performance-section" data-tooltip="Jump to Benchmarks (B)" aria-label="2.49 Mpps Throughput - Jump to details (B)" aria-keyshortcuts="b B"><span aria-hidden="true">⚡</span> 2.49 Mpps Throughput</button>
+                <button type="button" id="badge-environment" class="badge badge-environment pulse-badge" data-target="environment-section" data-tooltip="Jump to Environment (E)" aria-label="Energy-Efficient Architecture - Jump to details (E)" aria-keyshortcuts="e E"><span aria-hidden="true">🌱</span> Energy-Efficient Architecture</button>
             </div>
 
             <div class="btn-container">
@@ -1930,7 +1930,7 @@
                             <option value="make status">make status</option>
                         </select>
                     </div>
-                    <button class="copy-btn" id="copy-btn" data-tooltip="Copy command (C)" aria-label="Copy selected command to clipboard (C)" aria-keyshortcuts="c C">
+                    <button type="button" class="copy-btn" id="copy-btn" data-tooltip="Copy command (C)" aria-label="Copy selected command to clipboard (C)" aria-keyshortcuts="c C">
                         <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1948,7 +1948,7 @@
             <section id="architecture-section" class="architecture-section" tabindex="-1" aria-labelledby="arch-heading">
                 <h2 id="arch-heading">
                     Trusted Three-Tier Architecture
-                    <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Trusted Three-Tier Architecture section" data-anchor="architecture-section">
+                    <button type="button" class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Trusted Three-Tier Architecture section" data-anchor="architecture-section">
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -1988,7 +1988,7 @@
         <section id="performance-section" class="performance-section" tabindex="-1" aria-labelledby="perf-heading">
             <h2 id="perf-heading">
                 Performance Benchmarks
-                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Performance Benchmarks section" data-anchor="performance-section">
+                <button type="button" class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Performance Benchmarks section" data-anchor="performance-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -2037,7 +2037,7 @@
         <section id="security-section" class="security-section" tabindex="-1" aria-labelledby="sec-heading">
             <h2 id="sec-heading">
                 Quantum-Ready Security Stack
-                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Quantum-Ready Security Stack section" data-anchor="security-section">
+                <button type="button" class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Quantum-Ready Security Stack section" data-anchor="security-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -2100,7 +2100,7 @@
         <section id="environment-section" class="environment-section" tabindex="-1" aria-labelledby="env-heading">
             <h2 id="env-heading">
                 Environmental Efficiency
-                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Environmental Efficiency section" data-anchor="environment-section">
+                <button type="button" class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Environmental Efficiency section" data-anchor="environment-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -2163,7 +2163,7 @@
         <section id="tech-stack-section" class="tech-stack-section" tabindex="-1" aria-labelledby="tech-heading">
             <h2 id="tech-heading">
                 Technical Implementation
-                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Technical Implementation section" data-anchor="tech-stack-section">
+                <button type="button" class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Technical Implementation section" data-anchor="tech-stack-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -2192,7 +2192,7 @@
         <section id="comparison-section" class="comparison-section" tabindex="-1" aria-labelledby="comp-heading">
             <h2 id="comp-heading">
                 Industry Comparison
-                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Industry Comparison section" data-anchor="comparison-section">
+                <button type="button" class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Industry Comparison section" data-anchor="comparison-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -2263,7 +2263,7 @@
         <section id="cta-section" class="cta-section hero" style="margin-bottom: 0; transition: border-color 0.4s ease, box-shadow 0.4s ease; border-radius: 20px; border: 1px solid transparent;" tabindex="-1" aria-labelledby="cta-heading">
             <h2 id="cta-heading" style="font-size: 2.5rem; margin-bottom: 30px;">
                 Ready to Deploy
-                <button class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Ready to Deploy section" data-anchor="cta-section">
+                <button type="button" class="anchor-link-btn" data-tooltip="Copy link" aria-label="Copy link to Ready to Deploy section" data-anchor="cta-section">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -2346,79 +2346,79 @@
             </h3>
             <ul class="shortcuts-list">
                 <li>
-                    <button class="shortcuts-item" data-action="T" aria-label="Scroll to top (T)">
+                    <button type="button" class="shortcuts-item" data-action="T" aria-label="Scroll to top (T)">
                         <span class="shortcuts-desc">Scroll to top</span>
                         <kbd class="shortcuts-key" data-key="T">T</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="M" aria-label="Focus command dropdown (M)">
+                    <button type="button" class="shortcuts-item" data-action="M" aria-label="Focus command dropdown (M)">
                         <span class="shortcuts-desc">Focus command dropdown</span>
                         <kbd class="shortcuts-key" data-key="M">M</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="C" aria-label="Copy selected command (C)">
+                    <button type="button" class="shortcuts-item" data-action="C" aria-label="Copy selected command (C)">
                         <span class="shortcuts-desc">Copy selected command</span>
                         <kbd class="shortcuts-key" data-key="C">C</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="A" aria-label="Jump to Architecture (A)">
+                    <button type="button" class="shortcuts-item" data-action="A" aria-label="Jump to Architecture (A)">
                         <span class="shortcuts-desc">Jump to Architecture</span>
                         <kbd class="shortcuts-key" data-key="A">A</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="S" aria-label="Jump to Security (S)">
+                    <button type="button" class="shortcuts-item" data-action="S" aria-label="Jump to Security (S)">
                         <span class="shortcuts-desc">Jump to Security</span>
                         <kbd class="shortcuts-key" data-key="S">S</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="B" aria-label="Jump to Benchmarks (B)">
+                    <button type="button" class="shortcuts-item" data-action="B" aria-label="Jump to Benchmarks (B)">
                         <span class="shortcuts-desc">Jump to Benchmarks</span>
                         <kbd class="shortcuts-key" data-key="B">B</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="E" aria-label="Jump to Environment (E)">
+                    <button type="button" class="shortcuts-item" data-action="E" aria-label="Jump to Environment (E)">
                         <span class="shortcuts-desc">Jump to Environment</span>
                         <kbd class="shortcuts-key" data-key="E">E</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="X" aria-label="Jump to Tech Stack (X)">
+                    <button type="button" class="shortcuts-item" data-action="X" aria-label="Jump to Tech Stack (X)">
                         <span class="shortcuts-desc">Jump to Tech Stack</span>
                         <kbd class="shortcuts-key" data-key="X">X</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="I" aria-label="Jump to Industry Comparison (I)">
+                    <button type="button" class="shortcuts-item" data-action="I" aria-label="Jump to Industry Comparison (I)">
                         <span class="shortcuts-desc">Jump to Industry Comparison</span>
                         <kbd class="shortcuts-key" data-key="I">I</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="D" aria-label="Jump to Deployment (D)">
+                    <button type="button" class="shortcuts-item" data-action="D" aria-label="Jump to Deployment (D)">
                         <span class="shortcuts-desc">Jump to Deployment</span>
                         <kbd class="shortcuts-key" data-key="D">D</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="K" aria-label="Toggle this helper (K / ?)">
+                    <button type="button" class="shortcuts-item" data-action="K" aria-label="Toggle this helper (K / ?)">
                         <span class="shortcuts-desc">Toggle this helper</span>
                         <kbd class="shortcuts-key" data-key="K">K / ?</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="P" aria-label="Toggle animation (P)">
+                    <button type="button" class="shortcuts-item" data-action="P" aria-label="Toggle animation (P)">
                         <span class="shortcuts-desc">Toggle animation</span>
                         <kbd class="shortcuts-key" data-key="P">P</kbd>
                     </button>
                 </li>
                 <li>
-                    <button class="shortcuts-item" data-action="Esc" aria-label="Close helper (Esc)">
+                    <button type="button" class="shortcuts-item" data-action="Esc" aria-label="Close helper (Esc)">
                         <span class="shortcuts-desc">Close helper</span>
                         <kbd class="shortcuts-key" data-key="Esc">Esc</kbd>
                     </button>
@@ -2427,7 +2427,7 @@
         </div>
 
         <!-- Play / Pause Button -->
-        <button id="play-pause-btn" class="play-pause-toggle" aria-pressed="true" aria-label="Pause background animation (P)" aria-live="polite" data-tooltip="Pause background animation (P)" aria-keyshortcuts="p P">
+        <button type="button" id="play-pause-btn" class="play-pause-toggle" aria-pressed="true" aria-label="Pause background animation (P)" aria-live="polite" data-tooltip="Pause background animation (P)" aria-keyshortcuts="p P">
             <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
@@ -2438,7 +2438,7 @@
         </button>
 
         <!-- Keyboard Shortcuts Button -->
-        <button id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel" data-tooltip="Keyboard shortcuts (K / ?)" aria-keyshortcuts="k K ?">
+        <button type="button" id="shortcuts-btn" class="shortcuts-toggle" aria-label="Toggle keyboard shortcuts panel" aria-expanded="false" aria-controls="shortcuts-panel" data-tooltip="Keyboard shortcuts (K / ?)" aria-keyshortcuts="k K ?">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
                 <line x1="6" y1="8" x2="6.01" y2="8"></line>
@@ -2454,7 +2454,7 @@
         </button>
 
         <!-- Back to Top Button -->
-        <button id="back-to-top" class="back-to-top" aria-label="Back to Top" data-tooltip="Scroll to top (T)" aria-keyshortcuts="t T">
+        <button type="button" id="back-to-top" class="back-to-top" aria-label="Back to Top" data-tooltip="Scroll to top (T)" aria-keyshortcuts="t T">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="12" y1="19" x2="12" y2="5"></line>
                 <polyline points="5 12 12 5 19 12"></polyline>
