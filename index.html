@@ -1563,12 +1563,46 @@
         .shortcuts-panel h3 {
             color: var(--primary);
             font-size: 1.1rem;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border-bottom: 1px solid rgba(0, 255, 204, 0.2);
             padding-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .shortcuts-search-wrapper {
+            margin-bottom: 12px;
+        }
+
+        .shortcuts-search-input {
+            width: 100%;
+            padding: 6px 10px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.8rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .shortcuts-search-input:focus-visible {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
+        }
+
+        .shortcuts-search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .shortcuts-empty-msg {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-align: center;
+            padding: 8px 0 0;
+            margin: 0;
         }
 
         .shortcuts-list {
@@ -2344,6 +2378,9 @@
                 </svg>
                 Keyboard Shortcuts
             </h3>
+            <div class="shortcuts-search-wrapper">
+                <input type="text" id="shortcuts-search" class="shortcuts-search-input" placeholder="Search shortcuts..." aria-label="Search shortcuts" autocomplete="off" />
+            </div>
             <ul class="shortcuts-list">
                 <li>
                     <button type="button" class="shortcuts-item" data-action="T" aria-label="Scroll to top (T)">
@@ -2424,6 +2461,7 @@
                     </button>
                 </li>
             </ul>
+            <p id="shortcuts-empty" class="shortcuts-empty-msg" role="status" aria-live="polite" style="display: none;">No matching shortcuts found</p>
         </div>
 
         <!-- Play / Pause Button -->
@@ -2893,6 +2931,13 @@
                             playPauseBtn.click();
                         }
                     } else if (e.key === 'Escape') {
+                        const shortcutsSearch = document.getElementById('shortcuts-search');
+                        if (shortcutsSearch && document.activeElement === shortcutsSearch && shortcutsSearch.value !== '') {
+                            e.preventDefault();
+                            shortcutsSearch.value = '';
+                            shortcutsSearch.dispatchEvent(new Event('input'));
+                            return;
+                        }
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
                         const toastEl = document.getElementById('toast');
                         if (shortcutsPanel && shortcutsPanel.classList.contains('visible')) {
@@ -2916,20 +2961,51 @@
                 const shortcutsBtn = document.getElementById('shortcuts-btn');
                 const shortcutsPanel = document.getElementById('shortcuts-panel');
                 const closeShortcutsBtn = document.getElementById('close-shortcuts-btn');
+                const shortcutsSearch = document.getElementById('shortcuts-search');
+                const shortcutsEmpty = document.getElementById('shortcuts-empty');
+                const shortcutListItems = shortcutsPanel ? shortcutsPanel.querySelectorAll('.shortcuts-list li') : [];
 
                 if (shortcutsBtn && shortcutsPanel) {
+                    const filterShortcuts = function() {
+                        if (!shortcutsSearch) return;
+                        const query = shortcutsSearch.value.trim().toLowerCase();
+                        let visibleCount = 0;
+                        shortcutListItems.forEach(function(li) {
+                            const text = li.textContent.toLowerCase();
+                            if (!query || text.includes(query)) {
+                                li.style.display = '';
+                                visibleCount++;
+                            } else {
+                                li.style.display = 'none';
+                            }
+                        });
+                        if (shortcutsEmpty) {
+                            shortcutsEmpty.style.display = visibleCount === 0 ? 'block' : 'none';
+                        }
+                    };
+
+                    if (shortcutsSearch) {
+                        shortcutsSearch.addEventListener('input', filterShortcuts);
+                    }
+
                     const togglePanel = function() {
                         const isExpanded = shortcutsBtn.getAttribute('aria-expanded') === 'true';
                         if (isExpanded) {
                             closePanel();
                         } else {
+                            if (shortcutsSearch) {
+                                shortcutsSearch.value = '';
+                                filterShortcuts();
+                            }
                             shortcutsBtn.setAttribute('aria-expanded', 'true');
                             shortcutsPanel.setAttribute('aria-hidden', 'false');
                             shortcutsPanel.setAttribute('aria-modal', 'true');
                             shortcutsPanel.classList.add('visible');
 
                             setTimeout(function() {
-                                if (closeShortcutsBtn) {
+                                if (shortcutsSearch) {
+                                    shortcutsSearch.focus();
+                                } else if (closeShortcutsBtn) {
                                     closeShortcutsBtn.focus();
                                 } else {
                                     shortcutsPanel.focus();
@@ -2945,6 +3021,10 @@
                             shortcutsPanel.setAttribute('aria-hidden', 'true');
                             shortcutsPanel.setAttribute('aria-modal', 'false');
                             shortcutsPanel.classList.remove('visible');
+                            if (shortcutsSearch) {
+                                shortcutsSearch.value = '';
+                                filterShortcuts();
+                            }
                             if (focusWasInside) {
                                 shortcutsBtn.focus();
                             }
@@ -2978,7 +3058,10 @@
 
                     shortcutsPanel.addEventListener('keydown', function(e) {
                         if (e.key === 'Tab' && shortcutsPanel.classList.contains('visible')) {
-                            const focusableEls = shortcutsPanel.querySelectorAll('button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+                            const rawEls = shortcutsPanel.querySelectorAll('button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])');
+                            const focusableEls = Array.from(rawEls).filter(function(el) {
+                                return el.offsetWidth > 0 || el.offsetHeight > 0;
+                            });
                             if (focusableEls.length > 0) {
                                 const firstEl = focusableEls[0];
                                 const lastEl = focusableEls[focusableEls.length - 1];
