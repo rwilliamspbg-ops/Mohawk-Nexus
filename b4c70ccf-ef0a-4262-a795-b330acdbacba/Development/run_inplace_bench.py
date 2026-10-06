@@ -94,6 +94,7 @@ AFXDP_SOC = os.path.join(WS, "afxdp", "src", "socket.rs")
 
 # Verify our custom files are clean
 for _p in OUR_CUSTOM:
+    if not os.path.exists(_p): continue
     raw = open(_p, "rb").read()
     if b"ZERVE" in raw or b"\x00" in raw:
         _rel = os.path.relpath(_p, WS)
