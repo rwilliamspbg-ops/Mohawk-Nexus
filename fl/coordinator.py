@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import copy
 import json
 import os
 from pathlib import Path
 from prometheus_client import start_http_server, Counter, Gauge
+import threading
 import time
 
 try:
@@ -54,6 +56,57 @@ REQUESTS = Counter('fl_requests_total', 'Total HTTP requests to coordinator', ['
 UPDATES = Counter('fl_updates_total', 'Total updates received')
 ROUNDS = Counter('fl_rounds_aggregated_total', 'Total rounds aggregated')
 GLOBAL = Gauge('fl_global_value', 'Last aggregated global value')
+
+# In-memory state cache
+STATE_LOCK = threading.Lock()
+_STATE_CACHE = None
+_STATE_CACHE_PATH = None
+_STATE_CACHE_MTIME = None
+
+
+def _get_state(default_factory):
+    global _STATE_CACHE, _STATE_CACHE_PATH, _STATE_CACHE_MTIME
+    with STATE_LOCK:
+        current_path = STATE
+        current_mtime = None
+        if current_path.exists():
+            try:
+                current_mtime = current_path.stat().st_mtime
+            except OSError:
+                current_mtime = None
+
+        if (
+            _STATE_CACHE is None
+            or _STATE_CACHE_PATH != current_path
+            or _STATE_CACHE_MTIME != current_mtime
+        ):
+            _STATE_CACHE_PATH = current_path
+            if current_path.exists():
+                try:
+                    _STATE_CACHE = json.loads(current_path.read_text())
+                    _STATE_CACHE_MTIME = current_mtime
+                except Exception:
+                    _STATE_CACHE = default_factory()
+                    _STATE_CACHE_MTIME = None
+            else:
+                _STATE_CACHE = default_factory()
+                _STATE_CACHE_MTIME = None
+
+        return copy.deepcopy(_STATE_CACHE)
+
+
+def _save_state(new_state):
+    global _STATE_CACHE, _STATE_CACHE_PATH, _STATE_CACHE_MTIME
+    with STATE_LOCK:
+        _STATE_CACHE = copy.deepcopy(new_state)
+        _STATE_CACHE_PATH = STATE
+        STATE.write_text(json.dumps(_STATE_CACHE))
+        if STATE.exists():
+            try:
+                _STATE_CACHE_MTIME = STATE.stat().st_mtime
+            except OSError:
+                _STATE_CACHE_MTIME = None
+
 
 class Handler(BaseHTTPRequestHandler):
     def _send(self, code=200, data=None):
@@ -116,10 +169,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(500, {'error': str(e)})
             return
         # return current round
-        if STATE.exists():
-            content = json.loads(STATE.read_text())
-        else:
-            content = {'round': 0, 'global': 0.0}
+        content = _get_state(lambda: {'round': 0, 'global': 0.0})
         self._send(200, content)
 
     def do_POST(self):
@@ -132,10 +182,7 @@ class Handler(BaseHTTPRequestHandler):
             self._send(400, {'error': 'invalid json'})
             return
         # append update
-        if STATE.exists():
-            content = json.loads(STATE.read_text())
-        else:
-            content = {'round': 0, 'updates': []}
+        content = _get_state(lambda: {'round': 0, 'updates': []})
         content.setdefault('updates', []).append(payload.get('value', 0.0))
         UPDATES.inc()
         # simple aggregation when 2 updates collected
@@ -145,7 +192,7 @@ class Handler(BaseHTTPRequestHandler):
             content = {'round': content.get('round', 0) + 1, 'global': agg, 'updates': []}
             ROUNDS.inc()
             GLOBAL.set(agg)
-        STATE.write_text(json.dumps(content))
+        _save_state(content)
         self._send(200, content)
 
 def main():
