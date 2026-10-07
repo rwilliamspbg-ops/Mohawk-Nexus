@@ -1572,12 +1572,13 @@
         }
 
         .shortcuts-search-wrapper {
+            position: relative;
             margin-bottom: 12px;
         }
 
         .shortcuts-search-input {
             width: 100%;
-            padding: 6px 10px;
+            padding: 6px 28px 6px 10px;
             background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 6px;
@@ -1586,6 +1587,29 @@
             font-size: 0.8rem;
             outline: none;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .shortcuts-search-clear {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 2px 4px;
+            line-height: 1;
+            border-radius: 4px;
+            display: none;
+            transition: color 0.2s ease;
+        }
+
+        .shortcuts-search-clear:hover,
+        .shortcuts-search-clear:focus-visible {
+            color: var(--primary);
+            outline: none;
         }
 
         .shortcuts-search-input:focus-visible {
@@ -2380,6 +2404,7 @@
             </h3>
             <div class="shortcuts-search-wrapper">
                 <input type="text" id="shortcuts-search" class="shortcuts-search-input" placeholder="Search shortcuts..." aria-label="Search shortcuts" autocomplete="off" />
+                <button type="button" id="shortcuts-search-clear" class="shortcuts-search-clear" aria-label="Clear search query" data-tooltip="Clear (Esc)"><span aria-hidden="true">&times;</span></button>
             </div>
             <ul class="shortcuts-list">
                 <li>
@@ -2934,8 +2959,13 @@
                         const shortcutsSearch = document.getElementById('shortcuts-search');
                         if (shortcutsSearch && document.activeElement === shortcutsSearch && shortcutsSearch.value !== '') {
                             e.preventDefault();
-                            shortcutsSearch.value = '';
-                            shortcutsSearch.dispatchEvent(new Event('input'));
+                            const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
+                            if (shortcutsSearchClear) {
+                                shortcutsSearchClear.click();
+                            } else {
+                                shortcutsSearch.value = '';
+                                shortcutsSearch.dispatchEvent(new Event('input'));
+                            }
                             return;
                         }
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
@@ -2962,13 +2992,15 @@
                 const shortcutsPanel = document.getElementById('shortcuts-panel');
                 const closeShortcutsBtn = document.getElementById('close-shortcuts-btn');
                 const shortcutsSearch = document.getElementById('shortcuts-search');
+                const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
                 const shortcutsEmpty = document.getElementById('shortcuts-empty');
                 const shortcutListItems = shortcutsPanel ? shortcutsPanel.querySelectorAll('.shortcuts-list li') : [];
 
                 if (shortcutsBtn && shortcutsPanel) {
                     const filterShortcuts = function() {
                         if (!shortcutsSearch) return;
-                        const query = shortcutsSearch.value.trim().toLowerCase();
+                        const rawQuery = shortcutsSearch.value;
+                        const query = rawQuery.trim().toLowerCase();
                         let visibleCount = 0;
                         shortcutListItems.forEach(function(li) {
                             const text = li.textContent.toLowerCase();
@@ -2982,10 +3014,23 @@
                         if (shortcutsEmpty) {
                             shortcutsEmpty.style.display = visibleCount === 0 ? 'block' : 'none';
                         }
+                        if (shortcutsSearchClear) {
+                            shortcutsSearchClear.style.display = rawQuery !== '' ? 'block' : 'none';
+                        }
                     };
 
                     if (shortcutsSearch) {
                         shortcutsSearch.addEventListener('input', filterShortcuts);
+                    }
+
+                    if (shortcutsSearchClear) {
+                        shortcutsSearchClear.addEventListener('click', function() {
+                            if (shortcutsSearch) {
+                                shortcutsSearch.value = '';
+                                filterShortcuts();
+                                shortcutsSearch.focus();
+                            }
+                        });
                     }
 
                     const togglePanel = function() {
