@@ -3026,6 +3026,27 @@
 
                     if (shortcutsSearch) {
                         shortcutsSearch.addEventListener('input', filterShortcuts);
+                        shortcutsSearch.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter') {
+                                const visibleLis = Array.from(shortcutListItems).filter(li => li.style.display !== 'none');
+                                if (visibleLis.length > 0) {
+                                    const firstBtn = visibleLis[0].querySelector('.shortcuts-item');
+                                    if (firstBtn) {
+                                        e.preventDefault();
+                                        firstBtn.click();
+                                    }
+                                }
+                            } else if (e.key === 'ArrowDown') {
+                                const visibleLis = Array.from(shortcutListItems).filter(li => li.style.display !== 'none');
+                                if (visibleLis.length > 0) {
+                                    const firstBtn = visibleLis[0].querySelector('.shortcuts-item');
+                                    if (firstBtn) {
+                                        e.preventDefault();
+                                        firstBtn.focus();
+                                    }
+                                }
+                            }
+                        });
                     }
 
                     if (shortcutsSearchClear) {
@@ -3135,9 +3156,26 @@
                         }
                     });
 
-                    // Add click listeners to inner interactive items
+                    // Add click and keydown listeners to inner interactive items
                     const items = shortcutsPanel.querySelectorAll('.shortcuts-item');
                     items.forEach(item => {
+                        item.addEventListener('keydown', function(e) {
+                            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                                const visibleBtns = Array.from(shortcutListItems)
+                                    .filter(li => li.style.display !== 'none')
+                                    .map(li => li.querySelector('.shortcuts-item'))
+                                    .filter(Boolean);
+                                const currentIndex = visibleBtns.indexOf(this);
+                                if (currentIndex !== -1 && visibleBtns.length > 0) {
+                                    e.preventDefault();
+                                    const nextIndex = e.key === 'ArrowDown'
+                                        ? (currentIndex + 1) % visibleBtns.length
+                                        : (currentIndex - 1 + visibleBtns.length) % visibleBtns.length;
+                                    visibleBtns[nextIndex].focus();
+                                }
+                            }
+                        });
+
                         item.addEventListener('click', function(e) {
                             e.stopPropagation();
                             const action = this.getAttribute('data-action');
