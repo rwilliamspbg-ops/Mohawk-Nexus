@@ -3017,7 +3017,13 @@
                             }
                         });
                         if (shortcutsEmpty) {
-                            shortcutsEmpty.style.display = visibleCount === 0 ? 'block' : 'none';
+                            if (visibleCount === 0) {
+                                const trimmed = rawQuery.trim();
+                                shortcutsEmpty.textContent = trimmed !== '' ? 'No matching shortcuts found for "' + trimmed + '"' : 'No matching shortcuts found';
+                                shortcutsEmpty.style.display = 'block';
+                            } else {
+                                shortcutsEmpty.style.display = 'none';
+                            }
                         }
                         if (shortcutsSearchClear) {
                             shortcutsSearchClear.style.display = rawQuery !== '' ? 'block' : 'none';
