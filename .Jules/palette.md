@@ -169,3 +169,7 @@
 ## 2026-10-06 - [Interactive Search Filter in Helper Modals & Polite Live Regions]
 **Learning:** When reference modals (such as keyboard shortcuts or command helpers) contain multiple items, providing a real-time search input allows power users to find hotkeys instantly without scanning long lists. Combining auto-focus on the search field, polite live region empty state announcements (`role="status" aria-live="polite"`), progressive Escape-key clearing, and dynamic focus-trap filtering (ignoring `offsetWidth === 0` hidden elements) ensures a fluid, accessible experience for both keyboard and screen reader users.
 **Action:** When adding search/filter inputs to modal dialogs, always auto-focus the input, include a polite live-region empty state, clear input on Escape before closing modal, and filter focus-trap targets to visible elements only.
+
+## 2026-10-10 - [Dynamic Query Context in ARIA Live Empty States]
+**Learning:** Generic empty state messages (e.g., "No matching shortcuts found") in search or filter overlays provide minimal spatial feedback to screen reader and keyboard users. Dynamically inserting the user's active search query into the `role="status"` ARIA live region (e.g., `No matching shortcuts found for "xyz"`) explicitly confirms the exact search terms evaluated and prevents ambiguity during rapid keyboard interactions.
+**Action:** Always include the active query context in live-region empty state messages when filtering list or grid overlays.
