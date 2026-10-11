@@ -2962,15 +2962,16 @@
                         }
                     } else if (e.key === 'Escape') {
                         const shortcutsSearch = document.getElementById('shortcuts-search');
-                        if (shortcutsSearch && document.activeElement === shortcutsSearch && shortcutsSearch.value !== '') {
+                        const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
+                        if (shortcutsSearch && (document.activeElement === shortcutsSearch || document.activeElement === shortcutsSearchClear) && shortcutsSearch.value !== '') {
                             e.preventDefault();
-                            const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
                             if (shortcutsSearchClear) {
                                 shortcutsSearchClear.click();
                             } else {
                                 shortcutsSearch.value = '';
                                 shortcutsSearch.dispatchEvent(new Event('input'));
                             }
+                            shortcutsSearch.focus();
                             return;
                         }
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
@@ -3174,10 +3175,15 @@
                                 const currentIndex = visibleBtns.indexOf(this);
                                 if (currentIndex !== -1 && visibleBtns.length > 0) {
                                     e.preventDefault();
-                                    const nextIndex = e.key === 'ArrowDown'
-                                        ? (currentIndex + 1) % visibleBtns.length
-                                        : (currentIndex - 1 + visibleBtns.length) % visibleBtns.length;
-                                    visibleBtns[nextIndex].focus();
+                                    const searchInput = document.getElementById('shortcuts-search');
+                                    if (e.key === 'ArrowUp' && currentIndex === 0 && searchInput) {
+                                        searchInput.focus();
+                                    } else {
+                                        const nextIndex = e.key === 'ArrowDown'
+                                            ? (currentIndex + 1) % visibleBtns.length
+                                            : (currentIndex - 1 + visibleBtns.length) % visibleBtns.length;
+                                        visibleBtns[nextIndex].focus();
+                                    }
                                 }
                             }
                         });
