@@ -139,7 +139,7 @@
 **Action:** Always ensure any explicit `aria-label` attribute on interactive controls incorporates the exact visual text string presented on the button or element.
 
 ## 2026-09-16 - [Enforcing Strict Heading Hierarchy for Assistive Screen Reader Navigation]
-**Learning:** Skipping heading levels (such as jumping directly from `<h2>` section titles to `<h4>` card headings) breaks sequential heading navigation in screen readers (like NVDA/JAWS/VoiceOver). Updating card headings to `<h3>` preserves a logical `<h1>` -> `<h2>` -> `<h3>` outline while matching CSS selectors.
+**Learning:** Skipping heading levels (such as jumping directly from `<h2>` section titles to `####` card headings) breaks sequential heading navigation in screen readers (like NVDA/JAWS/VoiceOver). Updating card headings to `<h3>` preserves a logical `<h1>` -> `<h2>` -> `<h3>` outline while matching CSS selectors.
 **Action:** Always verify that card components placed inside `<h2>` sections use `<h3>` headings, and update both HTML elements and CSS selectors symmetrically.
 
 ## 2026-09-21 - [Tactile Toast Animation Refreshes & Dropdown Enter-Key Execution]
@@ -173,3 +173,7 @@
 ## 2026-10-10 - [Dynamic Query Context in ARIA Live Empty States]
 **Learning:** Generic empty state messages (e.g., "No matching shortcuts found") in search or filter overlays provide minimal spatial feedback to screen reader and keyboard users. Dynamically inserting the user's active search query into the `role="status"` ARIA live region (e.g., `No matching shortcuts found for "xyz"`) explicitly confirms the exact search terms evaluated and prevents ambiguity during rapid keyboard interactions.
 **Action:** Always include the active query context in live-region empty state messages when filtering list or grid overlays.
+
+## 2026-10-12 - [In-Input Match Counter Badges with Polite ARIA Live Regions]
+**Learning:** When filtering lists or reference overlays via a search input, users must visually scan the list or tab through remaining items to discern how many matches were returned. Adding an absolute-positioned badge (`.shortcuts-count-badge`) inside the search input wrapper that dynamically displays result counts (e.g., "1 found") along with `role="status"` and `aria-live="polite"` provides immediate visual and screen reader feedback as users type.
+**Action:** Position a compact, theme-conforming count badge within search wrappers that dynamically renders filtered result counts with `aria-live="polite"` feedback.
