@@ -1578,7 +1578,7 @@
 
         .shortcuts-search-input {
             width: 100%;
-            padding: 6px 28px 6px 10px;
+            padding: 6px 68px 6px 10px;
             background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 6px;
@@ -1587,6 +1587,28 @@
             font-size: 0.8rem;
             outline: none;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .shortcuts-count-badge {
+            position: absolute;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--primary);
+            background: rgba(0, 255, 204, 0.12);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            border-radius: 4px;
+            padding: 1px 5px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .shortcuts-count-badge.visible {
+            opacity: 1;
         }
 
         .shortcuts-search-clear {
@@ -2409,6 +2431,7 @@
             </h3>
             <div class="shortcuts-search-wrapper">
                 <input type="text" id="shortcuts-search" class="shortcuts-search-input" placeholder="Search shortcuts..." aria-label="Search shortcuts" autocomplete="off" />
+                <span id="shortcuts-count" class="shortcuts-count-badge" role="status" aria-live="polite" aria-atomic="true"></span>
                 <button type="button" id="shortcuts-search-clear" class="shortcuts-search-clear" aria-label="Clear search query" data-tooltip="Clear (Esc)"><span aria-hidden="true">&times;</span></button>
             </div>
             <ul class="shortcuts-list">
@@ -2998,6 +3021,7 @@
                 const shortcutsPanel = document.getElementById('shortcuts-panel');
                 const closeShortcutsBtn = document.getElementById('close-shortcuts-btn');
                 const shortcutsSearch = document.getElementById('shortcuts-search');
+                const shortcutsCount = document.getElementById('shortcuts-count');
                 const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
                 const shortcutsEmpty = document.getElementById('shortcuts-empty');
                 const shortcutListItems = shortcutsPanel ? shortcutsPanel.querySelectorAll('.shortcuts-list li') : [];
@@ -3017,6 +3041,15 @@
                                 li.style.display = 'none';
                             }
                         });
+                        if (shortcutsCount) {
+                            if (query) {
+                                shortcutsCount.textContent = visibleCount + ' found';
+                                shortcutsCount.classList.add('visible');
+                            } else {
+                                shortcutsCount.textContent = '';
+                                shortcutsCount.classList.remove('visible');
+                            }
+                        }
                         if (shortcutsEmpty) {
                             if (visibleCount === 0) {
                                 const trimmed = rawQuery.trim();
