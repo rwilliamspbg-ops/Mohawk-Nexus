@@ -2013,6 +2013,9 @@
                             <option value="make test-all">make test-all</option>
                             <option value="make verify">make verify</option>
                             <option value="make status">make status</option>
+                            <option value="make build">make build</option>
+                            <option value="make bench">make bench</option>
+                            <option value="make deploy">make deploy</option>
                         </select>
                     </div>
                     <button type="button" class="copy-btn" id="copy-btn" data-tooltip="Copy command (C)" aria-label="Copy selected command to clipboard (C)" aria-keyshortcuts="c C">
@@ -3409,7 +3412,10 @@
                         'make setup': 'Bootstrap and configure local development dependencies and environments.',
                         'make test-all': 'Execute the entire test suite including Go, Rust, and TypeScript SDK verifications.',
                         'make verify': 'Validate the post-quantum secure bridge contract, generate SDK bindings, and run smoke tests.',
-                        'make status': 'Check workspace, Kubernetes policies, and the status of system dependencies.'
+                        'make status': 'Check workspace, Kubernetes policies, and the status of system dependencies.',
+                        'make build': 'Compile system components, Go control plane binaries, and Rust datapath modules.',
+                        'make bench': 'Run performance benchmarks to measure packet throughput and latency metrics.',
+                        'make deploy': 'Deploy Kubernetes policies, container services, and system configurations.'
                     };
 
                     const commandDescEl = document.getElementById('command-desc');
@@ -3439,13 +3445,14 @@
                         copyBtn.setAttribute('data-tooltip', `Copy "${commandText}" (C)`);
 
                         // Update description with a smooth transition
-                        if (commandDescEl && commandDescriptions[commandText]) {
+                        if (commandDescEl) {
+                            const descText = commandDescriptions[commandText] || 'Execute command to perform the selected task.';
                             if (isInitialLoad) {
-                                commandDescEl.textContent = commandDescriptions[commandText];
+                                commandDescEl.textContent = descText;
                             } else {
                                 commandDescEl.classList.add('fade');
                                 setTimeout(() => {
-                                    commandDescEl.textContent = commandDescriptions[commandText];
+                                    commandDescEl.textContent = descText;
                                     commandDescEl.classList.remove('fade');
                                 }, 150);
                             }
