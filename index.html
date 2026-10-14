@@ -1639,6 +1639,36 @@
             box-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
         }
 
+        .shortcuts-search-clear[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -35px;
+            right: 0;
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(5px);
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 100;
+        }
+
+        .shortcuts-search-clear[data-tooltip]:hover::after,
+        .shortcuts-search-clear[data-tooltip]:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
         .shortcuts-search-input:focus-visible {
             border-color: var(--primary);
             box-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
