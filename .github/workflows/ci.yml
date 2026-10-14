@@ -107,7 +107,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v7
         with:
-          go-version: '1.22'
+          go-version: '1.26.6'
 
       - name: Run Go SDK conformance tests
         working-directory: sdk/go
@@ -151,6 +151,43 @@ jobs:
         run: |
           cd sdk/typescript
           npm test
+
+  go-vulncheck:
+    name: go-vulncheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout SMIP-MWP
+        uses: actions/checkout@v7
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP
+          path: SMIP-MWP
+
+      - name: Checkout Sovereign-Mohawk-Proto
+        uses: actions/checkout@v7
+        with:
+          repository: rwilliamspbg-ops/Sovereign-Mohawk-Proto
+          path: Sovereign-Mohawk-Proto
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: 'Sovereign-Mohawk-Proto/go.mod'
+
+      # govulncheck reports only vulnerabilities reachable from our code, so a
+      # new stdlib or dependency CVE that we actually call fails the build
+      # instead of accumulating in an unreviewed dependency tree.
+      - name: Run govulncheck on Go modules
+        run: |
+          for dir in ./sdk/go ./SMIP-MWP ./Sovereign-Mohawk-Proto; do
+            if [ -f "$dir/go.mod" ]; then
+              echo "::group::govulncheck $dir"
+              ( cd "$dir" && GOWORK=off go run golang.org/x/vuln/cmd/govulncheck@latest ./... )
+              echo "::endgroup::"
+            fi
+          done
 
   rust-security-audit:
     name: rust-security-audit

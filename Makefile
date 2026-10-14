@@ -33,7 +33,7 @@ verify-go:
 					if [ -n "$$pkgs" ]; then \
 						GOWORK=off go test $$pkgs; \
 					fi; \
-					GOWORK=off go test ./internal/federation -run '^$$' ); \
+					GOWORK=off go test ./internal/federation ); \
 			else \
 				( cd "$$dir" && GOWORK=off go test ./... ); \
 			fi; \
@@ -99,6 +99,7 @@ verify:
 	$(MAKE) generate-bridge
 	$(MAKE) validate-bridge
 	$(MAKE) verify-go
+	$(MAKE) verify-rust
 	bash ./scripts/bridge_smoke.sh
 
 status:

@@ -26,8 +26,10 @@ class FLClient:
         sleeper: Callable[[float], None] = time.sleep,
         jitter: Callable[[], float] = random.random,
         logger: Callable[..., None] = print,
+        auth_token: str = "",
     ):
         self.coord_url = coord_url.rstrip("/")
+        self.auth_token = auth_token
         self.get_timeout = get_timeout
         self.post_timeout = post_timeout
         self.max_retries = max(0, max_retries)
@@ -94,11 +96,17 @@ class FLClient:
         except Exception as error:
             raise RuntimeError(f"invalid state response: {error}") from error
 
+    def _headers(self) -> Dict[str, str]:
+        if not self.auth_token:
+            return {}
+        return {"Authorization": f"Bearer {self.auth_token}"}
+
     def submit_update(self, value: float) -> Dict[str, Any]:
         response = self._request_with_retry(
             "POST",
             timeout=self.post_timeout,
             json={"value": value},
+            headers=self._headers(),
         )
         try:
             return response.json()
@@ -183,6 +191,8 @@ def load_client_from_env() -> FLClient:
             },
         )
 
+    auth_token = os.environ.get("FL_AUTH_TOKEN", cfg.get("auth_token", ""))
+
     return FLClient(
         coord_url=coord,
         get_timeout=get_timeout,
@@ -190,6 +200,7 @@ def load_client_from_env() -> FLClient:
         max_retries=retries,
         base_backoff_seconds=backoff_base,
         max_backoff_seconds=backoff_max,
+        auth_token=auth_token,
     )
 
 def main():

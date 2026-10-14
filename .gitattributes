@@ -1,0 +1,35 @@
+# Normalize line endings in the repository.
+#
+# The working tree checks out CRLF on Windows (core.autocrlf=true) while the
+# index stores LF, which is correct. Without these attributes a fresh Windows
+# clone still produces CRLF everywhere, and anything that hashes file bytes
+# (the bridge contract manifest) disagrees with an LF checkout. Declaring
+# `text eol=lf` keeps the index authoritative and stops the drift at the source
+# instead of patching each consumer.
+* text=auto eol=lf
+
+# Formats that must never be normalized.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+
+# Shell scripts and makefiles must keep LF or they fail to run on Linux CI.
+*.sh text eol=lf
+Makefile text eol=lf
+*.mk text eol=lf
+
+# Sources consumed by hashing or strict parsers.
+*.go text eol=lf
+*.rs text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.toml text eol=lf
