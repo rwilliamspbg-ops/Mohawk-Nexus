@@ -20,8 +20,8 @@ All notable changes to this repository will be documented in this file.
 ### Changed
 - `make verify` now runs `verify-rust`, so the `SMIP-MWP-Rust` workspace (including the
   bridge contract test) is exercised in CI instead of only `sdk/rust`.
-- Go toolchain pins unified on 1.26.6 across all workflows; `perf-regression.yml` no longer
-  pins Go 1.19, which cannot build the `go 1.22` SDK module.
+- Go toolchain pins unified on 1.27.2 across all workflows and the devcontainer;
+  `perf-regression.yml` no longer pins Go 1.19, which cannot build the `go 1.22` SDK module.
 - Kubernetes FL and SWIP deployments gained pod and container security contexts
   (seccomp RuntimeDefault, runAsNonRoot, dropped capabilities, read-only root filesystem)
   with an `emptyDir` mount for the writable state directory.
@@ -48,7 +48,11 @@ All notable changes to this repository will be documented in this file.
 - `images/SMIP-MWP-Rust/Dockerfile` applied a `sed` patch for a mutable borrow that upstream had
   already fixed, making it a silent no-op; it now asserts the declaration instead.
 - Bumped `golang.org/x/net` to v0.60.0 in `SMIP-MWP` and `Sovereign-Mohawk-Proto`, clearing the
-  reachable GO-2026-6603/6610/6611/6612/6613/6617 findings.
+  reachable GO-2026-6610/6611/6612/6613/6617 findings.
+- Raised the Go requirement to 1.27.2 across `go.mod`, all workflow pins and the devcontainer.
+  The remaining reachable findings were stdlib CVEs (GO-2026-6603/6605/6607/6608/6609/6613/6617
+  in `net/http`, `net/textproto` and `crypto/tls`) fixed only in 1.27.2, so a dependency bump
+  alone could not clear them.
 - Removed the stray agent-scratch directory `b4c70ccf-ef0a-4262-a795-b330acdbacba/` (40 files)
   and removed the unmatched markdown fences from `.gitignore`.
 - Removed reliance on placeholder FL and SWIP Kubernetes stubs in default deployment manifests.
