@@ -177,3 +177,7 @@
 ## 2026-10-12 - [In-Input Match Counter Badges with Polite ARIA Live Regions]
 **Learning:** When filtering lists or reference overlays via a search input, users must visually scan the list or tab through remaining items to discern how many matches were returned. Adding an absolute-positioned badge (`.shortcuts-count-badge`) inside the search input wrapper that dynamically displays result counts (e.g., "1 found") along with `role="status"` and `aria-live="polite"` provides immediate visual and screen reader feedback as users type.
 **Action:** Position a compact, theme-conforming count badge within search wrappers that dynamically renders filtered result counts with `aria-live="polite"` feedback.
+
+## 2026-10-13 - [Synchronizing Dropdown Options and ARIA-Describedby State Handlers]
+**Learning:** When interactive `<select>` elements use `aria-describedby` to dynamically update description elements on option change, any mismatch between HTML `<option>` values and the JS lookup object causes descriptions to silently fail for both visual users and screen readers. Ensuring 100% alignment between option values and key-map dictionaries, paired with a fallback description guard, prevents silent UI failures.
+**Action:** Always maintain strict parity between dropdown option values and underlying description lookup maps, and implement a defensive fallback description when using `aria-describedby` for dynamic option updates.
