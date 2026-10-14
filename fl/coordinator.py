@@ -32,6 +32,7 @@ def _load_config():
     metrics_cfg = file_cfg.get("metrics", {}) if isinstance(file_cfg.get("metrics", {}), dict) else {}
     profiling_cfg = file_cfg.get("profiling", {}) if isinstance(file_cfg.get("profiling", {}), dict) else {}
     storage_cfg = file_cfg.get("storage", {}) if isinstance(file_cfg.get("storage", {}), dict) else {}
+    security_cfg = file_cfg.get("security", {}) if isinstance(file_cfg.get("security", {}), dict) else {}
 
     return {
         "host": os.environ.get("FL_SERVER_HOST", str(server_cfg.get("host", "0.0.0.0"))),
@@ -44,6 +45,11 @@ def _load_config():
             int(profiling_cfg.get("default_duration_seconds", 2)),
         ),
         "state_dir": os.environ.get("FL_STATE_DIR", str(storage_cfg.get("state_dir", "run_data"))),
+        # Shared secret required on write endpoints. Empty keeps writes open,
+        # which is only acceptable on a loopback or otherwise isolated bind.
+        "auth_token": os.environ.get(
+            "FL_AUTH_TOKEN", str(security_cfg.get("auth_token", ""))
+        ),
     }
 
 
@@ -56,6 +62,7 @@ REQUESTS = Counter('fl_requests_total', 'Total HTTP requests to coordinator', ['
 UPDATES = Counter('fl_updates_total', 'Total updates received')
 ROUNDS = Counter('fl_rounds_aggregated_total', 'Total rounds aggregated')
 GLOBAL = Gauge('fl_global_value', 'Last aggregated global value')
+UNAUTHORIZED = Counter('fl_unauthorized_total', 'Rejected write requests', ['method'])
 
 # In-memory state cache
 STATE_LOCK = threading.Lock()
@@ -117,6 +124,22 @@ class Handler(BaseHTTPRequestHandler):
             data = {}
         self.wfile.write(json.dumps(data).encode())
 
+    def _authorized(self):
+        """Check the optional write token.
+
+        True when no token is configured (open mode) or the caller supplied
+        the configured token. hmac.compare_digest keeps the comparison
+        constant-time so a wrong token cannot be recovered byte by byte.
+        """
+        expected = CONFIG.get("auth_token", "")
+        if not expected:
+            return True
+        provided = self.headers.get('Authorization', '')
+        if provided.startswith('Bearer '):
+            provided = provided[len('Bearer '):]
+        import hmac as _hmac
+        return _hmac.compare_digest(provided, expected)
+
     def do_GET(self):
         REQUESTS.labels(method='GET').inc()
         path = self.path.split('?')[0]
@@ -174,6 +197,10 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         REQUESTS.labels(method='POST').inc()
+        if not self._authorized():
+            UNAUTHORIZED.labels(method='POST').inc()
+            self._send(401, {'error': 'unauthorized'})
+            return
         length = int(self.headers.get('Content-Length', '0'))
         body = self.rfile.read(length) if length else b''
         try:
@@ -204,6 +231,8 @@ def main():
         CONFIG["port"],
         'metrics',
         CONFIG["metrics_port"] if CONFIG["metrics_enabled"] else 'disabled',
+        'write auth',
+        'enabled' if CONFIG["auth_token"] else 'disabled',
     )
     server.serve_forever()
 

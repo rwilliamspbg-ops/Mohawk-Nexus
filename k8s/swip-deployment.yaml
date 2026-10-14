@@ -13,11 +13,24 @@ spec:
       labels:
         app: swip-client
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
       containers:
         - name: swip
           image: mohawk/swip:local
           imagePullPolicy: IfNotPresent
           command: ["python", "/app/swip/service.py"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 9100
             - containerPort: 9101
@@ -33,6 +46,9 @@ spec:
               port: 9100
             initialDelaySeconds: 5
             periodSeconds: 10
+          volumeMounts:
+            - name: state
+              mountPath: /app/run_data
           resources:
             requests:
               cpu: "50m"
@@ -40,3 +56,6 @@ spec:
             limits:
               cpu: "250m"
               memory: "256Mi"
+      volumes:
+        - name: state
+          emptyDir: {}

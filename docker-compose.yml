@@ -1,4 +1,4 @@
-version: '3.8'
+# Compose v2 ignores the top-level `version` key and warns on it.
 services:
   control:
     build:
@@ -33,6 +33,10 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+    # Set FL_AUTH_TOKEN in the environment to require a bearer token on writes.
+    # Unset keeps writes open, which is only safe on an isolated network.
+    environment:
+      - FL_AUTH_TOKEN=${FL_AUTH_TOKEN:-}
     restart: unless-stopped
 
   fl-client-1:
@@ -47,6 +51,7 @@ services:
       - fl-coordinator
     environment:
       - COORD_HOST=http://fl-coordinator:9000
+      - FL_AUTH_TOKEN=${FL_AUTH_TOKEN:-}
     command: ["python", "/app/fl/client.py"]
 
   fl-client-2:
@@ -61,6 +66,7 @@ services:
       - fl-coordinator
     environment:
       - COORD_HOST=http://fl-coordinator:9000
+      - FL_AUTH_TOKEN=${FL_AUTH_TOKEN:-}
     command: ["python", "/app/fl/client.py"]
 
   swip-client:

@@ -331,6 +331,97 @@ class FLCoordinatorConfigAndHandlerTests(unittest.TestCase):
         self.assertEqual(file_data["global"], 0.5)
         self.assertEqual(file_data.get("updates", []), [])
 
+    def test_auth_open_mode_allows_post(self):
+        """No token configured -> writes stay open (backwards compatible)."""
+        fl.coordinator.CONFIG["auth_token"] = ""
+        if self.temp_state_file.exists():
+            self.temp_state_file.unlink()
+
+        payload = json.dumps({"value": 0.5}).encode()
+        handler = self._create_handler(
+            "/", "POST", body=payload, headers={"Content-Length": str(len(payload))}
+        )
+        handler.do_POST()
+        self.assertEqual(handler.response_code, 200)
+
+    def test_auth_rejects_post_without_token(self):
+        fl.coordinator.CONFIG["auth_token"] = "s3cret"
+        payload = json.dumps({"value": 0.5}).encode()
+        handler = self._create_handler(
+            "/", "POST", body=payload, headers={"Content-Length": str(len(payload))}
+        )
+        handler.do_POST()
+        self.assertEqual(handler.response_code, 401)
+        data = json.loads(handler.wfile.getvalue().decode())
+        self.assertEqual(data, {"error": "unauthorized"})
+        # State must be untouched by the rejected write.
+        self.assertFalse(self.temp_state_file.exists())
+
+    def test_auth_rejects_post_with_wrong_token(self):
+        fl.coordinator.CONFIG["auth_token"] = "s3cret"
+        payload = json.dumps({"value": 0.5}).encode()
+        handler = self._create_handler(
+            "/",
+            "POST",
+            body=payload,
+            headers={
+                "Content-Length": str(len(payload)),
+                "Authorization": "Bearer wrong",
+            },
+        )
+        handler.do_POST()
+        self.assertEqual(handler.response_code, 401)
+
+    def test_auth_accepts_post_with_correct_token(self):
+        fl.coordinator.CONFIG["auth_token"] = "s3cret"
+        if self.temp_state_file.exists():
+            self.temp_state_file.unlink()
+
+        payload = json.dumps({"value": 0.5}).encode()
+        handler = self._create_handler(
+            "/",
+            "POST",
+            body=payload,
+            headers={
+                "Content-Length": str(len(payload)),
+                "Authorization": "Bearer s3cret",
+            },
+        )
+        handler.do_POST()
+        self.assertEqual(handler.response_code, 200)
+        data = json.loads(handler.wfile.getvalue().decode())
+        self.assertEqual(data["updates"], [0.5])
+
+    def test_auth_does_not_guard_reads(self):
+        """Health/read/state endpoints stay readable without a token."""
+        fl.coordinator.CONFIG["auth_token"] = "s3cret"
+        handler = self._create_handler("/healthz", "GET")
+        handler.do_GET()
+        self.assertEqual(handler.response_code, 200)
+
+        state_handler = self._create_handler("/", "GET")
+        state_handler.do_GET()
+        self.assertEqual(state_handler.response_code, 200)
+
+    def test_load_config_auth_token_from_env(self):
+        with patch.dict(os.environ, {"FL_AUTH_TOKEN": "env-token"}, clear=True):
+            with patch("fl.coordinator._read_config_file", return_value={}):
+                cfg = _load_config()
+                self.assertEqual(cfg["auth_token"], "env-token")
+
+    def test_load_config_auth_token_from_file(self):
+        with patch.dict(os.environ, {}, clear=True):
+            file_cfg = {"security": {"auth_token": "file-token"}}
+            with patch("fl.coordinator._read_config_file", return_value=file_cfg):
+                cfg = _load_config()
+                self.assertEqual(cfg["auth_token"], "file-token")
+
+    def test_load_config_auth_token_defaults_empty(self):
+        with patch.dict(os.environ, {}, clear=True):
+            with patch("fl.coordinator._read_config_file", return_value={}):
+                cfg = _load_config()
+                self.assertEqual(cfg["auth_token"], "")
+
 
 if __name__ == "__main__":
     unittest.main()
