@@ -59,6 +59,13 @@ jobs:
         with:
           go-version-file: 'Sovereign-Mohawk-Proto/go.mod'
 
+      # make verify now runs verify-rust, which needs this component present.
+      - name: Checkout SMIP-MWP-Rust
+        uses: actions/checkout@v7
+        with:
+          repository: rwilliamspbg-ops/SMIP-MWP-Rust
+          path: SMIP-MWP-Rust
+
       - name: Ensure Python 3 is available
         run: |
           sudo apt-get update
