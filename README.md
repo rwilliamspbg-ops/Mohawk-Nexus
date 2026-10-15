@@ -11,7 +11,7 @@ Mohawk Nexus is the root integration workspace for the Mohawk network stack. It 
 [![Bridge E2E](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/bridge-e2e.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Bridge%20E2E)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/bridge-e2e.yml)
 [![Policy Validate](https://img.shields.io/github/actions/workflow/status/rwilliamspbg-ops/Mohawk-Nexus/policy-validate.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Policy%20Validate)](https://github.com/rwilliamspbg-ops/Mohawk-Nexus/actions/workflows/policy-validate.yml)
 
-![Go](https://img.shields.io/badge/Go-1.26.1-00ADD8?style=flat-square&logo=go&logoColor=white)
+![Go](https://img.shields.io/badge/Go-1.27.2-00ADD8?style=flat-square&logo=go&logoColor=white)
 ![Rust](https://img.shields.io/badge/Rust-1.0%2B-DEA584?style=flat-square&logo=rust&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)
 ![Node](https://img.shields.io/badge/Node-20%2B-339933?style=flat-square&logo=node.js&logoColor=white)
@@ -47,19 +47,19 @@ Mohawk Nexus is the root integration workspace for the Mohawk network stack. It 
 
 ## Requirements
 
-- Go (1.26.1 recommended — pinned for reproducible builds; 1.22+ should work for most local workflows)
+- Go (1.27.2 recommended — pinned for reproducible builds; 1.22+ should work for most local workflows)
 - Python 3.8+
 - Docker (for containerized performance/stress runs)
 - Rust toolchain (only required for running `SMIP-MWP-Rust` tests locally)
 
-Note: For reproducible local builds and CI parity we pin Go to `1.26.1`.
+Note: For reproducible local builds and CI parity we pin Go to `1.27.2`.
 You can install it locally (no sudo) and add it to your shell `PATH`:
 
 ```bash
-GO_INSTALL_DIR="$HOME/.go/go1.26.1"
-curl -fsSL -o /tmp/go1.26.1.linux-amd64.tar.gz https://go.dev/dl/go1.26.1.linux-amd64.tar.gz
+GO_INSTALL_DIR="$HOME/.go/go1.27.2"
+curl -fsSL -o /tmp/go1.27.2.linux-amd64.tar.gz https://go.dev/dl/go1.27.2.linux-amd64.tar.gz
 rm -rf "$GO_INSTALL_DIR" && mkdir -p "$GO_INSTALL_DIR"
-tar -C "$GO_INSTALL_DIR" -xzf /tmp/go1.26.1.linux-amd64.tar.gz --strip-components=1
+tar -C "$GO_INSTALL_DIR" -xzf /tmp/go1.27.2.linux-amd64.tar.gz --strip-components=1
 export PATH="$GO_INSTALL_DIR/bin:$PATH"
 go version
 ```
@@ -230,9 +230,9 @@ If you need a condensed usage guide or an examples section added to this README,
 
 ## Dev Container / Codespace
 
-For reproducible development environments (Codespaces or Dev Containers) this repository pins Go to `1.26.1`. See `.devcontainer/devcontainer.json` for an example devcontainer configuration which sets `GOROOT` and prepends the pinned Go binary directory to the `PATH` so builds and tests use Go 1.26.1.
+For reproducible development environments (Codespaces or Dev Containers) this repository pins Go to `1.27.2`. See `.devcontainer/devcontainer.json` for an example devcontainer configuration which sets `GOROOT` and prepends the pinned Go binary directory to the `PATH` so builds and tests use Go 1.27.2.
 
-If you prefer to install Go locally without sudo, follow the steps in the Requirements section to install to `$HOME/.go/go1.26.1` and add it to your shell profile (`~/.bashrc` / `~/.profile`).
+If you prefer to install Go locally without sudo, follow the steps in the Requirements section to install to `$HOME/.go/go1.27.2` and add it to your shell profile (`~/.bashrc` / `~/.profile`).
 
 ## License
 

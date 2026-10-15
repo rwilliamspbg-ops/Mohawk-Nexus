@@ -6,7 +6,7 @@ Prerequisites
 
 - Docker & Docker Compose (for local dev)
 - kubectl + a Kubernetes cluster (for production)
-- Go 1.26.1 (pinned)
+- Go 1.27.2 (pinned)
 - Rust toolchain (for building datapath)
 - Host NIC/kernel prerequisites for AF_XDP if using the high-performance datapath
 

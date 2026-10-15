@@ -21,8 +21,8 @@ NOTE: The repository includes canonical baseline results stored under `benchmark
 To reproduce a canonical benchmark run locally:
 
 ```bash
-# use pinned Go 1.26.1 for reproducible builds
-export PATH="$HOME/.go/go1.26.1/bin:$PATH"
+# use pinned Go 1.27.2 for reproducible builds
+export PATH="$HOME/.go/go1.27.2/bin:$PATH"
 cd SMIP-MWP
 go test ./internal/crypto -bench . -run ^$ -benchmem -count 8 2>&1 | tee benchmarks/run.txt
 python3 ../scripts/compare_benchmarks.py --bench-file benchmarks/run.txt --baseline ../benchmarks/baselines/crypto-baseline.json --threshold-percent 5.0
@@ -71,7 +71,7 @@ Build steps (recommended CI-like):
 ```bash
 # Build Go control plane
 cd SMIP-MWP
-export PATH="$HOME/.go/go1.26.1/bin:$PATH"
+export PATH="$HOME/.go/go1.27.2/bin:$PATH"
 go build -o ../dist/mohawk-control ./cmd/...
 
 # Build Rust datapath

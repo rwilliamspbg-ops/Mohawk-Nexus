@@ -1,0 +1,46 @@
+goos: windows
+goarch: amd64
+pkg: github.com/rwilliamspbg-ops/mohawk-nexus/sdk/go/mohawksdk
+cpu: AMD Ryzen AI 7 350 w/ Radeon 860M              
+BenchmarkSwipScale-16                     	1000000000	         0.2188 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2059 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2061 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2052 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2031 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2040 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2042 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2033 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2052 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSwipScale-16                     	1000000000	         0.2073 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	129034893	         9.098 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	135551298	         8.997 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	130254266	         9.071 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	127865750	         9.040 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	128140797	         9.114 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	132191972	         9.026 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	100000000	        11.38 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	100000000	        11.78 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	100000000	        12.17 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Aggregate-16       	100000000	        11.97 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	127308945	         9.590 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	125718559	         9.620 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	123575864	         9.416 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	124806588	         9.803 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	125006484	         9.504 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	123097009	         9.594 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	100000000	        10.12 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	124654615	        10.12 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	100000000	        10.29 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_Buffer-16          	100000000	        10.19 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	100000000	        13.54 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	83312504	        12.55 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	97558596	        11.79 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	100143408	        10.68 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	100000000	        11.88 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	96975966	        11.68 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	100000000	        11.75 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	98601501	        11.34 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	96411871	        11.24 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFlApplyUpdate_SecondUpdate-16    	100000000	        11.69 ns/op	       8 B/op	       1 allocs/op
+PASS
+ok  	github.com/rwilliamspbg-ops/mohawk-nexus/sdk/go/mohawksdk	51.277s
