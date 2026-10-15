@@ -34,10 +34,30 @@ If you change bridge semantics:
 
 ## Component sync and pinning process
 
-Use one of these approaches and document the chosen SHA(s) in your PR:
+The workspace tracks each component as a **gitlink** (a `160000` index entry)
+rather than as a vendored snapshot, so the component sources live in their own
+repositories and this repo records which commit of each it was verified against.
 
-- Submodule strategy: pin each component submodule SHA and update recursively in CI.
-- Snapshot strategy (current): keep component directories in sync with upstream commits and record source SHAs in PR notes.
+There is deliberately **no `.gitmodules`**: CI does not run
+`git submodule update --init`. Every job that needs component sources checks
+them out explicitly with `actions/checkout` at upstream `main`, which is why the
+recorded SHAs are a provenance record rather than something the build consumes.
+Keep them current anyway — a stale or unresolvable pin is misleading about what
+was actually tested.
+
+To refresh the recorded SHAs after merging component work:
+
+```bash
+for r in SMIP-MWP SMIP-MWP-Rust Sovereign-Mohawk-Proto; do
+  git -C "$r" fetch origin main && git -C "$r" checkout --quiet origin/main
+done
+git add SMIP-MWP SMIP-MWP-Rust Sovereign-Mohawk-Proto
+```
+
+Then confirm each pinned commit is reachable in its upstream repository before
+committing; a pin that no longer resolves tells a future reader nothing.
+
+When updating component references, include:
 
 When updating component references, include:
 

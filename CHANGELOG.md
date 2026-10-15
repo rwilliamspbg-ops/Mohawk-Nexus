@@ -55,6 +55,16 @@ All notable changes to this repository will be documented in this file.
   alone could not clear them.
 - Removed the stray agent-scratch directory `b4c70ccf-ef0a-4262-a795-b330acdbacba/` (40 files)
   and removed the unmatched markdown fences from `.gitignore`.
+- Repointed the three component gitlinks (`SMIP-MWP`, `SMIP-MWP-Rust`,
+  `Sovereign-Mohawk-Proto`) at commits that actually resolve. The previous pins
+  returned `422 No commit found` from the GitHub API and were absent even from a
+  full `git fetch --unshallow`, so the recorded provenance was unusable while CI
+  stayed green by checking out upstream HEAD directly.
+- Documented the component pinning strategy in CONTRIBUTING: the workspace uses
+  gitlinks with no `.gitmodules`, CI checks components out from upstream rather
+  than via `git submodule`, and the pins are therefore a provenance record. The
+  doc previously claimed the "snapshot strategy (current)", which matched
+  neither the gitlinks on disk nor how CI resolves components.
 - Removed reliance on placeholder FL and SWIP Kubernetes stubs in default deployment manifests.
 - Removed `--demo && sleep infinity` keepalive stubs from in-repo Kubernetes control and datapath manifests.
 - Replaced SWIP mock runtime entrypoint with SWIP service runtime entrypoint.
