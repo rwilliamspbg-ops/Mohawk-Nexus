@@ -6,7 +6,7 @@ This guide gets a portable Mohawk Nexus stack running in about 5 minutes.
 
 - Docker + Docker Compose
 - Python 3.11+
-- Go 1.22+ (Go 1.26.1 recommended for CI parity)
+- Go 1.22+ (Go 1.27.2 recommended for CI parity)
 
 ## 2. Bootstrap the workspace
 

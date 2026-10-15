@@ -1,13 +1,29 @@
 name: perf-regression
 
+# Benchmarks run on the self-hosted `bench-host` runner so numbers come from a
+# stable 16-core host instead of GitHub's 2-4 core shared runners. That makes
+# this workflow a code-execution surface on that host, so it must never be
+# reachable from an untrusted event.
+#
+# No `pull_request` trigger: this repo is public, so a fork PR would otherwise
+# schedule arbitrary code on the runner. Pushes to main and manual dispatch are
+# both trusted. Fork PRs still get the ordinary GitHub-hosted `ci` gates, they
+# just forfeit the benchmark comparison.
 on:
-  pull_request:
+  push:
     branches:
       - main
+  workflow_dispatch: {}
 
 jobs:
   bench-go-sdk:
-    runs-on: ubuntu-latest
+    # Belt and braces on top of the trigger filter: this workflow executes on a
+    # self-hosted runner, so it must refuse to start from an untrusted event
+    # even if a `pull_request` trigger is ever re-added above.
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.event_name != 'pull_request_target'
+    runs-on: [self-hosted, bench-host]
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -34,7 +50,10 @@ jobs:
           retention-days: 7
 
   bench-and-compare:
-    runs-on: ubuntu-latest
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.event_name != 'pull_request_target'
+    runs-on: [self-hosted, bench-host]
     steps:
       - name: Checkout
         uses: actions/checkout@v7
