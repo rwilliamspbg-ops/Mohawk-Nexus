@@ -560,6 +560,7 @@
         }
 
         .tag {
+            position: relative;
             background: rgba(0, 119, 255, 0.1);
             color: #4db8ff;
             padding: 10px 25px;
@@ -567,11 +568,56 @@
             font-size: 0.95rem;
             font-family: 'JetBrains Mono', monospace;
             border: 1px solid rgba(0, 119, 255, 0.3);
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .tag:hover {
             background: rgba(0, 119, 255, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+        }
+
+        .tag:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 4px;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        }
+
+        .tag:active {
+            transform: scale(0.95);
+        }
+
+        .tag[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 48px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(13, 17, 28, 0.95);
+            border: 1px solid var(--primary);
+            color: var(--light-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            z-index: 100;
+        }
+
+        .tag[data-tooltip]:hover:not([aria-disabled="true"]):not(:disabled)::after,
+        .tag[data-tooltip]:focus-visible:not([aria-disabled="true"]):not(:disabled)::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
         }
 
         /* Comparison Table */
@@ -2290,19 +2336,19 @@
             </h2>
             
             <div class="tech-tags">
-                <span class="tag">#Rust</span>
-                <span class="tag">#Go</span>
-                <span class="tag">#AF_XDP</span>
-                <span class="tag">#Hybrid-Transport</span>
-                <span class="tag">#AI-Networking</span>
-                <span class="tag">#Energy-Efficient</span>
-                <span class="tag">#PQC</span>
-                <span class="tag">#Formal-Verification</span>
-                <span class="tag">#Byzantine-Resilience</span>
-                <span class="tag">#Zero-Copy</span>
-                <span class="tag">#SIMD-Optimization</span>
-                <span class="tag">#TPM-Attestation</span>
-                <span class="tag">#Multi-Tier-Federation</span>
+                <button type="button" class="tag" data-tooltip="Copy tag #Rust" aria-label="Copy tag #Rust to clipboard">#Rust</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #Go" aria-label="Copy tag #Go to clipboard">#Go</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #AF_XDP" aria-label="Copy tag #AF_XDP to clipboard">#AF_XDP</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #Hybrid-Transport" aria-label="Copy tag #Hybrid-Transport to clipboard">#Hybrid-Transport</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #AI-Networking" aria-label="Copy tag #AI-Networking to clipboard">#AI-Networking</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #Energy-Efficient" aria-label="Copy tag #Energy-Efficient to clipboard">#Energy-Efficient</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #PQC" aria-label="Copy tag #PQC to clipboard">#PQC</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #Formal-Verification" aria-label="Copy tag #Formal-Verification to clipboard">#Formal-Verification</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #Byzantine-Resilience" aria-label="Copy tag #Byzantine-Resilience to clipboard">#Byzantine-Resilience</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #Zero-Copy" aria-label="Copy tag #Zero-Copy to clipboard">#Zero-Copy</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #SIMD-Optimization" aria-label="Copy tag #SIMD-Optimization to clipboard">#SIMD-Optimization</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #TPM-Attestation" aria-label="Copy tag #TPM-Attestation to clipboard">#TPM-Attestation</button>
+                <button type="button" class="tag" data-tooltip="Copy tag #Multi-Tier-Federation" aria-label="Copy tag #Multi-Tier-Federation to clipboard">#Multi-Tier-Federation</button>
             </div>
         </section>
 
@@ -3637,6 +3683,45 @@
                         }).catch(err => {
                             console.error('Failed to copy section link: ', err);
                             window.showToast('Unable to copy section link', 'error');
+                        });
+                    });
+                });
+            });
+
+            // Tech stack tag click-to-copy functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const tagBtns = document.querySelectorAll('.tag');
+                tagBtns.forEach(btn => {
+                    let timeout = null;
+                    const originalText = btn.textContent.trim();
+                    const originalTooltip = btn.getAttribute('data-tooltip') || `Copy tag ${originalText}`;
+                    const originalAriaLabel = btn.getAttribute('aria-label') || `Copy tag ${originalText} to clipboard`;
+
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (btn.getAttribute('aria-disabled') === 'true') return;
+
+                        navigator.clipboard.writeText(originalText).then(() => {
+                            btn.setAttribute('aria-disabled', 'true');
+                            btn.setAttribute('data-tooltip', 'Copied!');
+                            btn.setAttribute('aria-label', `Tag ${originalText} copied to clipboard`);
+
+                            const feedbackEl = document.getElementById('copy-feedback');
+                            if (feedbackEl) {
+                                feedbackEl.textContent = `Tag ${originalText} copied to clipboard`;
+                            }
+
+                            window.showToast(`Tag "${originalText}" copied to clipboard!`);
+
+                            if (timeout) clearTimeout(timeout);
+                            timeout = setTimeout(() => {
+                                btn.removeAttribute('aria-disabled');
+                                btn.setAttribute('data-tooltip', originalTooltip);
+                                btn.setAttribute('aria-label', originalAriaLabel);
+                            }, 2000);
+                        }).catch(err => {
+                            console.error('Failed to copy tag: ', err);
+                            window.showToast('Unable to copy tag to clipboard', 'error');
                         });
                     });
                 });
