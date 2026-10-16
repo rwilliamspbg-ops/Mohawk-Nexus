@@ -590,6 +590,14 @@
             transform: scale(0.95);
         }
 
+        .tag[aria-disabled="true"] {
+            color: var(--security-green);
+            border-color: rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            cursor: default;
+        }
+
         .tag[data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -613,8 +621,8 @@
             z-index: 100;
         }
 
-        .tag[data-tooltip]:hover:not([aria-disabled="true"]):not(:disabled)::after,
-        .tag[data-tooltip]:focus-visible:not([aria-disabled="true"]):not(:disabled)::after {
+        .tag[data-tooltip]:hover:not(:disabled)::after,
+        .tag[data-tooltip]:focus-visible:not(:disabled)::after {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);

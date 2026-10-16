@@ -181,3 +181,7 @@
 ## 2026-10-13 - [Synchronizing Dropdown Options and ARIA-Describedby State Handlers]
 **Learning:** When interactive `<select>` elements use `aria-describedby` to dynamically update description elements on option change, any mismatch between HTML `<option>` values and the JS lookup object causes descriptions to silently fail for both visual users and screen readers. Ensuring 100% alignment between option values and key-map dictionaries, paired with a fallback description guard, prevents silent UI failures.
 **Action:** Always maintain strict parity between dropdown option values and underlying description lookup maps, and implement a defensive fallback description when using `aria-describedby` for dynamic option updates.
+
+## 2026-10-16 - [Unrestrained Tooltip Display and Visual Feedback for Temporary Disabled Button States]
+**Learning:** When an interactive button enters a temporary `aria-disabled="true"` feedback phase (e.g., tech stack tag copying), using strict tooltip suppression selectors like `:not([aria-disabled="true"])` prevents the element from displaying updated feedback tooltips (such as "Copied!"). Allowing tooltips to render on `aria-disabled="true"` while applying distinct success styling (such as green text, background tint, and border) creates a cohesive, multi-sensory feedback loop.
+**Action:** Ensure tooltip CSS selectors permit displaying tooltips during `aria-disabled="true"` feedback states, and pair temporary accessibility states with distinct visual success styles.
