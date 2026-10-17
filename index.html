@@ -3129,7 +3129,7 @@
                             }
                         });
                         if (shortcutsCount) {
-                            if (query) {
+                            if (query && visibleCount > 0) {
                                 shortcutsCount.textContent = visibleCount + ' found';
                                 shortcutsCount.classList.add('visible');
                             } else {
