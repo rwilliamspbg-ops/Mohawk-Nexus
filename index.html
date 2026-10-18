@@ -3071,9 +3071,10 @@
                             playPauseBtn.click();
                         }
                     } else if (e.key === 'Escape') {
+                        const shortcutsPanel = document.getElementById('shortcuts-panel');
                         const shortcutsSearch = document.getElementById('shortcuts-search');
                         const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
-                        if (shortcutsSearch && (document.activeElement === shortcutsSearch || document.activeElement === shortcutsSearchClear) && shortcutsSearch.value !== '') {
+                        if (shortcutsPanel && shortcutsPanel.classList.contains('visible') && shortcutsPanel.contains(document.activeElement) && shortcutsSearch && shortcutsSearch.value !== '') {
                             e.preventDefault();
                             if (shortcutsSearchClear) {
                                 shortcutsSearchClear.click();
@@ -3084,7 +3085,6 @@
                             shortcutsSearch.focus();
                             return;
                         }
-                        const shortcutsPanel = document.getElementById('shortcuts-panel');
                         const toastEl = document.getElementById('toast');
                         if (shortcutsPanel && shortcutsPanel.classList.contains('visible')) {
                             e.preventDefault();
