@@ -3287,7 +3287,7 @@
                     const items = shortcutsPanel.querySelectorAll('.shortcuts-item');
                     items.forEach(item => {
                         item.addEventListener('keydown', function(e) {
-                            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                            if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) {
                                 const visibleBtns = Array.from(shortcutListItems)
                                     .filter(li => li.style.display !== 'none')
                                     .map(li => li.querySelector('.shortcuts-item'))
@@ -3296,7 +3296,11 @@
                                 if (currentIndex !== -1 && visibleBtns.length > 0) {
                                     e.preventDefault();
                                     const searchInput = document.getElementById('shortcuts-search');
-                                    if (e.key === 'ArrowUp' && currentIndex === 0 && searchInput) {
+                                    if (e.key === 'Home') {
+                                        visibleBtns[0].focus();
+                                    } else if (e.key === 'End') {
+                                        visibleBtns[visibleBtns.length - 1].focus();
+                                    } else if (e.key === 'ArrowUp' && currentIndex === 0 && searchInput) {
                                         searchInput.focus();
                                     } else {
                                         const nextIndex = e.key === 'ArrowDown'
