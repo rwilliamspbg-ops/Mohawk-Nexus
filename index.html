@@ -3553,7 +3553,7 @@
                     commandSelect.addEventListener('change', updateCopyBtnCues);
 
                     commandSelect.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter') {
+                        if (e.key === 'Enter' || ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C'))) {
                             e.preventDefault();
                             copyBtn.click();
                         }
@@ -3641,6 +3641,13 @@
                     const originalTooltip = btn.getAttribute('data-tooltip') || 'Copy link';
                     const originalAriaLabel = btn.getAttribute('aria-label') || 'Copy section link';
 
+                    btn.addEventListener('keydown', function(e) {
+                        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) {
+                            e.preventDefault();
+                            btn.click();
+                        }
+                    });
+
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         if (btn.getAttribute('aria-disabled') === 'true') return;
@@ -3708,6 +3715,13 @@
                     const originalText = btn.textContent.trim();
                     const originalTooltip = btn.getAttribute('data-tooltip') || `Copy tag ${originalText}`;
                     const originalAriaLabel = btn.getAttribute('aria-label') || `Copy tag ${originalText} to clipboard`;
+
+                    btn.addEventListener('keydown', function(e) {
+                        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) {
+                            e.preventDefault();
+                            btn.click();
+                        }
+                    });
 
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
