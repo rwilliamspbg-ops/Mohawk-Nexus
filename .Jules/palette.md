@@ -189,3 +189,7 @@
 ## 2026-10-20 - [Universal Keyboard Copy Shortcuts on Custom Focusable Copy Targets]
 **Learning:** Standard browser keyboard shortcuts like `Ctrl+C` / `Cmd+C` are commonly expected by keyboard users when focused on interactive controls that perform copy actions (such as dropdown command selectors `#command-select`, tech stack tag buttons `.tag`, or section link buttons `.anchor-link-btn`). Without explicit `keydown` listeners intercepting `Ctrl+C` / `Cmd+C`, pressing the copy shortcut on focused controls performs default browser text selection copying or fails silently.
 **Action:** Always bind `keydown` listeners checking for `(e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')` on custom focusable copy components, preventing default behavior and delegating execution directly to the element's copy action handler (`click()`).
+
+## 2026-10-22 - [PageUp/PageDown Page Scroll Interception on Focusable Scrollable Tables]
+**Learning:** Placing focus on generic scrollable regions (`<div tabindex="0">`) allows `ArrowLeft` / `ArrowRight` horizontal navigation, but pressing `PageUp` or `PageDown` falls through to default document scrolling, causing the entire webpage to scroll vertically and displacing the user's focus from the table.
+**Action:** Intercept `PageUp` and `PageDown` on focusable scrollable containers with `e.preventDefault()` to scroll the element horizontally by a proportional page size (`clientWidth * 0.75`), while updating associated ARIA descriptions and tooltips.

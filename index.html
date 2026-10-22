@@ -2372,8 +2372,8 @@
                 </button>
             </h2>
             
-            <p id="table-scroll-hint" class="sr-only">Use left and right arrow keys to scroll table content horizontally.</p>
-            <div class="table-container" tabindex="0" role="region" aria-label="Industry comparison table" aria-describedby="table-scroll-hint" data-tooltip="Scroll table with ← / → arrow keys">
+            <p id="table-scroll-hint" class="sr-only">Use left and right arrow keys, PageUp / PageDown, or Home / End keys to scroll table content horizontally.</p>
+            <div class="table-container" tabindex="0" role="region" aria-label="Industry comparison table" aria-describedby="table-scroll-hint" data-tooltip="Scroll table with ← / → arrow keys or PageUp / PageDown">
                 <table class="comparison-table">
                     <thead>
                     <tr>
@@ -3758,7 +3758,7 @@
                 });
             });
 
-            // Horizontal keyboard arrow and Home/End navigation for comparison table container
+            // Horizontal keyboard arrow, PageUp/PageDown, and Home/End navigation for comparison table container
             document.addEventListener('DOMContentLoaded', function() {
                 const tableContainer = document.querySelector('.table-container');
                 if (tableContainer) {
@@ -3766,6 +3766,14 @@
                         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
                             const scrollAmount = e.key === 'ArrowRight' ? 120 : -120;
+                            e.preventDefault();
+                            tableContainer.scrollBy({
+                                left: scrollAmount,
+                                behavior: prefersReducedMotion ? 'auto' : 'smooth'
+                            });
+                        } else if (e.key === 'PageDown' || e.key === 'PageUp') {
+                            const pageSize = tableContainer.clientWidth ? tableContainer.clientWidth * 0.75 : 240;
+                            const scrollAmount = e.key === 'PageDown' ? pageSize : -pageSize;
                             e.preventDefault();
                             tableContainer.scrollBy({
                                 left: scrollAmount,
