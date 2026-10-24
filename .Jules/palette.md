@@ -193,3 +193,7 @@
 ## 2026-10-22 - [PageUp/PageDown Page Scroll Interception on Focusable Scrollable Tables]
 **Learning:** Placing focus on generic scrollable regions (`<div tabindex="0">`) allows `ArrowLeft` / `ArrowRight` horizontal navigation, but pressing `PageUp` or `PageDown` falls through to default document scrolling, causing the entire webpage to scroll vertically and displacing the user's focus from the table.
 **Action:** Intercept `PageUp` and `PageDown` on focusable scrollable containers with `e.preventDefault()` to scroll the element horizontally by a proportional page size (`clientWidth * 0.75`), while updating associated ARIA descriptions and tooltips.
+
+## 2026-10-25 - [Keyword & Synonym Search Filtering in Helper Modals]
+**Learning:** In keyboard shortcut overlays, filtering strictly against visible item text limits discoverability when users search using action intent or domain synonyms (e.g. searching "setup", "pqc", or "pause"). Adding `data-keywords` metadata attributes to list items and querying both visible text and keywords allows power users and screen reader users to find relevant shortcuts rapidly.
+**Action:** Enrich reference overlay items with `data-keywords` attributes and incorporate keyword attributes alongside visible text during real-time list filtering.

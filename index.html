@@ -2522,79 +2522,79 @@
                 <button type="button" id="shortcuts-search-clear" class="shortcuts-search-clear" aria-label="Clear search query" data-tooltip="Clear (Esc)"><span aria-hidden="true">&times;</span></button>
             </div>
             <ul class="shortcuts-list">
-                <li>
+                <li data-keywords="home start page top upward scroll">
                     <button type="button" class="shortcuts-item" data-action="T" aria-label="Scroll to top (T)">
                         <span class="shortcuts-desc">Scroll to top</span>
                         <kbd class="shortcuts-key" data-key="T">T</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="make setup test verify build bench deploy select dropdown input cmd command">
                     <button type="button" class="shortcuts-item" data-action="M" aria-label="Focus command dropdown (M)">
                         <span class="shortcuts-desc">Focus command dropdown</span>
                         <kbd class="shortcuts-key" data-key="M">M</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="make setup test verify build bench deploy copy clipboard cmd command">
                     <button type="button" class="shortcuts-item" data-action="C" aria-label="Copy selected command (C)">
                         <span class="shortcuts-desc">Copy selected command</span>
                         <kbd class="shortcuts-key" data-key="C">C</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="three-tier layers security performance environment arch">
                     <button type="button" class="shortcuts-item" data-action="A" aria-label="Jump to Architecture (A)">
                         <span class="shortcuts-desc">Jump to Architecture</span>
                         <kbd class="shortcuts-key" data-key="A">A</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="quantum pqc tpm formal verification audit security stack">
                     <button type="button" class="shortcuts-item" data-action="S" aria-label="Jump to Security (S)">
                         <span class="shortcuts-desc">Jump to Security</span>
                         <kbd class="shortcuts-key" data-key="S">S</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="throughput mpps latency ops speed performance criterion">
                     <button type="button" class="shortcuts-item" data-action="B" aria-label="Jump to Benchmarks (B)">
                         <span class="shortcuts-desc">Jump to Benchmarks</span>
                         <kbd class="shortcuts-key" data-key="B">B</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="energy power memory allocation simd efficiency green">
                     <button type="button" class="shortcuts-item" data-action="E" aria-label="Jump to Environment (E)">
                         <span class="shortcuts-desc">Jump to Environment</span>
                         <kbd class="shortcuts-key" data-key="E">E</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="rust go af_xdp tags implementation stack tech">
                     <button type="button" class="shortcuts-item" data-action="X" aria-label="Jump to Tech Stack (X)">
                         <span class="shortcuts-desc">Jump to Tech Stack</span>
                         <kbd class="shortcuts-key" data-key="X">X</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="nvidia flare pysyft table matrix feature comparison">
                     <button type="button" class="shortcuts-item" data-action="I" aria-label="Jump to Industry Comparison (I)">
                         <span class="shortcuts-desc">Jump to Industry Comparison</span>
                         <kbd class="shortcuts-key" data-key="I">I</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="ready deploy cta get started repository github">
                     <button type="button" class="shortcuts-item" data-action="D" aria-label="Jump to Deployment (D)">
                         <span class="shortcuts-desc">Jump to Deployment</span>
                         <kbd class="shortcuts-key" data-key="D">D</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="keyboard shortcuts help info panel modal guide keys">
                     <button type="button" class="shortcuts-item" data-action="K" aria-label="Toggle this helper (K, ?, or /)">
                         <span class="shortcuts-desc">Toggle this helper</span>
                         <kbd class="shortcuts-key" data-key="K">K, ?, /</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="pause play motion background neural network animation">
                     <button type="button" class="shortcuts-item" data-action="P" aria-label="Toggle animation (P)">
                         <span class="shortcuts-desc">Toggle animation</span>
                         <kbd class="shortcuts-key" data-key="P">P</kbd>
                     </button>
                 </li>
-                <li>
+                <li data-keywords="close exit dismiss cancel escape hide">
                     <button type="button" class="shortcuts-item" data-action="Esc" aria-label="Close helper (Esc)">
                         <span class="shortcuts-desc">Close helper</span>
                         <kbd class="shortcuts-key" data-key="Esc">Esc</kbd>
@@ -3126,7 +3126,8 @@
                         let visibleCount = 0;
                         shortcutListItems.forEach(function(li) {
                             const text = li.textContent.toLowerCase();
-                            if (!query || text.includes(query)) {
+                            const keywords = (li.getAttribute('data-keywords') || '').toLowerCase();
+                            if (!query || text.includes(query) || keywords.includes(query)) {
                                 li.style.display = '';
                                 visibleCount++;
                             } else {
