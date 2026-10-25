@@ -3079,7 +3079,7 @@
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
                         const shortcutsSearch = document.getElementById('shortcuts-search');
                         const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
-                        if (shortcutsPanel && shortcutsPanel.classList.contains('visible') && shortcutsPanel.contains(document.activeElement) && shortcutsSearch && shortcutsSearch.value !== '') {
+                        if (shortcutsPanel && shortcutsPanel.classList.contains('visible') && document.activeElement === shortcutsSearch && shortcutsSearch && shortcutsSearch.value !== '') {
                             e.preventDefault();
                             if (shortcutsSearchClear) {
                                 shortcutsSearchClear.click();
@@ -3557,6 +3557,7 @@
                     updateCopyBtnCues(true);
 
                     commandSelect.addEventListener('change', updateCopyBtnCues);
+                    commandSelect.addEventListener('input', updateCopyBtnCues);
 
                     commandSelect.addEventListener('keydown', function(e) {
                         if (e.key === 'Enter' || ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C'))) {

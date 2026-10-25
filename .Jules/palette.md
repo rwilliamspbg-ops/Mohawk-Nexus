@@ -197,3 +197,7 @@
 ## 2026-10-25 - [Keyword & Synonym Search Filtering in Helper Modals]
 **Learning:** In keyboard shortcut overlays, filtering strictly against visible item text limits discoverability when users search using action intent or domain synonyms (e.g. searching "setup", "pqc", or "pause"). Adding `data-keywords` metadata attributes to list items and querying both visible text and keywords allows power users and screen reader users to find relevant shortcuts rapidly.
 **Action:** Enrich reference overlay items with `data-keywords` attributes and incorporate keyword attributes alongside visible text during real-time list filtering.
+
+## 2026-10-26 - [Search Input Focus & Escape Key Modal Disambiguation]
+**Learning:** In modal dialogs containing search inputs (such as keyboard shortcut helpers), checking `panel.contains(document.activeElement)` on `Escape` keypresses causes pressing `Escape` while focused on list items or modal close controls to clear search text instead of dismissing the modal dialog. Restricting query clearing strictly to `document.activeElement === searchInput` allows `Escape` to clear input text when actively typing, while preserving instant modal dismissal when navigating modal controls.
+**Action:** Always scope query-clearing `Escape` key logic strictly to `document.activeElement === searchInput` inside modal dialogs so keyboard navigation across inner list controls preserves standard WAI-ARIA modal dismissal behavior.
