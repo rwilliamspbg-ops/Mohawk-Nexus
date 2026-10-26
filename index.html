@@ -3178,6 +3178,11 @@
                                         firstBtn.focus();
                                     }
                                 }
+                            } else if (e.key === 'ArrowUp') {
+                                if (closeShortcutsBtn) {
+                                    e.preventDefault();
+                                    closeShortcutsBtn.focus();
+                                }
                             }
                         });
                     }
