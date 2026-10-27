@@ -201,3 +201,7 @@
 ## 2026-10-26 - [Search Input Focus & Escape Key Modal Disambiguation]
 **Learning:** In modal dialogs containing search inputs (such as keyboard shortcut helpers), checking `panel.contains(document.activeElement)` on `Escape` keypresses causes pressing `Escape` while focused on list items or modal close controls to clear search text instead of dismissing the modal dialog. Restricting query clearing strictly to `document.activeElement === searchInput` allows `Escape` to clear input text when actively typing, while preserving instant modal dismissal when navigating modal controls.
 **Action:** Always scope query-clearing `Escape` key logic strictly to `document.activeElement === searchInput` inside modal dialogs so keyboard navigation across inner list controls preserves standard WAI-ARIA modal dismissal behavior.
+
+## 2026-10-28 - [Bidirectional Arrow Navigation at Modal Search Boundaries]
+**Learning:** In modal overlays containing search inputs at the top and list item buttons below, supporting `ArrowDown` allows users to move focus from the search input into the list, but omitting `ArrowUp` handling leaves a non-intuitive navigation dead-end. Intercepting `ArrowUp` on the search input to transfer focus directly to the overlay's close button (`#close-shortcuts-btn`) completes intuitive bidirectional arrow key navigation at the top boundary of the modal.
+**Action:** Always pair `ArrowDown` focus navigation into list items with `ArrowUp` focus transfer to top boundary controls (like close buttons) on modal search fields.
