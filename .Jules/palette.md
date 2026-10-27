@@ -205,3 +205,7 @@
 ## 2026-10-28 - [Bidirectional Arrow Navigation at Modal Search Boundaries]
 **Learning:** In modal overlays containing search inputs at the top and list item buttons below, supporting `ArrowDown` allows users to move focus from the search input into the list, but omitting `ArrowUp` handling leaves a non-intuitive navigation dead-end. Intercepting `ArrowUp` on the search input to transfer focus directly to the overlay's close button (`#close-shortcuts-btn`) completes intuitive bidirectional arrow key navigation at the top boundary of the modal.
 **Action:** Always pair `ArrowDown` focus navigation into list items with `ArrowUp` focus transfer to top boundary controls (like close buttons) on modal search fields.
+
+## 2026-10-29 - [Modal Top-Boundary Arrow Navigation Handlers]
+**Learning:** When modal dialogs include top-level close controls (such as `#close-shortcuts-btn`) positioned directly above search inputs or content lists, handling `ArrowUp` on the input shifts focus to the close control, but omitting `ArrowDown` / `ArrowRight` on the close control leaves a keyboard navigation dead-end. Adding `ArrowDown` / `ArrowRight` focus transfer on top close controls completes the bidirectional navigation loop.
+**Action:** Always attach `ArrowDown` and `ArrowRight` keydown handlers to modal close buttons that sit above search inputs or lists to seamlessly return focus to search fields or primary controls.

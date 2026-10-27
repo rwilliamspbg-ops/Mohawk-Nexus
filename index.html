@@ -3253,6 +3253,14 @@
                             e.stopPropagation();
                             closePanel();
                         });
+                        closeShortcutsBtn.addEventListener('keydown', function(e) {
+                            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                                if (shortcutsSearch) {
+                                    e.preventDefault();
+                                    shortcutsSearch.focus();
+                                }
+                            }
+                        });
                     }
 
                     // Close panel when clicking or focusing outside
