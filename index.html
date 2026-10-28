@@ -1745,6 +1745,27 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            max-height: calc(100vh - 230px);
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .shortcuts-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .shortcuts-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .shortcuts-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 204, 0.3);
+            border-radius: 4px;
+        }
+
+        .shortcuts-list::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
 
         .shortcuts-item {
@@ -2500,7 +2521,7 @@
 
         <!-- Keyboard Shortcuts Panel -->
         <div id="shortcuts-panel" class="shortcuts-panel" role="dialog" aria-modal="false" aria-label="Keyboard Shortcuts" aria-hidden="true" tabindex="-1">
-            <button id="close-shortcuts-btn" class="close-shortcuts-btn" type="button" aria-label="Close shortcuts panel" data-tooltip="Close (Esc)"><span aria-hidden="true">&times;</span></button>
+            <button id="close-shortcuts-btn" class="close-shortcuts-btn" type="button" aria-label="Close shortcuts panel (Esc)" aria-keyshortcuts="Escape" data-tooltip="Close (Esc)"><span aria-hidden="true">&times;</span></button>
             <h3>
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
@@ -2519,7 +2540,7 @@
             <div class="shortcuts-search-wrapper">
                 <input type="text" id="shortcuts-search" class="shortcuts-search-input" placeholder="Search shortcuts..." aria-label="Search shortcuts" autocomplete="off" />
                 <span id="shortcuts-count" class="shortcuts-count-badge" role="status" aria-live="polite" aria-atomic="true"></span>
-                <button type="button" id="shortcuts-search-clear" class="shortcuts-search-clear" aria-label="Clear search query" data-tooltip="Clear (Esc)"><span aria-hidden="true">&times;</span></button>
+                <button type="button" id="shortcuts-search-clear" class="shortcuts-search-clear" aria-label="Clear search query (Esc)" aria-keyshortcuts="Escape" data-tooltip="Clear (Esc)"><span aria-hidden="true">&times;</span></button>
             </div>
             <ul class="shortcuts-list">
                 <li data-keywords="home start page top upward scroll">
