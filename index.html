@@ -3100,7 +3100,7 @@
                         const shortcutsPanel = document.getElementById('shortcuts-panel');
                         const shortcutsSearch = document.getElementById('shortcuts-search');
                         const shortcutsSearchClear = document.getElementById('shortcuts-search-clear');
-                        if (shortcutsPanel && shortcutsPanel.classList.contains('visible') && document.activeElement === shortcutsSearch && shortcutsSearch && shortcutsSearch.value !== '') {
+                        if (shortcutsPanel && shortcutsPanel.classList.contains('visible') && (document.activeElement === shortcutsSearch || document.activeElement === shortcutsSearchClear) && shortcutsSearch && shortcutsSearch.value !== '') {
                             e.preventDefault();
                             if (shortcutsSearchClear) {
                                 shortcutsSearchClear.click();
@@ -3214,6 +3214,23 @@
                                 shortcutsSearch.value = '';
                                 filterShortcuts();
                                 shortcutsSearch.focus();
+                            }
+                        });
+                        shortcutsSearchClear.addEventListener('keydown', function(e) {
+                            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                                if (shortcutsSearch) {
+                                    e.preventDefault();
+                                    shortcutsSearch.focus();
+                                }
+                            } else if (e.key === 'ArrowDown') {
+                                const visibleLis = Array.from(shortcutListItems).filter(li => li.style.display !== 'none');
+                                if (visibleLis.length > 0) {
+                                    const firstBtn = visibleLis[0].querySelector('.shortcuts-item');
+                                    if (firstBtn) {
+                                        e.preventDefault();
+                                        firstBtn.focus();
+                                    }
+                                }
                             }
                         });
                     }
