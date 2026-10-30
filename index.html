@@ -1632,7 +1632,7 @@
 
         .shortcuts-search-input {
             width: 100%;
-            padding: 6px 68px 6px 10px;
+            padding: 6px 10px 6px 10px;
             background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 6px;
@@ -1640,7 +1640,7 @@
             font-family: inherit;
             font-size: 0.8rem;
             outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, padding-right 0.2s ease;
         }
 
         .shortcuts-count-badge {
@@ -3155,8 +3155,10 @@
                                 li.style.display = 'none';
                             }
                         });
+                        const hasCount = Boolean(query && visibleCount > 0);
+                        const hasClear = Boolean(rawQuery !== '');
                         if (shortcutsCount) {
-                            if (query && visibleCount > 0) {
+                            if (hasCount) {
                                 shortcutsCount.textContent = visibleCount + ' found';
                                 shortcutsCount.classList.add('visible');
                             } else {
@@ -3174,7 +3176,10 @@
                             }
                         }
                         if (shortcutsSearchClear) {
-                            shortcutsSearchClear.style.display = rawQuery !== '' ? 'block' : 'none';
+                            shortcutsSearchClear.style.display = hasClear ? 'block' : 'none';
+                        }
+                        if (shortcutsSearch) {
+                            shortcutsSearch.style.paddingRight = (hasCount && hasClear) ? '74px' : (hasClear ? '30px' : '10px');
                         }
                     };
 
