@@ -209,3 +209,7 @@
 ## 2026-10-29 - [Modal Top-Boundary Arrow Navigation Handlers]
 **Learning:** When modal dialogs include top-level close controls (such as `#close-shortcuts-btn`) positioned directly above search inputs or content lists, handling `ArrowUp` on the input shifts focus to the close control, but omitting `ArrowDown` / `ArrowRight` on the close control leaves a keyboard navigation dead-end. Adding `ArrowDown` / `ArrowRight` focus transfer on top close controls completes the bidirectional navigation loop.
 **Action:** Always attach `ArrowDown` and `ArrowRight` keydown handlers to modal close buttons that sit above search inputs or lists to seamlessly return focus to search fields or primary controls.
+
+## 2026-10-31 - [Bidirectional Horizontal Arrow Navigation between Search Inputs & Clear Buttons]
+**Learning:** In search input toolbars paired with inline clear actions (such as `#shortcuts-search-clear`), supporting `ArrowLeft` on the clear button to return focus to the search field is incomplete if the input does not support `ArrowRight` to navigate to the clear button. Intercepting `ArrowRight` on the search input when the text caret is at the end of the query (`selectionStart === value.length`) and the clear button is visible completes the 2D arrow navigation loop without disrupting native caret movement within text.
+**Action:** Always pair `ArrowLeft` / `ArrowUp` focus return from clear buttons with caret-boundary `ArrowRight` handlers on search inputs when inline action buttons are displayed.

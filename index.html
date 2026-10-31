@@ -3209,6 +3209,11 @@
                                     e.preventDefault();
                                     closeShortcutsBtn.focus();
                                 }
+                            } else if (e.key === 'ArrowRight') {
+                                if (shortcutsSearchClear && shortcutsSearchClear.style.display !== 'none' && shortcutsSearch.selectionStart === shortcutsSearch.value.length) {
+                                    e.preventDefault();
+                                    shortcutsSearchClear.focus();
+                                }
                             }
                         });
                     }
