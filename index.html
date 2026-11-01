@@ -2954,7 +2954,7 @@
                 window.addEventListener('keydown', function(e) {
                     const activeEl = document.activeElement;
                     const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT' || activeEl.isContentEditable);
-                    if (isInput) return;
+                    if (isInput && e.key !== 'Escape') return;
 
                     if ((e.key === 'm' || e.key === 'M') && !e.ctrlKey && !e.metaKey && !e.altKey) {
                         const selectEl = document.getElementById('command-select');
@@ -3227,7 +3227,12 @@
                             }
                         });
                         shortcutsSearchClear.addEventListener('keydown', function(e) {
-                            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                            if (e.key === 'ArrowUp') {
+                                if (closeShortcutsBtn) {
+                                    e.preventDefault();
+                                    closeShortcutsBtn.focus();
+                                }
+                            } else if (e.key === 'ArrowLeft') {
                                 if (shortcutsSearch) {
                                     e.preventDefault();
                                     shortcutsSearch.focus();
@@ -3302,7 +3307,15 @@
                             closePanel();
                         });
                         closeShortcutsBtn.addEventListener('keydown', function(e) {
-                            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                            if (e.key === 'ArrowDown') {
+                                if (shortcutsSearchClear && shortcutsSearchClear.style.display !== 'none') {
+                                    e.preventDefault();
+                                    shortcutsSearchClear.focus();
+                                } else if (shortcutsSearch) {
+                                    e.preventDefault();
+                                    shortcutsSearch.focus();
+                                }
+                            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
                                 if (shortcutsSearch) {
                                     e.preventDefault();
                                     shortcutsSearch.focus();
