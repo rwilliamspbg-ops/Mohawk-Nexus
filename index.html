@@ -1679,11 +1679,15 @@
             line-height: 1;
             border-radius: 4px;
             display: none;
-            transition: color 0.2s ease, box-shadow 0.2s ease;
+            transition: color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
         }
 
         .shortcuts-search-clear:hover {
             color: var(--primary);
+        }
+
+        .shortcuts-search-clear:active {
+            transform: translateY(-50%) scale(0.92);
         }
 
         .shortcuts-search-clear:focus-visible {
