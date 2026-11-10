@@ -1937,6 +1937,19 @@
             pointer-events: auto;
         }
 
+        .toast:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .toast:focus-visible {
+            outline: 2px solid var(--secondary);
+            outline-offset: 2px;
+        }
+
+        .toast.toast-error:focus-visible {
+            outline-color: var(--performance-orange);
+        }
+
         .toast.toast-error {
             border-color: var(--performance-orange);
             box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
@@ -2511,7 +2524,7 @@
         </footer>
 
         <!-- Toast Notification -->
-        <div id="toast" class="toast" role="status" aria-live="polite" data-tooltip="Click or press Esc to dismiss">
+        <div id="toast" class="toast" role="status" aria-live="polite" tabindex="0" data-tooltip="Click, or press Enter/Space/Esc to dismiss">
             <svg id="toast-icon-success" aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
@@ -2714,6 +2727,12 @@
                     toastEl.addEventListener('click', function() {
                         toastEl.classList.remove('visible');
                         if (toastTimeout) clearTimeout(toastTimeout);
+                    });
+                    toastEl.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toastEl.click();
+                        }
                     });
                     toastEl.addEventListener('mouseenter', function() {
                         if (toastEl.classList.contains('visible') && toastTimeout) {
